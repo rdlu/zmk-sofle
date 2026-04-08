@@ -1,0 +1,56 @@
+[tools]
+python = {version = "3.12", backend = "uv"}
+
+[env]
+_.python.venv = {path = ".venv", create = true}
+
+[tasks.setup]
+description = "Initialize west workspace and Python deps (run once after cloning)"
+run = """
+west init -l config/
+west update
+west zephyr-export
+uv pip install -r zmk/zephyr/scripts/requirements.txt
+"""
+
+[tasks.build-left]
+description = "Build left half firmware (ZMK Studio enabled)"
+run = """
+west build -s zmk/app -b eyelash_sofle_left --pristine -- \
+  -DZMK_CONFIG="$(pwd)/config" \
+  -DSHIELD=nice_view \
+  -DCONFIG_ZMK_STUDIO=y \
+  -DCONFIG_ZMK_STUDIO_LOCKING=n \
+  -Dsnippet=studio-rpc-usb-uart
+cp build/zephyr/zmk.uf2 eyelash_sofle_studio_left.uf2
+"""
+
+[tasks.build-right]
+description = "Build right half firmware"
+run = """
+west build -s zmk/app -b eyelash_sofle_right --pristine -- \
+  -DZMK_CONFIG="$(pwd)/config" \
+  -DSHIELD=nice_view
+cp build/zephyr/zmk.uf2 eyelash_sofle_right.uf2
+"""
+
+[tasks.build-reset]
+description = "Build settings reset firmware (clears Bluetooth bonds)"
+run = """
+west build -s zmk/app -b nice_nano_v2 --pristine -- \
+  -DZMK_CONFIG="$(pwd)/config" \
+  -DSHIELD=settings_reset
+cp build/zephyr/zmk.uf2 settings_reset.uf2
+"""
+
+[tasks.flash-left]
+description = "Flash left half — double-tap reset button first"
+run = "cp eyelash_sofle_studio_left.uf2 /run/media/$USER/NICENANO/"
+
+[tasks.flash-right]
+description = "Flash right half — double-tap reset button first"
+run = "cp eyelash_sofle_right.uf2 /run/media/$USER/NICENANO/"
+
+[tasks.flash-reset]
+description = "Flash settings reset — double-tap reset button first"
+run = "cp settings_reset.uf2 /run/media/$USER/NICENANO/"

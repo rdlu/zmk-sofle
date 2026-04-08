@@ -30,23 +30,22 @@ For 3D printed model files or any issues and malfunctions with the keyboard, ple
 
 ## Building Locally on Arch Linux
 
-This repo uses [ZMK Firmware](https://zmk.dev/) with a west workspace. The keyboard is the **Eyelash Sofle** (split, NRF52840).
+This repo uses [ZMK Firmware](https://zmk.dev/) with a west workspace and [mise](https://mise.jdx.dev/) for environment management.
 
 ### 1. Install system dependencies
 
 ```bash
-sudo pacman -S cmake ninja dtc python git dfu-util python-pyelftools python-yaml
-yay -S python-west
+sudo pacman -S cmake ninja dtc git dfu-util
+yay -S python-west mise
 ```
 
-> **Why not `yay -S zephyr-sdk`?** The AUR package installs SDK 1.0.0 (released March 2026), which requires Zephyr 4.2+. This repo uses ZMK v0.3.0 which targets Zephyr 3.5 — incompatible.
+> **Why not `yay -S zephyr-sdk`?** The AUR package installs SDK 1.0.0 (March 2026), which requires Zephyr 4.2+. ZMK v0.3.0 targets Zephyr 3.5 — incompatible.
 
 ### 2. Install the Zephyr SDK 0.17.0 (ARM toolchain)
 
 The SDK goes into `tools/` (already gitignored):
 
 ```bash
-cd ~/Projects/zmk-sofle
 mkdir -p tools
 wget -P tools https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v0.17.0/zephyr-sdk-0.17.0_linux-x86_64_minimal.tar.xz
 tar xf tools/zephyr-sdk-0.17.0_linux-x86_64_minimal.tar.xz -C tools/
@@ -54,74 +53,39 @@ tools/zephyr-sdk-0.17.0/setup.sh -t arm-zephyr-eabi -h -c
 rm tools/zephyr-sdk-0.17.0_linux-x86_64_minimal.tar.xz
 ```
 
-### 3. Initialize the west workspace
+### 3. Bootstrap the environment (run once)
 
-Run this **once** from the project root:
-
-```bash
-cd ~/Projects/zmk-sofle
-west init -l config/
-west update
-west zephyr-export
-pip install --user -r zmk/zephyr/scripts/requirements.txt
-```
-
-This will fetch ZMK v0.3.0 and the custom board definitions into `zmk/` and `modules/` directories (gitignored).
-
-### 4. Build the firmware
-
-Run from the project root. Each build outputs `build/zephyr/zmk.uf2`.
-
-**Left half (with ZMK Studio support) — flash this when editing the keymap:**
+mise provisions Python 3.12 via uv and auto-activates a `.venv` on `cd`:
 
 ```bash
-west build -s zmk/app -b eyelash_sofle_left --pristine -- \
-  -DZMK_CONFIG="$(pwd)/config" \
-  -DSHIELD=nice_view \
-  -DCONFIG_ZMK_STUDIO=y \
-  -DCONFIG_ZMK_STUDIO_LOCKING=n \
-  -Dsnippet=studio-rpc-usb-uart
-cp build/zephyr/zmk.uf2 eyelash_sofle_studio_left.uf2
+mise install
+mise run setup
 ```
 
-**Right half:**
+`setup` runs `west init`, `west update`, `west zephyr-export`, and installs Python deps into the venv. ZMK source lands in `zmk/` and `modules/` (gitignored).
+
+### 4. Build and flash
 
 ```bash
-west build -s zmk/app -b eyelash_sofle_right --pristine -- \
-  -DZMK_CONFIG="$(pwd)/config" \
-  -DSHIELD=nice_view
-cp build/zephyr/zmk.uf2 eyelash_sofle_right.uf2
+mise run build-left    # left half (ZMK Studio enabled)
+mise run build-right   # right half
+mise run build-reset   # settings reset (clears BT bonds)
 ```
 
-**Settings reset** (use once to clear Bluetooth bonds if pairing breaks):
+To flash: double-tap the reset button on the half you want to flash — a `NICENANO` USB drive appears — then:
 
 ```bash
-west build -s zmk/app -b nice_nano_v2 --pristine -- \
-  -DZMK_CONFIG="$(pwd)/config" \
-  -DSHIELD=settings_reset
-cp build/zephyr/zmk.uf2 settings_reset.uf2
+mise run flash-left    # or flash-right / flash-reset
 ```
 
-### 5. Flash the firmware
+The keyboard reboots automatically once the file is copied.
 
-Each half has a nice!nano v2 controller with a UF2 bootloader.
-
-1. **Enter bootloader:** double-tap the reset button on the half you want to flash. A USB drive named `NICENANO` will appear.
-2. **Copy the `.uf2` file** to the drive:
-
-```bash
-# Example for left half (adjust mount path as needed)
-cp eyelash_sofle_studio_left.uf2 /run/media/$USER/NICENANO/
-```
-
-The keyboard reboots automatically after the file is copied. Flash the right half the same way.
-
-### 6. ZMK Studio (live keymap editing)
+### 5. ZMK Studio (live keymap editing)
 
 With the Studio firmware on the left half, you can edit keymaps live without rebuilding:
 
 1. Connect the left half via USB.
-2. Open [studio.zmk.dev](https://studio.zmk.dev) in a browser (Chrome/Edge required for WebSerial).
-3. Changes are applied immediately; click **Save** to persist them to flash.
+2. Open [studio.zmk.dev](https://studio.zmk.dev) in Chrome/Edge (WebSerial required).
+3. Changes apply immediately; click **Save** to persist to flash.
 
-> Note: ZMK Studio changes are stored on the keyboard. Rebuilding and reflashing the left half will overwrite them unless you export the keymap first.
+> Rebuilding and reflashing will overwrite Studio changes — export your keymap first if needed.
