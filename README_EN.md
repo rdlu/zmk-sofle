@@ -43,14 +43,16 @@ yay -S python-west
 
 ### 2. Install the Zephyr SDK 0.17.0 (ARM toolchain)
 
-```bash
-cd ~
-wget https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v0.17.0/zephyr-sdk-0.17.0_linux-x86_64_minimal.tar.xz
-tar xf zephyr-sdk-0.17.0_linux-x86_64_minimal.tar.xz
-cd zephyr-sdk-0.17.0 && ./setup.sh -t arm-zephyr-eabi -h -c
-```
+The SDK goes into `tools/` (already gitignored):
 
-This installs the SDK to `~/zephyr-sdk-0.17.0` and registers it system-wide.
+```bash
+cd ~/Projects/zmk-sofle
+mkdir -p tools
+wget -P tools https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v0.17.0/zephyr-sdk-0.17.0_linux-x86_64_minimal.tar.xz
+tar xf tools/zephyr-sdk-0.17.0_linux-x86_64_minimal.tar.xz -C tools/
+tools/zephyr-sdk-0.17.0/setup.sh -t arm-zephyr-eabi -h -c
+rm tools/zephyr-sdk-0.17.0_linux-x86_64_minimal.tar.xz
+```
 
 ### 3. Initialize the west workspace
 
