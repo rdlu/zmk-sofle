@@ -98,7 +98,7 @@
 &kp TAB     &kp Q   &kp W         &kp E         &kp R         &mt RALT T   &kp DOWN_ARROW   &mt RALT Y   &kp U         &kp I         &kp O    &kp P     &kp EQUAL
 &kp ESC     &kp A   &kp S         &hml LCTRL D  &hml LSHFT F  &hml LALT G  &kp LEFT_ARROW   &hmr LALT H  &hmr RSHFT J  &hmr RCTRL K  &kp L    &kp SEMI  &kp APOS
 &kp BSLH    &kp Z   &kp X         &kp C         &kp V         &kp B        &kp RIGHT_ARROW  &kp N        &kp M         &kp COMMA     &kp DOT  &kp FSLH  &kp RET
-&kp C_MUTE  &mo 4   &kp F11       &kp LGUI      &mo 1         &kp BSPC     &trans           &lt 2 DEL    &mo 3         &kp F12       &caps_word  &kp RET
+&kp C_MUTE  &mo 4   &kp F11       &kp LGUI      &mo 1         &kp BSPC     &trans           &mo 3        &kp F12       &lt 2 DEL     &caps_word  &kp RET
             >;
 
             sensor-bindings = <&inc_dec_kp C_VOLUME_UP C_VOL_DN>;
@@ -120,11 +120,11 @@
 
         layer_2 {
             bindings = <
-&kp TILDE  &bt BT_SEL 0  &bt BT_SEL 1    &bt BT_SEL 2  &bt BT_SEL 3  &bt BT_SEL 4    &mmv MOVE_UP     &kp F6  &kp F7  &kp F8      &kp F9     &kp F10      &trans
-&trans     &bt BT_CLR    &bt BT_CLR_ALL  &trans        &trans        &trans          &mmv MOVE_DOWN   &trans  &trans  &kp F11     &kp F12    &kp UNDER    &kp PLUS
-&trans     &out OUT_USB  &out OUT_BLE    &trans        &trans        &trans          &mmv MOVE_LEFT   &trans  &trans  &trans      &trans     &kp LBRC     &kp RBRC
-&trans     &sys_reset    &trans          &bootloader   &trans        &trans          &mmv MOVE_RIGHT  &trans  &trans  &sys_reset  &soft_off  &bootloader  &trans
-&trans     &trans        &trans          &trans        &trans        &trans          &mkp LCLK        &trans  &trans  &trans      &trans     &trans
+&trans  &trans     &trans     &trans           &trans           &trans        &trans  &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans     &trans     &trans           &trans           &trans        &trans  &trans  &trans  &trans  &trans  &trans  &trans
+&kp GRAVE  &kp LBRC  &kp RBRC  &mt LCTRL LBKT  &mt LSHFT RBKT  &mt LALT PLUS  &trans  &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &kp MINUS  &kp LPAR  &kp RPAR         &kp EQUAL        &trans        &trans  &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans     &trans    &trans           &trans           &trans        &trans  &trans  &trans  &trans  &trans  &trans
             >;
 
             display-name = "CODE";
