@@ -86,7 +86,7 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - HOME
   - PG DN
   - PG UP
   - END
@@ -99,9 +99,9 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - LEFT
+  - DOWN
+  - UP
   - RIGHT
   - DEL
   - PAUSE BREAK
