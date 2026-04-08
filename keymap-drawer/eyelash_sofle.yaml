@@ -72,7 +72,7 @@ layers:
   - F3
   - F4
   - F5
-  - {t: ▽, type: trans}
+  - '&mmv MOVE_UP'
   - F6
   - F7
   - F8
@@ -81,11 +81,11 @@ layers:
   - F11
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - '&mkp LCLK'
+  - '&mkp MCLK'
+  - '&mkp RCLK'
+  - '&mkp MB4'
+  - '&mmv MOVE_DOWN'
   - HOME
   - PG DN
   - PG UP
@@ -97,8 +97,8 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - '&mkp MB5'
+  - '&mmv MOVE_LEFT'
   - LEFT
   - DOWN
   - UP
@@ -111,7 +111,7 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - '&mmv MOVE_RIGHT'
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
@@ -124,7 +124,7 @@ layers:
   - {t: ▽, type: trans}
   - {type: held}
   - DEL
-  - LGUI
+  - '&mkp LCLK'
   - APP
   - LCTRL
   - LEFT
