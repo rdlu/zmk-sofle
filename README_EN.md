@@ -80,7 +80,26 @@ mise run flash-left    # or flash-right / flash-reset
 
 The keyboard reboots automatically once the file is copied.
 
-### 5. ZMK Studio (live keymap editing)
+### 5. Keymap Editor (visual web editor + auto-build)
+
+[keymap-editor](https://nickcoutsos.github.io/keymap-editor/) is a browser-based visual keymap editor that commits changes directly to this repo and triggers a firmware build automatically.
+
+**Setup (one-time):**
+1. Install the [keymap-editor GitHub App](https://github.com/apps/keymap-editor) and grant it access to this repo.
+2. Open [nickcoutsos.github.io/keymap-editor](https://nickcoutsos.github.io/keymap-editor/) and sign in with GitHub.
+3. Select this repo — it will detect `config/eyelash_sofle.keymap` and `config/eyelash_sofle.json` automatically.
+
+**Workflow:**
+1. Edit keybindings visually in the browser.
+2. Click **Save** — keymap-editor commits the updated `.keymap` to `main`.
+3. GitHub Actions runs automatically:
+   - `build.yml` builds new firmware and uploads `.uf2` artifacts.
+   - `draw.yml` regenerates the keymap SVG in `keymap-drawer/`.
+4. Download the artifacts from the [Actions tab](../../actions) and flash.
+
+> The `build.yml` and `draw.yml` workflows are already configured to trigger on keymap changes and are loop-safe (draw commits don't re-trigger the build).
+
+### 6. ZMK Studio (live keymap editing)
 
 With the Studio firmware on the left half, you can edit keymaps live without rebuilding:
 
