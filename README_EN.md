@@ -25,3 +25,102 @@ For 3D printed model files or any issues and malfunctions with the keyboard, ple
 ## Sofle Keymap
 
 ![Sofle键位图](keymap-drawer/eyelash_sofle.svg)
+
+---
+
+## Building Locally on Arch Linux
+
+This repo uses [ZMK Firmware](https://zmk.dev/) with a west workspace. The keyboard is the **Eyelash Sofle** (split, NRF52840).
+
+### 1. Install system dependencies
+
+```bash
+sudo pacman -S cmake ninja dtc python git dfu-util python-pyelftools python-yaml
+yay -S python-west
+```
+
+### 2. Install the Zephyr SDK (ARM toolchain)
+
+The nRF52840 requires the ARM cross-compiler from the Zephyr SDK. Download the minimal ARM-only SDK:
+
+```bash
+cd ~
+wget https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v0.17.0/zephyr-sdk-0.17.0_linux-x86_64_minimal.tar.xz
+tar xf zephyr-sdk-0.17.0_linux-x86_64_minimal.tar.xz
+cd zephyr-sdk-0.17.0
+./setup.sh -t arm-zephyr-eabi -h -c
+```
+
+This installs the SDK to `~/zephyr-sdk-0.17.0` and registers it system-wide.
+
+### 3. Initialize the west workspace
+
+Run this **once** from the project root:
+
+```bash
+cd ~/Projects/zmk-sofle
+west init -l config/
+west update
+west zephyr-export
+pip install --user -r zmk/zephyr/scripts/requirements.txt
+```
+
+This will fetch ZMK v0.3.0 and the custom board definitions into `zmk/` and `modules/` directories (gitignored).
+
+### 4. Build the firmware
+
+Run from the project root. Each build outputs `build/zephyr/zmk.uf2`.
+
+**Left half (with ZMK Studio support) — flash this when editing the keymap:**
+
+```bash
+west build -s zmk/app -b eyelash_sofle_left --pristine -- \
+  -DZMK_CONFIG="$(pwd)/config" \
+  -DSHIELD=nice_view \
+  -DCONFIG_ZMK_STUDIO=y \
+  -DCONFIG_ZMK_STUDIO_LOCKING=n \
+  -Dsnippet=studio-rpc-usb-uart
+cp build/zephyr/zmk.uf2 eyelash_sofle_studio_left.uf2
+```
+
+**Right half:**
+
+```bash
+west build -s zmk/app -b eyelash_sofle_right --pristine -- \
+  -DZMK_CONFIG="$(pwd)/config" \
+  -DSHIELD=nice_view
+cp build/zephyr/zmk.uf2 eyelash_sofle_right.uf2
+```
+
+**Settings reset** (use once to clear Bluetooth bonds if pairing breaks):
+
+```bash
+west build -s zmk/app -b nice_nano_v2 --pristine -- \
+  -DZMK_CONFIG="$(pwd)/config" \
+  -DSHIELD=settings_reset
+cp build/zephyr/zmk.uf2 settings_reset.uf2
+```
+
+### 5. Flash the firmware
+
+Each half has a nice!nano v2 controller with a UF2 bootloader.
+
+1. **Enter bootloader:** double-tap the reset button on the half you want to flash. A USB drive named `NICENANO` will appear.
+2. **Copy the `.uf2` file** to the drive:
+
+```bash
+# Example for left half (adjust mount path as needed)
+cp eyelash_sofle_studio_left.uf2 /run/media/$USER/NICENANO/
+```
+
+The keyboard reboots automatically after the file is copied. Flash the right half the same way.
+
+### 6. ZMK Studio (live keymap editing)
+
+With the Studio firmware on the left half, you can edit keymaps live without rebuilding:
+
+1. Connect the left half via USB.
+2. Open [studio.zmk.dev](https://studio.zmk.dev) in a browser (Chrome/Edge required for WebSerial).
+3. Changes are applied immediately; click **Save** to persist them to flash.
+
+> Note: ZMK Studio changes are stored on the keyboard. Rebuilding and reflashing the left half will overwrite them unless you export the keymap first.
