@@ -32,26 +32,21 @@ For 3D printed model files or any issues and malfunctions with the keyboard, ple
 
 This repo uses [ZMK Firmware](https://zmk.dev/) with a west workspace. The keyboard is the **Eyelash Sofle** (split, NRF52840).
 
-### 1. Install system dependencies
+### 1. Install system dependencies and the Zephyr SDK
 
 ```bash
-sudo pacman -S cmake ninja dtc python git dfu-util python-pyelftools python-yaml
-yay -S python-west
+yay -S python-west zephyr-sdk
 ```
 
-### 2. Install the Zephyr SDK (ARM toolchain)
+`zephyr-sdk` from AUR pulls in all required dependencies (`cmake`, `ninja`, `dtc`, `dfu-util`, `python-pyelftools`, etc.) and installs the full Zephyr toolchain including the ARM cross-compiler needed for the nRF52840.
 
-The nRF52840 requires the ARM cross-compiler from the Zephyr SDK. Download the minimal ARM-only SDK:
-
-```bash
-cd ~
-wget https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v0.17.0/zephyr-sdk-0.17.0_linux-x86_64_minimal.tar.xz
-tar xf zephyr-sdk-0.17.0_linux-x86_64_minimal.tar.xz
-cd zephyr-sdk-0.17.0
-./setup.sh -t arm-zephyr-eabi -h -c
-```
-
-This installs the SDK to `~/zephyr-sdk-0.17.0` and registers it system-wide.
+> **SDK version note:** ZMK v0.3.0 targets Zephyr 3.5 and was validated against SDK 0.16/0.17. The AUR package installs SDK 1.0.0. If you hit build errors related to the toolchain, fall back to the manual install:
+> ```bash
+> cd ~
+> wget https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v0.17.0/zephyr-sdk-0.17.0_linux-x86_64_minimal.tar.xz
+> tar xf zephyr-sdk-0.17.0_linux-x86_64_minimal.tar.xz
+> cd zephyr-sdk-0.17.0 && ./setup.sh -t arm-zephyr-eabi -h -c
+> ```
 
 ### 3. Initialize the west workspace
 
