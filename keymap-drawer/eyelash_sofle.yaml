@@ -60,11 +60,11 @@ layers:
   - NAV
   - BSPC
   - {t: ▽, type: trans}
+  - SPACE
+  - {t: DEL, h: CODE}
   - MEDIA
   - F12
-  - {t: DEL, h: CODE}
   - '&caps_word'
-  - RET
   NAV:
   - {t: ▽, type: trans}
   - F1
@@ -191,8 +191,8 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
   - {type: held}
+  - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   MEDIA:
@@ -255,9 +255,9 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
   - {type: held}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   SYS|NUM:
