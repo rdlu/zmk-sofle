@@ -87,11 +87,28 @@ Current timing: `tapping-term-ms=280`, `require-prior-idle-ms=150`, `quick-tap-m
 1. Run `mise run draw` to regenerate the SVG
 2. Stage `config/eyelash_sofle.keymap`, `keymap-drawer/eyelash_sofle.yaml`, `keymap-drawer/eyelash_sofle.svg` together
 3. Commit and push — GitHub Actions will build the firmware automatically
+4. Update the open PR description to reflect the current state of all layers and behaviors
+5. Post a PR comment summarising what changed in this interaction (what the user asked for, what was changed and why)
 
 ## Branch / PR conventions
 
-Active development happens on feature branches. Current: `feat/home-row-mods` (PR #1).
-Main branch is `main`.
+- Always work on a feature branch and keep an open PR — **never commit directly to `main`** unless explicitly asked
+- Active branch: `feat/home-row-mods` (PR #1). Create a new branch/PR if starting a distinct new topic
+- Main branch is `main`
+
+### PR description hygiene
+
+The PR description is the canonical summary of everything on the branch. Keep it current:
+- After every push, update the **Summary** section to reflect the actual current state of all layers and behaviors
+- If a behavior or key was changed, the old description is wrong — fix it
+
+### PR comments as a change log
+
+After each push, post a comment on the PR documenting what happened in that interaction:
+```
+gh pr comment <number> --body "..."
+```
+Include: what the user requested, what was changed (layer/key/behavior), and any non-obvious rationale (e.g. why ralt_mt has no positional restriction). This creates a useful history of decisions for future sessions.
 
 ## Important gotchas
 

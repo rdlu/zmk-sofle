@@ -7,6 +7,14 @@ Edit the keymap based on the user's request, then regenerate the SVG and commit.
 3. Run `mise run draw` to regenerate the SVG (always do this — never commit a stale SVG).
 4. Stage and commit `config/eyelash_sofle.keymap`, `keymap-drawer/eyelash_sofle.yaml`, and `keymap-drawer/eyelash_sofle.svg` together.
 5. Push to the current branch.
+6. Update the open PR description — the Summary section must reflect the actual current state of all layers and behaviors (not just what changed this session).
+7. Post a PR comment documenting this interaction:
+   - What the user asked for
+   - What was changed (layer, key, behavior)
+   - Any non-obvious rationale
+   ```bash
+   gh pr comment <number> --body "..."
+   ```
 
 ## Layer index
 
