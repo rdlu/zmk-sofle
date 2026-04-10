@@ -93,6 +93,27 @@ NUM  7   8   9   -
 
 ---
 
+## Flashing from a release
+
+No build environment needed — just grab the `.uf2` files from the [Releases page](../../releases/latest).
+
+| File | Flash to |
+|------|----------|
+| `eyelash_sofle_studio_left.uf2` | Left half (ZMK Studio enabled) |
+| `nice_view-eyelash_sofle_right-zmk.uf2` | Right half |
+| `settings_reset-nice_nano_v2-zmk.uf2` | Either half — clears Bluetooth bonds (use when re-pairing) |
+
+**Steps:**
+
+1. Download the files above from the latest release.
+2. Double-tap the reset button on the **left** half — a `NICENANO` USB drive appears on your computer.
+3. Drag and drop `eyelash_sofle_studio_left.uf2` onto the drive. The keyboard reboots automatically.
+4. Repeat for the **right** half using `nice_view-eyelash_sofle_right-zmk.uf2`.
+
+> Flash left first, then right. If the halves fail to pair after flashing, flash `settings_reset-nice_nano_v2-zmk.uf2` to both halves to clear old bonds, then re-pair.
+
+---
+
 ## Building Locally on Arch Linux
 
 This repo uses [ZMK Firmware](https://zmk.dev/) with a west workspace and [mise](https://mise.jdx.dev/) for environment management.
