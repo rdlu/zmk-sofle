@@ -267,7 +267,7 @@ layers:
   - {t: BT, h: '2'}
   - {t: BT, h: '3'}
   - {t: BT, h: '4'}
-  - '&mkp LCLK'
+  - '&mmv MOVE_UP'
   - KP NUM
   - KP 7
   - KP 8
@@ -280,7 +280,7 @@ layers:
   - RGB EFF
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - '&mkp LCLK'
+  - '&mmv MOVE_DOWN'
   - KP SLASH
   - KP 4
   - KP 5
@@ -293,7 +293,7 @@ layers:
   - RGB EFR
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - '&mkp LCLK'
+  - '&mmv MOVE_LEFT'
   - KP ASTERISK
   - KP 1
   - KP 2
@@ -306,7 +306,7 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - '&mkp LCLK'
+  - '&mmv MOVE_RIGHT'
   - KP EQUAL
   - KP 0
   - ','
