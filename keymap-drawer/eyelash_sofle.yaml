@@ -309,7 +309,7 @@ layers:
   - {t: ▽, type: trans}
   - KP EQUAL
   - KP 0
-  - {t: ▽, type: trans}
+  - ','
   - KP DOT
   - '%'
   - {t: ▽, type: trans}
