@@ -228,7 +228,7 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - MUTE
+  - PREV
   - VOL DN
   - VOL UP
   - PP
@@ -241,7 +241,7 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - NEXT
   - F20
   - MUTE
   - PREV
@@ -254,7 +254,7 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - NEXT
+  - MUTE
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {type: held}
