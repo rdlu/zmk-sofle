@@ -110,7 +110,24 @@ No build environment needed — just grab the `.uf2` files from the [Releases pa
 3. Drag and drop `eyelash_sofle_studio_left.uf2` onto the drive. The keyboard reboots automatically.
 4. Repeat for the **right** half using `nice_view-eyelash_sofle_right-zmk.uf2`.
 
-> Flash left first, then right. If the halves fail to pair after flashing, flash `settings_reset-nice_nano_v2-zmk.uf2` to both halves to clear old bonds, then re-pair.
+> Flash left first, then right.
+
+### Re-pairing the halves
+
+If the halves fail to connect to each other, clear their Bluetooth bonds and let them re-discover:
+
+**Option A — via the keymap (no reflash needed):**
+1. On each half separately, hold `mo(SYS|NUM)` (left thumb) and tap `BT_CLR` (top-left of the SYS layer, above `Q`).
+2. Do this on both halves.
+
+**Option B — via settings reset firmware:**
+1. Flash `settings_reset-nice_nano_v2-zmk.uf2` to each half.
+
+**After clearing bonds (both options):**
+1. Power off both halves.
+2. Power on the **right** half first (peripheral — starts advertising).
+3. Power on the **left** half (central — scans and connects).
+4. They auto-pair within a few seconds.
 
 ---
 
