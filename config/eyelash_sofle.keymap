@@ -134,7 +134,7 @@
 &trans  &trans     &trans     &trans           &trans           &trans        &trans  &trans  &trans  &trans  &trans  &trans  &trans
 &trans  &trans     &trans     &trans           &trans           &trans        &trans  &trans  &trans  &trans  &trans  &trans  &trans
 &kp GRAVE  &kp LBRC  &kp RBRC  &mt LCTRL LBKT  &mt LSHFT RBKT  &mt LALT PLUS  &trans  &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &kp MINUS  &kp LPAR  &kp RPAR         &kp EQUAL        &trans        &trans  &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &kp MINUS  &kp UNDER &kp LPAR         &kp RPAR         &kp EQUAL     &trans  &trans  &trans  &trans  &trans  &trans  &trans
 &trans  &trans     &trans    &trans           &trans           &trans        &trans  &trans  &trans  &trans  &trans  &trans
             >;
 
