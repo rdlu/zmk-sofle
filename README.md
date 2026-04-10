@@ -1,29 +1,171 @@
-# Sofle
+# Eyelash Sofle — ZMK Firmware
 
-- [中文](README.md)
-- [English](README_EN.md)
+> Original hardware by [380465425@qq.com](mailto:380465425@qq.com) · Original README (Chinese): [README_JP.md](README_JP.md)
 
-## 更新列表
+ZMK firmware configuration for the **Eyelash Sofle** split keyboard (NRF52840, nice!nano v2, nice!view display). Features home row mods, a full 5-layer layout, and ZMK Studio support on the left half.
 
-- 2024/12/21
-  1. 增加zmk-studio支持（只需要刷新左手即可使用）。
-- 2024/10/24
-  1. 修改供电模式，功耗降低。
-  2. 修正RGB供电自动关闭的功能。
-- 2025/3/30 增加睡眠进入时间1小时  增加防抖时间 优化睡眠后功耗 
-- 2025/8/22
-  1. 更新了soft off。当您同时按下 Q、S 和 Z 键并按住 2 秒钟时，键盘将进入深度睡眠状态，无法通过按键唤醒。携带外出时可以使用此功能。激活方式为按一次复位开关。
-  2. 这个月，我还更新了矮轴版本sofle和corne的外壳。框架和底板加厚了，复位开关的开口也进行了调整，可以轻松按下复位开关。目前，我们仍在构思如何设计带有倾斜支架的外壳。如果您仔细检查过 PCB，您会注意到有用于扩展 IO 的预留接口。不知道有没有人能够使用它们，我会尝试一下！
-  3. 右侧键盘屏幕上的GIF动画被移除，这将显著降低右侧键盘的功耗。
+## Keymap
 
-> 如果您的键盘于2025年8月22之前更新，请更新最新的固件。
->
+![Keymap](keymap-drawer/eyelash_sofle.svg)
 
-## 联系我
+See [KEYMAP.md](KEYMAP.md) for the full layer reference and hold-tap timing documentation.
 
-如需3D打印的模型文件或者键盘有任何异常和故障，请联系380465425@qq.com
+See [WM_KEYBINDS.md](WM_KEYBINDS.md) for suggested window manager keybind configuration (niri, GNOME, COSMIC) to match the NAV layer workspace and monitor navigation keys.
 
-## Sofle键位图
+---
 
-![Sofle键位图](keymap-drawer/eyelash_sofle.svg)
+## Layers
 
+| # | Name | Access |
+|---|------|--------|
+| 0 | BASE | always on |
+| 1 | NAV | hold `mo1` — left thumb |
+| 2 | CODE | hold `lt(2,DEL)` — right thumb |
+| 3 | MEDIA | hold `mo3` — right thumb |
+| 4 | SYS\|NUM | hold `mo4` — left thumb |
+
+### BASE
+
+QWERTY with home row mods and AltGr mod-tap:
+
+| Key | Tap | Hold |
+|-----|-----|------|
+| D | D | LCTRL |
+| F | F | LSHFT |
+| G | G | LALT |
+| H | H | LALT |
+| J | J | RSHFT |
+| K | K | RCTRL |
+| T | T | RALT (AltGr) |
+| Y | Y | RALT (AltGr) |
+
+**Left thumb:** `mo(SYS|NUM)` · `F11` · `LGUI` · `mo(NAV)` · `BSPC`
+
+**Right thumb:** `SPACE` · `lt(CODE,DEL)` · `mo(MEDIA)` · `F12` · `CapsWord`
+
+Hold-tap timing: `tapping-term=280ms` · `require-prior-idle=150ms` · `quick-tap=175ms` · `flavor=balanced`
+
+### NAV (1)
+
+- **Top row:** F12 · F1–F11
+- **Row 2:** mouse buttons (L/M/R/4/5) · Home · PgDn · PgUp · End · Ins · Print
+- **Home row:** WM monitor/workspace navigation (Super+key combos) · Left · Down · Up · Right · Del
+- **Bottom row:** WM move-to-workspace/monitor combos · workspace shortcuts (N=ws1, M=next, ,=prev, .=last, /=mon-left, RET=mon-right)
+- **Encoder D-pad:** mouse pointer movement
+- **Thumb:** Del · App menu · LCTRL · Left · Right
+
+### CODE (2)
+
+Left home + bottom rows, right side transparent.
+
+**Home row:** `` ` `` · `{` · `}` · `[`(LCTRL) · `]`(LSHFT) · `+`(LALT)
+
+**Bottom row:** `-` · `_` · `(` · `)` · `=`
+
+### MEDIA (3)
+
+**Home row:** Vol↓ · Vol↑ · Play/Pause · Stop
+
+**Bottom row:** F20 (mic mute) · Mute · Prev · Next
+
+**Encoder D-pad:** Vol↑/↓ (vertical) · Play/Pause (left) · Next (right) · Mute (center)
+
+### SYS|NUM (4)
+
+**Left — Bluetooth:** CLR · BT0–BT4
+
+**Left — RGB:** Brightness · Saturation · Hue · Effect (increase row 1 / decrease row 2) · RGB Toggle
+
+**Right — Numpad** (aligned with base layer 7/8/9):
+
+```
+NUM  7   8   9   -
+ /   4   5   6   +
+ *   1   2   3  Ent
+ =   0   ,   .   %
+```
+
+**Encoder D-pad:** mouse pointer movement · center = left click
+
+---
+
+## Building Locally on Arch Linux
+
+This repo uses [ZMK Firmware](https://zmk.dev/) with a west workspace and [mise](https://mise.jdx.dev/) for environment management.
+
+### 1. Install system dependencies
+
+```bash
+sudo pacman -S cmake ninja dtc git dfu-util
+yay -S python-west mise
+```
+
+> **Why not `yay -S zephyr-sdk`?** The AUR package installs SDK 1.0.0 (March 2026), which requires Zephyr 4.2+. ZMK v0.3.0 targets Zephyr 3.5 — incompatible.
+
+### 2. Install the Zephyr SDK 0.17.0 (ARM toolchain)
+
+The SDK goes into `tools/` (already gitignored):
+
+```bash
+mkdir -p tools
+wget -P tools https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v0.17.0/zephyr-sdk-0.17.0_linux-x86_64_minimal.tar.xz
+tar xf tools/zephyr-sdk-0.17.0_linux-x86_64_minimal.tar.xz -C tools/
+tools/zephyr-sdk-0.17.0/setup.sh -t arm-zephyr-eabi -h -c
+rm tools/zephyr-sdk-0.17.0_linux-x86_64_minimal.tar.xz
+```
+
+### 3. Bootstrap the environment (run once)
+
+mise provisions Python 3.12 via uv and auto-activates a `.venv` on `cd`:
+
+```bash
+mise install
+mise run setup
+```
+
+`setup` runs `west init`, `west update`, `west zephyr-export`, and installs Python deps into the venv. ZMK source lands in `zmk/` and `modules/` (gitignored).
+
+### 4. Build and flash
+
+```bash
+mise run build-left    # left half (ZMK Studio enabled)
+mise run build-right   # right half
+mise run build-reset   # settings reset (clears BT bonds)
+```
+
+To flash: double-tap the reset button on the half you want to flash — a `NICENANO` USB drive appears — then:
+
+```bash
+mise run flash-left    # or flash-right / flash-reset
+```
+
+The keyboard reboots automatically once the file is copied.
+
+### 5. Keymap Editor (visual web editor + auto-build)
+
+[keymap-editor](https://nickcoutsos.github.io/keymap-editor/) is a browser-based visual keymap editor that commits changes directly to this repo and triggers a firmware build automatically.
+
+**Setup (one-time):**
+1. Install the [keymap-editor GitHub App](https://github.com/apps/keymap-editor) and grant it access to this repo.
+2. Open [nickcoutsos.github.io/keymap-editor](https://nickcoutsos.github.io/keymap-editor/) and sign in with GitHub.
+3. Select this repo — it will detect `config/eyelash_sofle.keymap` and `config/eyelash_sofle.json` automatically.
+
+**Workflow:**
+1. Edit keybindings visually in the browser.
+2. Click **Save** — keymap-editor commits the updated `.keymap` to `main`.
+3. GitHub Actions runs automatically:
+   - `build.yml` builds new firmware and uploads `.uf2` artifacts.
+   - `draw.yml` regenerates the keymap SVG in `keymap-drawer/`.
+4. Download the artifacts from the [Actions tab](../../actions) and flash.
+
+> The `build.yml` and `draw.yml` workflows trigger on `main` pushes only. Use `workflow_dispatch` from the Actions tab to build manually from any branch.
+
+### 6. ZMK Studio (live keymap editing)
+
+With the Studio firmware on the left half, you can edit keymaps live without rebuilding:
+
+1. Connect the left half via USB.
+2. Open [studio.zmk.dev](https://studio.zmk.dev) in Chrome/Edge (WebSerial required).
+3. Changes apply immediately; click **Save** to persist to flash.
+
+> Rebuilding and reflashing will overwrite Studio changes — export your keymap first if needed.
