@@ -27,27 +27,38 @@ The NAV layer sends standard Super-key combos for workspace and monitor navigati
 
 ## niri
 
-Your niri config already has all required bindings. The relevant entries (already in your `binds {}` block):
+Add the following entries inside your `binds {}` block in `~/.config/niri/config.kdl`:
 
-```
+```kdl
+// Workspace navigation
 Mod+U { focus-workspace-down; }
 Mod+I { focus-workspace-up; }
 Mod+1 { focus-workspace 1; }
+Mod+2 { focus-workspace 2; }
+Mod+3 { focus-workspace 3; }
+Mod+4 { focus-workspace 4; }
+Mod+5 { focus-workspace 5; }
+Mod+6 { focus-workspace 6; }
+Mod+7 { focus-workspace 7; }
+Mod+8 { focus-workspace 8; }
 Mod+9 { focus-workspace 9; }
 
-Mod+Shift+H     { focus-monitor-left; }
-Mod+Shift+J     { focus-monitor-down; }
-Mod+Shift+K     { focus-monitor-up; }
-Mod+Shift+L     { focus-monitor-right; }
+// Move column to workspace
+Mod+Ctrl+U { move-column-to-workspace-down; }
+Mod+Ctrl+I { move-column-to-workspace-up; }
 
-Mod+Ctrl+U      { move-column-to-workspace-down; }
-Mod+Ctrl+I      { move-column-to-workspace-up; }
+// Monitor focus
+Mod+Shift+H { focus-monitor-left; }
+Mod+Shift+J { focus-monitor-down; }
+Mod+Shift+K { focus-monitor-up; }
+Mod+Shift+L { focus-monitor-right; }
 
+// Move column to monitor
 Mod+Shift+Ctrl+H { move-column-to-monitor-left; }
 Mod+Shift+Ctrl+L { move-column-to-monitor-right; }
 ```
 
-No changes needed — niri is already configured.
+> **Note:** `Mod` in niri equals `Super` (Win key) when running on a TTY, or `Alt` when running inside a winit window. The keyboard sends `LGUI` (Left Super), so TTY mode is the intended target.
 
 ---
 
