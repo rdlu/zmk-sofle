@@ -228,7 +228,7 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - PREV
+  - PP
   - VOL DN
   - VOL UP
   - PP

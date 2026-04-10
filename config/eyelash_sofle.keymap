@@ -146,7 +146,7 @@
             bindings = <
 &trans  &trans  &trans  &trans  &trans  &trans  &kp C_VOL_UP  &trans        &trans        &trans      &trans      &trans  &trans
 &trans  &trans  &trans  &trans  &trans  &trans  &kp C_VOL_DN  &trans        &trans        &trans      &trans      &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans  &kp C_PREV    &kp C_VOL_DN  &kp C_VOL_UP  &kp C_PP    &kp C_STOP  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans  &kp C_PP      &kp C_VOL_DN  &kp C_VOL_UP  &kp C_PP    &kp C_STOP  &trans  &trans
 &trans  &trans  &trans  &trans  &trans  &trans  &kp C_NEXT    &kp F20       &kp C_MUTE    &kp C_PREV  &kp C_NEXT  &trans  &trans
 &kp C_PP  &trans  &trans  &trans  &trans  &trans  &kp C_MUTE  &trans        &trans        &trans      &trans      &trans
             >;
