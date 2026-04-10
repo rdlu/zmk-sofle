@@ -26,6 +26,10 @@ For 3D printed model files or any issues and malfunctions with the keyboard, ple
 
 ![Sofle键位图](keymap-drawer/eyelash_sofle.svg)
 
+See [KEYMAP.md](KEYMAP.md) for a full layer reference and hold-tap timing documentation.
+
+See [WM_KEYBINDS.md](WM_KEYBINDS.md) for suggested window manager keybind configuration (niri, GNOME, COSMIC) to match the NAV layer workspace and monitor navigation keys.
+
 ---
 
 ## Building Locally on Arch Linux

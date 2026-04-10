@@ -54,3 +54,11 @@ run = "cp eyelash_sofle_right.uf2 /run/media/$USER/NICENANO/"
 [tasks.flash-reset]
 description = "Flash settings reset — double-tap reset button first"
 run = "cp settings_reset.uf2 /run/media/$USER/NICENANO/"
+
+[tasks.draw]
+description = "Regenerate keymap SVG locally using keymap-drawer"
+run = """
+uvx --from keymap-drawer keymap parse -z config/eyelash_sofle.keymap -o keymap-drawer/eyelash_sofle.yaml
+uvx --from keymap-drawer keymap -c keymap_drawer.config.yaml draw -z eyelash_sofle keymap-drawer/eyelash_sofle.yaml -o keymap-drawer/eyelash_sofle.svg
+echo "SVG written to keymap-drawer/eyelash_sofle.svg"
+"""
