@@ -6,7 +6,6 @@
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/keys.h>
-#include <dt-bindings/zmk/outputs.h>
 #include <dt-bindings/zmk/pointing.h>
 #include <dt-bindings/zmk/rgb.h>
 
@@ -46,6 +45,7 @@
             tapping-term-ms = <280>;
             quick-tap-ms = <175>;
             bindings = <&kp>, <&kp>;
+
             hold-trigger-key-positions = <7 8 9 10 11 12 20 21 22 23 24 25 33 34 35 36 37 38 46 47 48 49 50 51 58 59 60 61 62 63>;
             hold-trigger-on-release;
         };
@@ -58,6 +58,7 @@
             tapping-term-ms = <280>;
             quick-tap-ms = <175>;
             bindings = <&kp>, <&kp>;
+
             hold-trigger-key-positions = <0 1 2 3 4 5 6 13 14 15 16 17 18 19 26 27 28 29 30 31 32 39 40 41 42 43 44 45 52 53 54 55 56 57>;
             hold-trigger-on-release;
         };
@@ -70,6 +71,7 @@
             tapping-term-ms = <280>;
             quick-tap-ms = <175>;
             bindings = <&kp>, <&kp>;
+
             // No hold-trigger-key-positions: AltGr combos target both hands
         };
     };
@@ -105,11 +107,11 @@
 
         layer0 {
             bindings = <
-&kp GRAVE   &kp N1  &kp N2        &kp N3        &kp N4        &kp N5       &kp UP_ARROW     &kp N6       &kp N7        &kp N8        &kp N9   &kp N0    &kp MINUS
-&kp TAB     &kp Q   &kp W         &kp E         &kp R         &ralt_mt RALT T   &kp DOWN_ARROW   &ralt_mt RALT Y   &kp U         &kp I         &kp O    &kp P     &kp EQUAL
-&kp ESC     &kp A   &kp S         &hml LCTRL D  &hml LSHFT F  &hml LALT G  &kp LEFT_ARROW   &hmr LALT H  &hmr RSHFT J  &hmr RCTRL K  &kp L    &kp SEMI  &kp APOS
-&kp BSLH    &kp Z   &kp X         &kp C         &kp V         &kp B        &kp RIGHT_ARROW  &kp N        &kp M         &kp COMMA     &kp DOT  &kp FSLH  &kp RET
-&kp C_MUTE  &mo 4   &kp F11       &kp LGUI      &mo 1         &kp BSPC     &trans           &kp SPACE    &lt 2 DEL     &mo 3         &kp F12     &caps_word
+&kp GRAVE   &kp N1  &kp N2   &kp N3        &kp N4        &kp N5             &kp UP_ARROW     &kp N6           &kp N7        &kp N8        &kp N9   &kp N0      &kp MINUS
+&kp TAB     &kp Q   &kp W    &kp E         &kp R         &ralt_mt RALT T    &kp DOWN_ARROW   &ralt_mt RALT Y  &kp U         &kp I         &kp O    &kp P       &kp EQUAL
+&kp ESC     &kp A   &kp S    &hml LCTRL D  &hml LSHFT F  &hml LALT G        &kp LEFT_ARROW   &hmr LALT H      &hmr RSHFT J  &hmr RCTRL K  &kp L    &kp SEMI    &kp APOS
+&kp BSLH    &kp Z   &kp X    &kp C         &kp V         &kp B              &kp RIGHT_ARROW  &kp N            &kp M         &kp COMMA     &kp DOT  &kp FSLH    &kp RET
+&kp C_MUTE  &mo 4   &kp F11  &kp LGUI      &mo 1         &kp BSPC           &kp ENTER        &kp SPACE        &lt 2 DEL     &mo 3         &kp F12  &caps_word
             >;
 
             sensor-bindings = <&inc_dec_kp C_VOLUME_UP C_VOL_DN>;
@@ -118,11 +120,11 @@
 
         layer_1 {
             bindings = <
-&kp F12          &kp F1          &kp F2    &kp F3    &kp F4    &kp F5    &mmv MOVE_UP     &kp F6         &kp F7         &kp F8        &kp F9         &kp F10  &kp F11
-&kp LG(U)        &kp LG(I)       &mkp LCLK &mkp MCLK &mkp RCLK &mkp MB4  &mmv MOVE_DOWN   &kp HOME       &kp PG_DN      &kp PG_UP     &kp END        &kp INS  &kp PRINTSCREEN
-&kp LG(LS(H))    &kp LG(LS(J))   &kp LG(LS(K)) &kp LG(LS(L)) &trans &mkp MB5  &mmv MOVE_LEFT   &kp LEFT       &kp DOWN       &kp UP        &kp RIGHT      &kp DEL  &kp PAUSE_BREAK
-&kp LG(LC(U))    &kp LG(LC(I))   &kp LG(LS(LC(H))) &kp LG(LS(LC(L))) &trans &trans &mmv MOVE_RIGHT &kp LG(N1) &kp LG(U)  &kp LG(I)     &kp LG(N9)     &kp LG(LS(H)) &kp LG(LS(L))
-&trans           &trans          &trans    &trans    &trans    &kp DEL   &mkp LCLK        &kp K_APP      &kp LCTRL      &kp LEFT      &kp RIGHT      &trans
+&kp F12        &kp F1         &kp F2             &kp F3             &kp F4     &kp F5      &mmv MOVE_UP     &kp F6      &kp F7     &kp F8     &kp F9      &kp F10        &kp F11
+&kp LG(U)      &kp LG(I)      &mkp LCLK          &mkp MCLK          &mkp RCLK  &mkp MB4    &mmv MOVE_DOWN   &kp HOME    &kp PG_DN  &kp PG_UP  &kp END     &kp INS        &kp PRINTSCREEN
+&kp LG(LS(H))  &kp LG(LS(J))  &kp LG(LS(K))      &kp LG(LS(L))      &trans     &mkp MB5    &mmv MOVE_LEFT   &kp LEFT    &kp DOWN   &kp UP     &kp RIGHT   &kp DEL        &kp PAUSE_BREAK
+&kp LG(LC(U))  &kp LG(LC(I))  &kp LG(LS(LC(H)))  &kp LG(LS(LC(L)))  &trans     &trans      &mmv MOVE_RIGHT  &kp LG(N1)  &kp LG(U)  &kp LG(I)  &kp LG(N9)  &kp LG(LS(H))  &kp LG(LS(L))
+&trans         &trans         &trans             &trans             &trans     &kp DEL     &mkp LCLK        &kp K_APP   &kp LCTRL  &kp LEFT   &kp RIGHT   &trans
             >;
 
             display-name = "NAV";
@@ -131,11 +133,11 @@
 
         layer_2 {
             bindings = <
-&trans  &trans     &trans     &trans           &trans           &trans        &trans  &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans     &trans     &trans           &trans           &trans        &trans  &trans  &trans  &trans  &trans  &trans  &trans
-&kp GRAVE  &kp LBRC  &kp RBRC  &mt LCTRL LBKT  &mt LSHFT RBKT  &mt LALT PLUS  &trans  &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &kp MINUS  &kp UNDER &kp LPAR         &kp RPAR         &kp EQUAL     &trans  &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans     &trans    &trans           &trans           &trans        &trans  &trans  &trans  &trans  &trans  &trans
+&trans     &trans     &trans     &trans          &trans          &trans           &trans  &trans  &trans  &trans  &trans  &trans  &trans
+&trans     &trans     &trans     &trans          &trans          &trans           &trans  &trans  &trans  &trans  &trans  &trans  &trans
+&kp GRAVE  &kp LBRC   &kp RBRC   &mt LCTRL LBKT  &mt LSHFT RBKT  &mt LALT PLUS    &trans  &trans  &trans  &trans  &trans  &trans  &trans
+&trans     &kp MINUS  &kp UNDER  &kp LPAR        &kp RPAR        &kp EQUAL        &trans  &trans  &trans  &trans  &trans  &trans  &trans
+&trans     &trans     &trans     &trans          &trans          &trans           &trans  &trans  &trans  &trans  &trans  &trans
             >;
 
             display-name = "CODE";
@@ -144,11 +146,11 @@
 
         layer_3 {
             bindings = <
-&trans  &trans  &trans  &trans  &trans  &trans  &kp C_VOL_UP  &trans        &trans        &trans      &trans      &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans  &kp C_VOL_DN  &trans        &trans        &trans      &trans      &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans  &kp C_PP      &kp C_VOL_DN  &kp C_VOL_UP  &kp C_PP    &kp C_STOP  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans  &kp C_NEXT    &kp F20       &kp C_MUTE    &kp C_PREV  &kp C_NEXT  &trans  &trans
-&trans    &trans  &trans  &trans  &trans  &trans  &kp C_MUTE  &trans        &trans        &trans      &trans      &trans
+&trans  &trans  &trans  &trans  &trans  &trans    &kp C_VOL_UP  &trans        &trans        &trans      &trans      &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans    &kp C_VOL_DN  &trans        &trans        &trans      &trans      &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans    &kp C_PP      &kp C_VOL_DN  &kp C_VOL_UP  &kp C_PP    &kp C_STOP  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans    &kp C_NEXT    &kp F20       &kp C_MUTE    &kp C_PREV  &kp C_NEXT  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans    &kp C_MUTE    &trans        &trans        &trans      &trans      &trans
             >;
 
             display-name = "MEDIA";
@@ -157,11 +159,11 @@
 
         layer_4 {
             bindings = <
-&bt BT_CLR       &bt BT_SEL 0     &bt BT_SEL 1     &bt BT_SEL 2     &bt BT_SEL 3     &bt BT_SEL 4     &mmv MOVE_UP     &kp KP_NUM       &kp KP_N7  &kp KP_N8   &kp KP_N9   &kp KP_MINUS  &trans
-&rgb_ug RGB_BRI  &rgb_ug RGB_SAI  &rgb_ug RGB_HUI  &rgb_ug RGB_EFF  &trans           &trans           &mmv MOVE_DOWN   &kp KP_SLASH     &kp KP_N4  &kp KP_N5   &kp KP_N6   &kp KP_PLUS   &trans
-&rgb_ug RGB_BRD  &rgb_ug RGB_SAD  &rgb_ug RGB_HUD  &rgb_ug RGB_EFR  &trans           &trans           &mmv MOVE_LEFT   &kp KP_ASTERISK  &kp KP_N1  &kp KP_N2   &kp KP_N3   &kp KP_ENTER  &trans
-&rgb_ug RGB_TOG  &trans           &trans           &trans           &trans           &trans           &mmv MOVE_RIGHT  &kp KP_EQUAL     &kp KP_N0  &kp COMMA   &kp KP_DOT  &kp PERCENT   &trans
-&trans           &trans           &trans           &trans           &trans           &trans           &mkp LCLK        &trans           &trans     &trans      &trans      &trans
+&bt BT_CLR       &bt BT_SEL 0     &bt BT_SEL 1     &bt BT_SEL 2     &bt BT_SEL 3  &bt BT_SEL 4    &mmv MOVE_UP     &kp KP_NUM       &kp KP_N7  &kp KP_N8  &kp KP_N9   &kp KP_MINUS  &trans
+&rgb_ug RGB_BRI  &rgb_ug RGB_SAI  &rgb_ug RGB_HUI  &rgb_ug RGB_EFF  &trans        &trans          &mmv MOVE_DOWN   &kp KP_SLASH     &kp KP_N4  &kp KP_N5  &kp KP_N6   &kp KP_PLUS   &trans
+&rgb_ug RGB_BRD  &rgb_ug RGB_SAD  &rgb_ug RGB_HUD  &rgb_ug RGB_EFR  &trans        &trans          &mmv MOVE_LEFT   &kp KP_ASTERISK  &kp KP_N1  &kp KP_N2  &kp KP_N3   &kp KP_ENTER  &trans
+&rgb_ug RGB_TOG  &trans           &trans           &trans           &trans        &trans          &mmv MOVE_RIGHT  &kp KP_EQUAL     &kp KP_N0  &kp COMMA  &kp KP_DOT  &kp PERCENT   &trans
+&trans           &trans           &trans           &trans           &trans        &trans          &mkp LCLK        &trans           &trans     &trans     &trans      &trans
             >;
 
             display-name = "SYS|NUM";
