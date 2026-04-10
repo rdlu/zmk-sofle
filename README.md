@@ -1,5 +1,9 @@
 # Eyelash Sofle — ZMK Firmware
 
+> [!WARNING]
+> **Personal configuration — use at your own risk.**
+> Releases are experimental and built for one specific keyboard. Key layout, timing, and layer assignments are tuned to personal preference and may change without notice. If you have the same hardware, feel free to use this as a starting point, but do not expect a stable or general-purpose firmware.
+
 > Original hardware by [380465425@qq.com](mailto:380465425@qq.com) · Original README (Chinese): [README_JP.md](README_JP.md)
 
 ZMK firmware configuration for the **Eyelash Sofle** split keyboard (NRF52840, nice!nano v2, nice!view display). Features home row mods, a full 5-layer layout, and ZMK Studio support on the left half.
