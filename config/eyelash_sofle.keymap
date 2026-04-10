@@ -118,11 +118,11 @@
 
         layer_1 {
             bindings = <
-&kp F12 &kp F1   &kp F2    &kp F3    &kp F4    &kp F5    &mmv MOVE_UP     &kp F6    &kp F7    &kp F8     &kp F9     &kp F10  &kp F11
-&trans  &trans   &mkp LCLK &mkp MCLK &mkp RCLK &mkp MB4  &mmv MOVE_DOWN   &kp HOME  &kp PG_DN &kp PG_UP  &kp END    &kp INS  &kp PRINTSCREEN
-&trans  &trans   &trans    &trans    &trans    &mkp MB5  &mmv MOVE_LEFT   &kp LEFT  &kp DOWN  &kp UP     &kp RIGHT  &kp DEL  &kp PAUSE_BREAK
-&trans  &trans   &trans    &trans    &trans    &trans    &mmv MOVE_RIGHT  &trans    &trans    &trans     &trans     &trans   &trans
-&trans  &trans   &trans    &trans    &trans    &kp DEL   &mkp LCLK        &kp K_APP &kp LCTRL &kp LEFT   &kp RIGHT  &trans
+&kp F12          &kp F1          &kp F2    &kp F3    &kp F4    &kp F5    &mmv MOVE_UP     &kp F6         &kp F7         &kp F8        &kp F9         &kp F10  &kp F11
+&kp LG(U)        &kp LG(I)       &mkp LCLK &mkp MCLK &mkp RCLK &mkp MB4  &mmv MOVE_DOWN   &kp HOME       &kp PG_DN      &kp PG_UP     &kp END        &kp INS  &kp PRINTSCREEN
+&kp LG(LS(H))    &kp LG(LS(J))   &kp LG(LS(K)) &kp LG(LS(L)) &trans &mkp MB5  &mmv MOVE_LEFT   &kp LEFT       &kp DOWN       &kp UP        &kp RIGHT      &kp DEL  &kp PAUSE_BREAK
+&kp LG(LC(U))    &kp LG(LC(I))   &kp LG(LS(LC(H))) &kp LG(LS(LC(L))) &trans &trans &mmv MOVE_RIGHT &kp LG(N1) &kp LG(U)  &kp LG(I)     &kp LG(N9)     &kp LG(LS(H)) &kp LG(LS(L))
+&trans           &trans          &trans    &trans    &trans    &kp DEL   &mkp LCLK        &kp K_APP      &kp LCTRL      &kp LEFT      &kp RIGHT      &trans
             >;
 
             display-name = "NAV";

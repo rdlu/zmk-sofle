@@ -79,8 +79,8 @@ layers:
   - F9
   - F10
   - F11
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - Gui+U
+  - Gui+I
   - '&mkp LCLK'
   - '&mkp MCLK'
   - '&mkp RCLK'
@@ -92,10 +92,10 @@ layers:
   - END
   - INS
   - PRINTSCREEN
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - Gui+Sft+H
+  - Gui+Sft+J
+  - Gui+Sft+K
+  - Gui+Sft+L
   - {t: ▽, type: trans}
   - '&mkp MB5'
   - '&mmv MOVE_LEFT'
@@ -105,19 +105,19 @@ layers:
   - RIGHT
   - DEL
   - PAUSE BREAK
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - Gui+Ctl+U
+  - Gui+Ctl+I
+  - Gui+Sft+Ctl+H
+  - Gui+Sft+Ctl+L
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - '&mmv MOVE_RIGHT'
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - Gui+1
+  - Gui+U
+  - Gui+I
+  - Gui+9
+  - Gui+Sft+H
+  - Gui+Sft+L
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
