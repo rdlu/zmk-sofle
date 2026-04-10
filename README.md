@@ -116,14 +116,13 @@ No build environment needed — just grab the `.uf2` files from the [Releases pa
 
 If the halves fail to connect to each other, clear their Bluetooth bonds and let them re-discover:
 
-**Option A — via the keymap (no reflash needed):**
-1. On each half separately, hold `mo(SYS|NUM)` (left thumb) and tap `BT_CLR` (top-left of the SYS layer, above `Q`).
-2. Do this on both halves.
+**Left half — via the keymap (no reflash needed):**
+1. Hold `mo(SYS|NUM)` (left thumb) and tap `BT_CLR` (top-left of the SYS layer, above `Q`).
 
-**Option B — via settings reset firmware:**
-1. Flash `settings_reset-nice_nano_v2-zmk.uf2` to each half.
+**Right half — always requires settings reset:**
+1. Flash `settings_reset-nice_nano_v2-zmk.uf2` to the right half (the right half has no independent access to the SYS layer when disconnected).
 
-**After clearing bonds (both options):**
+**After clearing bonds:**
 1. Power off both halves.
 2. Power on the **right** half first (peripheral — starts advertising).
 3. Power on the **left** half (central — scans and connects).
