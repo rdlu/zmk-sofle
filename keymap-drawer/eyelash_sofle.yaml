@@ -274,11 +274,11 @@ layers:
   - KP 9
   - KP MINUS
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
   - RGB BRI
   - RGB SAI
   - RGB HUI
   - RGB EFF
+  - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - KP SLASH
@@ -287,11 +287,11 @@ layers:
   - KP 6
   - KP PLUS
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
   - RGB BRD
   - RGB SAD
   - RGB HUD
   - RGB EFR
+  - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - KP ASTERISK
