@@ -15,7 +15,7 @@ Core timing shared by all five hold-tap behaviors:
 | `quick-tap-ms` | 175 ms | Tap within this window of a prior tap → always sends tap (enables key repeat) |
 | `flavor` | `balanced` | Hold fires on key release if another key was pressed and released inside the term |
 
-**Index-finger exception**: `hml_idx` (F) and `hmr_idx` (J) use `require-prior-idle-ms = 70` instead of 230. The index finger rolls and holds inconsistently, so a 230 ms streak window makes Shift-on-F/J feel sluggish for CamelCase and fast rolls. Sunaku documents this asymmetry as unavoidable in [his home-row-mods guide](https://sunaku.github.io/home-row-mods.html).
+**Index-finger exception**: `hml_idx` (F) and `hmr_idx` (J) use `require-prior-idle-ms = 70`, `flavor = hold-preferred`, and **no** `hold-trigger-on-release`. The index finger rolls and holds inconsistently, so a 230 ms streak window makes Shift-on-F/J feel sluggish for CamelCase and fast rolls. `hold-preferred` commits the Shift on the press of the next key (not its release), which eliminates the visible latency that `balanced` introduces. Safe here because the positional restriction still blocks same-hand rolls and the 70 ms idle window still blocks in-stream mis-fires. Inspired by [Sunaku's home-row-mods guide](https://sunaku.github.io/home-row-mods.html).
 
 ### `hml` / `hmr` — home row mods (left / right)
 
