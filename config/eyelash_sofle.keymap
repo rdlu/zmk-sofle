@@ -91,7 +91,7 @@
         combo_pipe_op {
             bindings = <&M_PIPE>;
             key-positions = <39 49>;
-            timeout-ms = <40>;
+            timeout-ms = <80>;
             layers = <0>;
         };
     };
@@ -338,7 +338,7 @@
 &kp TAB     &kp Q   &kp W          &kp E         &ralt_mt RALT R  &kp T              &kp DOWN_ARROW   &kp Y            &ralt_mt RALT U  &kp I         &kp O           &kp P       &kp EQUAL
 &kp ESC     &kp A   &hml LALT S    &hml LCTRL D  &hml LSHFT F     &kp G              &kp LEFT_ARROW   &kp H            &hmr RSHFT J     &hmr RCTRL K  &hmr LALT L     &kp SEMI    &kp APOS
 &kp BSLH    &kp Z   &kp X    &kp C         &kp V         &kp B              &kp RIGHT_ARROW  &kp N            &kp M         &kp COMMA     &kp DOT  &kp FSLH    &kp RET
-&kp C_MUTE  &mo 4   &kp F11  &kp LGUI      &mo 1         &kp BSPC           &kp ENTER        &kp SPACE        &lt 2 DEL     &mo 3         &kp F12  &caps_word
+&kp C_MUTE  &mo 4   &kp F11  &kp LGUI      &mo 1         &kp BSPC           &kp ENTER        &kp SPACE        &lt 2 DEL     &caps_word    &kp F12  &mo 3
             >;
 
             sensor-bindings = <&inc_dec_kp C_VOLUME_UP C_VOL_DN>;
