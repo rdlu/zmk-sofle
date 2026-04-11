@@ -33,12 +33,17 @@ After this, the BT pairing between halves and with the host will need to be redo
 Only needed if you want to iterate without pushing to GH Actions. Requires `mise run setup` on first use.
 
 ```bash
-mise run build-left    # left half with ZMK Studio (studio-rpc-usb-uart snippet)
-mise run build-right   # right half
+mise run build-flash   # build both halves sequentially, then interactive flash
+mise run build-left    # left half alone (ZMK Studio enabled)
+mise run build-right   # right half alone
 mise run build-reset   # settings reset
 ```
 
-Output files: `eyelash_sofle_studio_left.uf2`, `eyelash_sofle_right.uf2`, `settings_reset.uf2`
+`build-flash` is the fastest local iteration path: one command, builds both halves in sequence, aborts if either build fails, then walks you through double-tap-reset on each half.
+
+**Do not run `build-left` and `build-right` in parallel** — they share `build/` and step on each other. `build-flash` runs them sequentially for exactly this reason.
+
+Output files: `eyelash_sofle_left.uf2`, `eyelash_sofle_right.uf2`, `settings_reset.uf2` (same names the `flash-release` flow uses after renaming the upstream-workflow artifacts).
 
 Flash the locally-built artifacts:
 ```bash
