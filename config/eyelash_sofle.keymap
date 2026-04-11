@@ -27,6 +27,10 @@
 
 &soft_off { hold-time-ms = <2000>; };
 
+&caps_word {
+    continue-list = <UNDERSCORE MINUS BACKSPACE DELETE N1 N2 N3 N4 N5 N6 N7 N8 N9 N0 EQUAL SEMICOLON COMMA PERIOD BACKSLASH GRAVE LEFT_BRACKET RIGHT_BRACKET APOSTROPHE SLASH>;
+};
+
 / {
     scroll_encoder: scroll_encoder {
         compatible = "zmk,behavior-sensor-rotate";
@@ -83,6 +87,13 @@
             bindings = <&soft_off>;
             key-positions = <14 28 40>;
         };
+
+        combo_pipe_op {
+            bindings = <&M_PIPE>;
+            key-positions = <39 49>;
+            timeout-ms = <40>;
+            layers = <0>;
+        };
     };
 
     macros {
@@ -99,6 +110,222 @@
                 <&kp LEFT_SHIFT &mkp MB3>;
 
             label = "SHIFT_MCLK";
+        };
+
+        M_PIPE: M_PIPE {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings = <&kp PIPE &kp GT>;
+            label = "PIPE_OP";
+        };
+
+        M_DCOLON: M_DCOLON {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings = <&kp COLON &kp COLON>;
+            label = "DBL_COLON";
+        };
+
+        M_ARROW: M_ARROW {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings = <&kp MINUS &kp GT>;
+            label = "ARROW";
+        };
+
+        M_FARROW: M_FARROW {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings = <&kp EQUAL &kp GT>;
+            label = "FAT_ARROW";
+        };
+
+        M_LARROW: M_LARROW {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings = <&kp LT &kp MINUS>;
+            label = "LEFT_ARROW";
+        };
+
+        M_CLOSURE: M_CLOSURE {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings = <&kp PIPE &kp UNDER &kp PIPE>;
+            label = "RUST_CLOSURE";
+        };
+
+        M_EQEQ: M_EQEQ {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings = <&kp EQUAL &kp EQUAL>;
+            label = "EQ_EQ";
+        };
+
+        M_NEQ: M_NEQ {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings = <&kp EXCL &kp EQUAL>;
+            label = "NOT_EQ";
+        };
+
+        M_LEQ: M_LEQ {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings = <&kp LT &kp EQUAL>;
+            label = "LESS_EQ";
+        };
+
+        M_GEQ: M_GEQ {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings = <&kp GT &kp EQUAL>;
+            label = "GTR_EQ";
+        };
+
+        M_CONCAT: M_CONCAT {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings = <&kp LT &kp GT>;
+            label = "ELX_CONCAT";
+        };
+
+        M_PAREN: M_PAREN {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings = <&kp LPAR &kp RPAR &kp LEFT>;
+            label = "PAREN_PAIR";
+        };
+
+        M_BRKT: M_BRKT {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings = <&kp LBKT &kp RBKT &kp LEFT>;
+            label = "BRACKET_PAIR";
+        };
+
+        M_BRACE: M_BRACE {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings = <&kp LBRC &kp RBRC &kp LEFT>;
+            label = "BRACE_PAIR";
+        };
+
+        M_DQUO: M_DQUO {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings = <&kp DQT &kp DQT &kp LEFT>;
+            label = "DQT_PAIR";
+        };
+
+        M_SIGS: M_SIGS {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings = <&kp TILDE &kp S &kp LPAR &kp RPAR &kp LEFT>;
+            label = "SIGIL_S";
+        };
+
+        M_SIGW: M_SIGW {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings = <&kp TILDE &kp W &kp LPAR &kp RPAR &kp LEFT>;
+            label = "SIGIL_W";
+        };
+
+        M_SIGR: M_SIGR {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings = <&kp TILDE &kp R &kp FSLH &kp FSLH &kp LEFT>;
+            label = "SIGIL_R";
+        };
+
+        M_SIGD: M_SIGD {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings = <&kp TILDE &kp LS(D) &kp LBKT &kp RBKT &kp LEFT>;
+            label = "SIGIL_D";
+        };
+
+        M_TFISH: M_TFISH {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings = <&kp COLON &kp COLON &kp LT &kp GT &kp LEFT>;
+            label = "TURBOFISH";
+        };
+
+        M_DBG: M_DBG {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings = <&kp D &kp B &kp G &kp EXCL &kp LPAR &kp RPAR &kp LEFT>;
+            label = "RUST_DBG";
+        };
+
+        M_TODO: M_TODO {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings = <&kp T &kp O &kp D &kp O &kp EXCL &kp LPAR &kp RPAR &kp LEFT>;
+            label = "RUST_TODO";
+        };
+
+        M_HEEXI: M_HEEXI {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings = <&kp LBRC &kp SPACE &kp SPACE &kp RBRC &kp LEFT &kp LEFT>;
+            label = "HEEX_INTERP";
+        };
+
+        M_HEEXNP: M_HEEXNP {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings = <&kp LT &kp PRCNT &kp SPACE &kp SPACE &kp PRCNT &kp GT &kp LEFT &kp LEFT &kp LEFT>;
+            label = "EEX_NONPRINT";
         };
     };
 
@@ -133,11 +360,11 @@
 
         layer_2 {
             bindings = <
-&trans     &trans     &trans     &trans          &trans          &trans           &trans  &trans  &trans  &trans  &trans  &trans  &trans
-&trans     &trans     &trans     &trans          &trans          &trans           &trans  &trans  &trans  &trans  &trans  &trans  &trans
-&kp GRAVE  &kp LBRC   &mt LALT RBRC  &mt LCTRL LBKT  &mt LSHFT RBKT  &kp PLUS         &trans  &trans  &trans  &trans  &trans  &trans  &trans
-&trans     &kp MINUS  &kp UNDER  &kp LPAR        &kp RPAR        &kp EQUAL        &trans  &trans  &trans  &trans  &trans  &trans  &trans
-&trans     &trans     &trans     &trans          &trans          &trans           &trans  &trans  &trans  &trans  &trans  &trans
+&trans     &trans       &trans     &trans     &trans     &trans         &trans  &trans    &trans    &trans     &trans      &trans      &trans
+&trans     &kp GRAVE    &M_SIGS    &M_SIGW    &M_SIGR    &M_SIGD        &trans  &M_DBG    &M_TODO   &M_TFISH   &M_CLOSURE  &M_DCOLON   &trans
+&trans     &kp MINUS    &M_LARROW  &M_PIPE    &M_FARROW  &M_ARROW       &trans  &M_PAREN  &M_BRKT   &M_BRACE   &M_DQUO     &trans      &trans
+&trans     &kp EQUAL    &M_EQEQ    &M_NEQ     &M_LEQ     &M_GEQ         &trans  &M_CONCAT &M_HEEXI  &M_HEEXNP  &trans      &trans      &trans
+&trans     &trans       &trans     &trans     &trans     &trans         &trans  &trans    &trans    &trans     &trans      &trans
             >;
 
             display-name = "CODE";
