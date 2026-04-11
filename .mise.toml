@@ -44,16 +44,52 @@ cp build/zephyr/zmk.uf2 settings_reset.uf2
 """
 
 [tasks.flash-left]
-description = "Flash left half — double-tap reset button first"
-run = "cp eyelash_sofle_studio_left.uf2 /run/media/$USER/NICENANO/"
+description = "Flash locally-built left half — waits up to 60s for NICENANO mount"
+run = """
+set -euo pipefail
+MOUNT="/run/media/$USER/NICENANO"
+UF2="eyelash_sofle_studio_left.uf2"
+[ -f "$UF2" ] || { echo "ERROR: $UF2 not found — run 'mise run build-left' first"; exit 1; }
+echo ">> Double-tap RESET on the LEFT half now"
+for _ in $(seq 1 60); do [ -d "$MOUNT" ] && break; sleep 1; done
+[ -d "$MOUNT" ] || { echo "ERROR: NICENANO not detected within 60s"; exit 1; }
+sleep 1
+cp "$UF2" "$MOUNT/"
+sync
+echo "✅ Left half flashed."
+"""
 
 [tasks.flash-right]
-description = "Flash right half — double-tap reset button first"
-run = "cp eyelash_sofle_right.uf2 /run/media/$USER/NICENANO/"
+description = "Flash locally-built right half — waits up to 60s for NICENANO mount"
+run = """
+set -euo pipefail
+MOUNT="/run/media/$USER/NICENANO"
+UF2="eyelash_sofle_right.uf2"
+[ -f "$UF2" ] || { echo "ERROR: $UF2 not found — run 'mise run build-right' first"; exit 1; }
+echo ">> Double-tap RESET on the RIGHT half now"
+for _ in $(seq 1 60); do [ -d "$MOUNT" ] && break; sleep 1; done
+[ -d "$MOUNT" ] || { echo "ERROR: NICENANO not detected within 60s"; exit 1; }
+sleep 1
+cp "$UF2" "$MOUNT/"
+sync
+echo "✅ Right half flashed."
+"""
 
 [tasks.flash-reset]
-description = "Flash settings reset — double-tap reset button first"
-run = "cp settings_reset.uf2 /run/media/$USER/NICENANO/"
+description = "Flash locally-built settings_reset — waits up to 60s for NICENANO mount"
+run = """
+set -euo pipefail
+MOUNT="/run/media/$USER/NICENANO"
+UF2="settings_reset.uf2"
+[ -f "$UF2" ] || { echo "ERROR: $UF2 not found — run 'mise run build-reset' first"; exit 1; }
+echo ">> Double-tap RESET on the half to clear now"
+for _ in $(seq 1 60); do [ -d "$MOUNT" ] && break; sleep 1; done
+[ -d "$MOUNT" ] || { echo "ERROR: NICENANO not detected within 60s"; exit 1; }
+sleep 1
+cp "$UF2" "$MOUNT/"
+sync
+echo "✅ settings_reset flashed. Now flash the normal firmware on top."
+"""
 
 [tasks.draw]
 description = "Regenerate keymap SVG locally using keymap-drawer"
