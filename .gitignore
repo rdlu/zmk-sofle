@@ -5,3 +5,10 @@ tools/
 .west/
 .venv/
 *.uf2
+
+# west-managed vendor sources
+eyelash_sofle/
+zephyr/
+
+# Claude Code local machine settings (skills in .claude/commands/ remain tracked)
+.claude/settings.local.json
