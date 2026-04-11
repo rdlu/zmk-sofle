@@ -17,15 +17,18 @@ All three behaviors share the same core timing. Adjust these together if the mod
 
 ### `hml` / `hmr` — home row mods (left / right)
 
-Used on: `D`=LCTRL · `F`=LSHFT · `G`=LALT (left) and `H`=LALT · `J`=RSHFT · `K`=RCTRL (right)
+Used on: `S`=LALT · `D`=LCTRL · `F`=LSHFT (left) and `J`=RSHFT · `K`=RCTRL · `L`=LALT (right)
+
+Finger mapping: ring=LALT, middle=LCTRL, index=LSHFT on both hands. Symmetric and keeps LALT off the awkward index-reach position (G/H), which was being mistyped.
 
 - `hold-trigger-key-positions`: restricts hold to fire only when the opposite hand's keys are involved — prevents accidental mod activation during same-hand rolls
 - `hold-trigger-on-release`: hold fires on release of the other key, not on press — tighter feel for fast typists
 
 ### `ralt_mt` — AltGr mod-tap
 
-Used on: `T` (left) and `Y` (right)
+Used on: `R` (left) and `U` (right)
 
+- Placed on index-finger home positions (not the index reach T/Y), which is easier to hold without misses
 - Same timing as `hml`/`hmr` but **no** `hold-trigger-key-positions` and **no** `hold-trigger-on-release`
 - Reason: AltGr accent combos (e.g. AltGr+E=é, AltGr+O=ó) target keys on both hands — a positional restriction would silently drop half the combos
 
@@ -42,9 +45,9 @@ Used on: `T` (left) and `Y` (right)
 
 ### BASE (0)
 - Home row mods — see timing reference above:
-  - Left: `D`=LCTRL · `F`=LSHFT · `G`=LALT
-  - Right: `H`=LALT · `J`=RSHFT · `K`=RCTRL
-- `T` / `Y` — `ralt_mt` RALT (AltGr for Latin accents, unrestricted positional)
+  - Left: `S`=LALT · `D`=LCTRL · `F`=LSHFT
+  - Right: `J`=RSHFT · `K`=RCTRL · `L`=LALT
+- `R` / `U` — `ralt_mt` RALT (AltGr for Latin accents, unrestricted positional)
 - Right thumb: `SPACE` · `lt(CODE,DEL)` · `mo(MEDIA)` · `F12` · `CapsWord`
 
 ### NAV (1) — hold `mo1`
@@ -61,9 +64,10 @@ Left home + bottom rows; right side transparent.
 | ESC | `` ` `` | |
 | A | `{` | |
 | S | `}` | |
+| S | `}` | LALT |
 | D | `[` | LCTRL |
 | F | `]` | LSHFT |
-| G | `+` | LALT |
+| G | `+` | |
 | Z | `-` | |
 | X | `(` | |
 | C | `)` | |
