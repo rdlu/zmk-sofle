@@ -360,11 +360,11 @@
 
         layer_2 {
             bindings = <
-&trans     &trans       &trans     &trans     &trans     &trans         &trans  &trans    &trans    &trans     &trans      &trans      &trans
-&trans     &kp GRAVE    &M_SIGS    &M_SIGW    &M_SIGR    &M_SIGD        &trans  &M_DBG    &M_TODO   &M_TFISH   &M_CLOSURE  &M_DCOLON   &trans
-&trans     &kp MINUS    &M_LARROW  &M_PIPE    &M_FARROW  &M_ARROW       &trans  &M_PAREN  &M_BRKT   &M_BRACE   &M_DQUO     &trans      &trans
-&trans     &kp EQUAL    &M_EQEQ    &M_NEQ     &M_LEQ     &M_GEQ         &trans  &M_CONCAT &M_HEEXI  &M_HEEXNP  &trans      &trans      &trans
-&trans     &trans       &trans     &trans     &trans     &trans         &trans  &trans    &trans    &trans     &trans      &trans
+&trans     &M_SIGS    &M_SIGW        &M_SIGR         &M_SIGD         &M_CONCAT   &trans  &trans     &M_HEEXI  &M_HEEXNP  &trans      &trans     &trans
+&trans     &trans     &M_LARROW      &M_PIPE         &M_ARROW        &M_FARROW   &trans  &M_DCOLON  &M_CLOSURE &M_DBG    &M_TODO     &M_TFISH   &trans
+&kp GRAVE  &kp LBRC   &mt LALT RBRC  &mt LCTRL LBKT  &mt LSHFT RBKT  &kp PLUS    &trans  &M_PAREN   &M_BRKT   &M_BRACE   &M_DQUO     &trans     &trans
+&trans     &kp MINUS  &kp UNDER      &kp LPAR        &kp RPAR        &kp EQUAL   &trans  &M_EQEQ    &M_NEQ    &M_LEQ     &M_GEQ      &trans     &trans
+&trans     &trans     &trans         &trans          &trans          &trans      &trans  &trans     &trans    &trans     &trans      &trans
             >;
 
             display-name = "CODE";

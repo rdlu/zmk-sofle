@@ -132,37 +132,37 @@ layers:
   - {t: ▽, type: trans}
   CODE:
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - '`'
   - '&M_SIGS'
   - '&M_SIGW'
   - '&M_SIGR'
   - '&M_SIGD'
+  - '&M_CONCAT'
   - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - '&M_HEEXI'
+  - '&M_HEEXNP'
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - '&M_LARROW'
+  - '&M_PIPE'
+  - '&M_ARROW'
+  - '&M_FARROW'
+  - {t: ▽, type: trans}
+  - '&M_DCOLON'
+  - '&M_CLOSURE'
   - '&M_DBG'
   - '&M_TODO'
   - '&M_TFISH'
-  - '&M_CLOSURE'
-  - '&M_DCOLON'
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - '-'
-  - '&M_LARROW'
-  - '&M_PIPE'
-  - '&M_FARROW'
-  - '&M_ARROW'
+  - '`'
+  - '{'
+  - {t: '}', h: LALT}
+  - {t: '[', h: LCTRL}
+  - {t: ']', h: LSHFT}
+  - +
   - {t: ▽, type: trans}
   - '&M_PAREN'
   - '&M_BRKT'
@@ -171,16 +171,16 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
+  - '-'
+  - _
+  - (
+  - )
   - '='
+  - {t: ▽, type: trans}
   - '&M_EQEQ'
   - '&M_NEQ'
   - '&M_LEQ'
   - '&M_GEQ'
-  - {t: ▽, type: trans}
-  - '&M_CONCAT'
-  - '&M_HEEXI'
-  - '&M_HEEXNP'
-  - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
