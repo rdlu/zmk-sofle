@@ -94,6 +94,66 @@ sync
 echo "✅ settings_reset flashed. Now flash the normal firmware on top."
 """
 
+[tasks.build-flash]
+description = "Build both halves locally (sequentially), then interactively flash both"
+run = """
+set -euo pipefail
+
+MOUNT="/run/media/$USER/NICENANO"
+LEFT_UF2="eyelash_sofle_left.uf2"
+RIGHT_UF2="eyelash_sofle_right.uf2"
+
+echo ">> Building LEFT half..."
+mise run build-left
+
+echo ""
+echo ">> Building RIGHT half..."
+mise run build-right
+
+[ -f "$LEFT_UF2" ]  || { echo "ERROR: $LEFT_UF2 missing after build";  exit 1; }
+[ -f "$RIGHT_UF2" ] || { echo "ERROR: $RIGHT_UF2 missing after build"; exit 1; }
+
+wait_for_mount() {
+  local label="$1"
+  echo ""
+  echo "==============================================="
+  echo ">> Double-tap RESET on the $label half now"
+  echo "==============================================="
+  for _ in $(seq 1 60); do
+    if [ -d "$MOUNT" ]; then
+      sleep 1  # give udisks a moment to finish mounting
+      return 0
+    fi
+    sleep 1
+  done
+  echo "ERROR: NICENANO not detected within 60s"
+  return 1
+}
+
+wait_for_unmount() {
+  for _ in $(seq 1 30); do
+    [ ! -d "$MOUNT" ] && return 0
+    sleep 1
+  done
+}
+
+wait_for_mount "LEFT"
+echo ">> Flashing left..."
+cp "$LEFT_UF2" "$MOUNT/"
+sync
+echo ">> Left flashed. Waiting for device to reset..."
+wait_for_unmount
+
+wait_for_mount "RIGHT"
+echo ">> Flashing right..."
+cp "$RIGHT_UF2" "$MOUNT/"
+sync
+echo ">> Right flashed."
+
+echo ""
+echo "✅ Both halves built and flashed. They will auto-reset and re-pair over BT."
+"""
+
 [tasks.draw]
 description = "Regenerate keymap SVG locally using keymap-drawer"
 run = """
