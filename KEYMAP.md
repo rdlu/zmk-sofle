@@ -11,7 +11,7 @@ All three behaviors share the same core timing. Adjust these together if the mod
 | Parameter | Value | Effect |
 |-----------|-------|--------|
 | `tapping-term-ms` | 280 ms | Hold longer than this → modifier fires |
-| `require-prior-idle-ms` | 150 ms | Key must be idle this long before hold activates (prevents false triggers during fast typing) |
+| `require-prior-idle-ms` | 230 ms | Key must be idle this long before hold activates (prevents false triggers during fast typing) |
 | `quick-tap-ms` | 175 ms | Tap within this window of a prior tap → always sends tap (enables key repeat) |
 | `flavor` | `balanced` | Hold fires on key release if another key was pressed and released inside the term |
 
@@ -34,7 +34,7 @@ Used on: `R` (left) and `U` (right)
 
 ### Tuning tips
 
-- False mod triggers during typing → increase `require-prior-idle-ms` (try 175–200 ms)
+- False mod triggers during typing → increase `require-prior-idle-ms` (currently 230 ms, inspired by Sunaku's guide; see #17)
 - Mod doesn't fire when intended → decrease `tapping-term-ms` (try 250 ms)
 - Key repeat broken → increase `quick-tap-ms` to match your fastest double-tap interval
 - Sluggish feel on deliberate holds → switch to `flavor = "tap-unless-interrupted"`
