@@ -150,6 +150,22 @@ If the halves fail to connect to each other, clear their Bluetooth bonds and let
 
 ---
 
+## Firmware memory budget
+
+Headroom available for future keymap growth, measured on `v2.0.0-rc1` (main build `24290907254`). The left half is the tightest because ZMK Studio ships on it.
+
+| Build | Flash used | Flash free | RAM used | RAM free |
+|-------|-----------:|-----------:|---------:|---------:|
+| Left (Studio + nice_view) | 389 KB / 792 KB (49.2%) | **402 KB** | 109 KB / 256 KB (42.5%) | **147 KB** |
+| Right (nice_view) | 268 KB / 792 KB (33.9%) | **523 KB** | 61 KB / 256 KB (24.0%) | **194 KB** |
+| Settings reset | 45 KB / 792 KB (5.7%) | — | 11 KB / 256 KB (4.4%) | — |
+
+Roughly half the flash is still free on the left half and two-thirds on the right, so new layers, macros, and combos have plenty of room. Dropping ZMK Studio from the left half would recover a large chunk of flash if a future feature ever needs it.
+
+Refresh the numbers after any significant keymap change by re-reading the `Memory region` block in the latest `Build ZMK firmware` run log.
+
+---
+
 ## Building Locally on Arch Linux
 
 This repo uses [ZMK Firmware](https://zmk.dev/) with a west workspace and [mise](https://mise.jdx.dev/) for environment management.
