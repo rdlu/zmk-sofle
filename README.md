@@ -93,24 +93,44 @@ NUM  7   8   9   -
 
 ---
 
-## Flashing from a release
+## Flashing
 
-No build environment needed — just grab the `.uf2` files from the [Releases page](../../releases/latest).
+### Quick flash — recommended
 
-| File | Flash to |
-|------|----------|
+One command downloads the latest firmware from GitHub Actions and walks you through flashing both halves:
+
+```bash
+mise run flash-release
+```
+
+Follow the on-screen prompts: double-tap reset on the left half when asked, then on the right half. The task handles everything else (artifact download, mount detection, `sync`, unmount wait).
+
+Requires `mise` and `gh` (GitHub CLI, authenticated). If you don't have them, see [FLASHING_MANUAL.md](FLASHING_MANUAL.md) for the drag-and-drop flow.
+
+### Clearing ZMK Studio overlay (when new firmware doesn't take effect)
+
+If you've used ZMK Studio to edit the keymap live, the changes are stored on the left half's settings partition and **survive a normal firmware flash**. Symptom: you flash a new release and the keymap still behaves like the old version.
+
+Fix — flash settings reset first, then the normal firmware on top:
+
+```bash
+mise run flash-release-reset   # double-tap the LEFT half when prompted
+mise run flash-release          # double-tap left, then right
+```
+
+This also wipes the left half's Bluetooth bonds — see [Re-pairing the halves](#re-pairing-the-halves) below if the halves don't auto-pair afterwards.
+
+### Firmware files
+
+For reference — the `mise` task downloads these automatically, but if you're flashing manually they are:
+
+| File | Target |
+|------|--------|
 | `eyelash_sofle_studio_left.uf2` | Left half (ZMK Studio enabled) |
 | `nice_view-eyelash_sofle_right-zmk.uf2` | Right half |
-| `settings_reset-nice_nano_v2-zmk.uf2` | Either half — clears Bluetooth bonds (use when re-pairing) |
+| `settings_reset-nice_nano_v2-zmk.uf2` | Either half — clears Studio overlay + BT bonds |
 
-**Steps:**
-
-1. Download the files above from the latest release.
-2. Double-tap the reset button on the **left** half — a `NICENANO` USB drive appears on your computer.
-3. Drag and drop `eyelash_sofle_studio_left.uf2` onto the drive. The keyboard reboots automatically.
-4. Repeat for the **right** half using `nice_view-eyelash_sofle_right-zmk.uf2`.
-
-> Flash left first, then right.
+For the drag-and-drop flashing flow without `mise`, see [FLASHING_MANUAL.md](FLASHING_MANUAL.md).
 
 ### Re-pairing the halves
 
@@ -168,19 +188,23 @@ mise run setup
 
 ### 4. Build and flash
 
+Build the firmware locally:
+
 ```bash
 mise run build-left    # left half (ZMK Studio enabled)
 mise run build-right   # right half
-mise run build-reset   # settings reset (clears BT bonds)
+mise run build-reset   # settings reset (clears Studio overlay + BT bonds)
 ```
 
-To flash: double-tap the reset button on the half you want to flash — a `NICENANO` USB drive appears — then:
+Flash the locally-built firmware:
 
 ```bash
 mise run flash-left    # or flash-right / flash-reset
 ```
 
-The keyboard reboots automatically once the file is copied.
+Each `flash-*` task prompts you to double-tap reset, waits up to 60 seconds for the `NICENANO` drive to mount, copies the `.uf2`, and syncs the write. The keyboard reboots automatically once the copy completes.
+
+> If you just want to flash a release without building from source, use `mise run flash-release` instead — it downloads the latest main artifacts from GitHub Actions. See the [Flashing](#flashing) section above.
 
 ### 5. Keymap Editor (visual web editor + auto-build)
 

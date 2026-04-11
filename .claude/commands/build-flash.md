@@ -1,50 +1,61 @@
 Build and/or flash the Eyelash Sofle firmware.
 
-## Option A — GitHub Actions (recommended, no local toolchain needed)
+## Quickest path — flash from GH Actions (no local build)
 
-Push changes to the branch. The workflow at `.github/workflows/build.yml` triggers automatically on `config/**` changes and produces `.uf2` artifacts. Download from the Actions tab on GitHub.
+One command downloads the latest successful main build and walks through flashing both halves:
 
-To trigger manually without a commit:
 ```bash
-gh workflow run build.yml
+mise run flash-release
 ```
 
-## Option B — Local build
+This is the preferred path — no local toolchain, no drag-and-drop, just follow the on-screen prompts to double-tap reset on each half. Requires `gh` authenticated.
 
-Requires the west workspace to be initialized (`mise run setup` on first use).
+To build on demand (e.g. from a feature branch) before downloading:
+```bash
+gh workflow run "Build ZMK firmware" --ref <branch-name>
+```
+Wait for the run to succeed, then `mise run flash-release` picks up the latest main artifacts. To flash from a specific non-main run, download manually with `gh run download <run-id>`.
+
+## ⚠️ ZMK Studio overlay persists across flashes
+
+If the user reports that a flashed keymap change isn't taking effect, the most likely cause is a stored ZMK Studio overlay on the **left** half. Studio edits are persisted to settings flash and re-applied on boot, overriding the compiled firmware's keymap.
+
+**Fix** — always use this two-step on the left half:
+```bash
+mise run flash-release-reset   # double-tap LEFT — flashes settings_reset (clears overlay + BT bonds)
+mise run flash-release          # double-tap LEFT, then RIGHT — flashes normal firmware on top
+```
+
+After this, the BT pairing between halves and with the host will need to be redone.
+
+## Local build (optional)
+
+Only needed if you want to iterate without pushing to GH Actions. Requires `mise run setup` on first use.
 
 ```bash
 mise run build-left    # left half with ZMK Studio (studio-rpc-usb-uart snippet)
 mise run build-right   # right half
-mise run build-reset   # settings reset (clears Bluetooth bonds — use when switching hosts)
+mise run build-reset   # settings reset
 ```
 
 Output files: `eyelash_sofle_studio_left.uf2`, `eyelash_sofle_right.uf2`, `settings_reset.uf2`
 
-## Flashing
-
-1. Double-tap the reset button on the half you want to flash → it mounts as `NICENANO`
-2. Run the matching flash task:
-
+Flash the locally-built artifacts:
 ```bash
-mise run flash-left
+mise run flash-left    # prompts, waits for NICENANO mount, copies, syncs
 mise run flash-right
 mise run flash-reset
 ```
 
-Or copy manually:
-```bash
-cp <file>.uf2 /run/media/$USER/NICENANO/
-```
+These tasks wait up to 60s for the `NICENANO` mount to appear, so you can run them first and then double-tap reset — no race condition.
 
-The drive unmounts automatically when flashing is complete.
+## First-time pairing after both halves are reflashed
 
-## First-time pairing after flashing both halves
-
-1. Flash reset firmware to **both** halves (clears old bonds)
-2. Flash left half firmware, then right half firmware
-3. Power cycle both halves — they will pair automatically
-4. Pair with the host via Bluetooth (BT0–BT4 slots on SYS|NUM layer)
+1. Power off both halves.
+2. Power on the **right** half first (peripheral — starts advertising).
+3. Power on the **left** half (central — scans and connects).
+4. They auto-pair within a few seconds.
+5. Pair with the host via Bluetooth (BT0–BT4 slots on SYS|NUM layer — hold SYS|NUM and tap the matching number).
 
 ## ZMK Studio (live keymap editing over USB)
 
