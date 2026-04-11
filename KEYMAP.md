@@ -15,9 +15,11 @@ All three behaviors share the same core timing. Adjust these together if the mod
 | `quick-tap-ms` | 175 ms | Tap within this window of a prior tap → always sends tap (enables key repeat) |
 | `flavor` | `balanced` | Hold fires on key release if another key was pressed and released inside the term |
 
-### `hml` / `hmr` — home row mods (left / right)
+### `hml` / `hmr` — bottom-row mods (left / right)
 
-Used on: `D`=LCTRL · `F`=LSHFT · `G`=LALT (left) and `H`=LALT · `J`=RSHFT · `K`=RCTRL (right)
+Used on: `C`=LCTRL · `V`=LSHFT · `B`=LALT (left) and `N`=LALT · `M`=RSHFT · `,`=RCTRL (right)
+
+Mods live one row below the home row so that NAV layer arrow keys (hjkl-style) on the home row are backed by plain `&kp` and can OS auto-repeat on hold. See issue #5 for the original investigation. The vertical column mapping preserves per-finger modifier assignment (middle → LCTRL, index → LSHFT, index-reach → LALT).
 
 - `hold-trigger-key-positions`: restricts hold to fire only when the opposite hand's keys are involved — prevents accidental mod activation during same-hand rolls
 - `hold-trigger-on-release`: hold fires on release of the other key, not on press — tighter feel for fast typists
@@ -41,9 +43,9 @@ Used on: `T` (left) and `Y` (right)
 ## Layer summary
 
 ### BASE (0)
-- Home row mods — see timing reference above:
-  - Left: `D`=LCTRL · `F`=LSHFT · `G`=LALT
-  - Right: `H`=LALT · `J`=RSHFT · `K`=RCTRL
+- Bottom-row mods — see timing reference above:
+  - Left: `C`=LCTRL · `V`=LSHFT · `B`=LALT
+  - Right: `N`=LALT · `M`=RSHFT · `,`=RCTRL
 - `T` / `Y` — `ralt_mt` RALT (AltGr for Latin accents, unrestricted positional)
 - Right thumb: `SPACE` · `lt(CODE,DEL)` · `mo(MEDIA)` · `F12` · `CapsWord`
 
@@ -61,13 +63,14 @@ Left home + bottom rows; right side transparent.
 | ESC | `` ` `` | |
 | A | `{` | |
 | S | `}` | |
-| D | `[` | LCTRL |
-| F | `]` | LSHFT |
-| G | `+` | LALT |
+| D | `[` | |
+| F | `]` | |
+| G | `+` | |
 | Z | `-` | |
-| X | `(` | |
-| C | `)` | |
-| V | `=` | |
+| X | `_` | |
+| C | `(` | LCTRL |
+| V | `)` | LSHFT |
+| B | `=` | LALT |
 
 ### MEDIA (3) — hold `mo3`
 Right side only.
