@@ -18,26 +18,26 @@ layers:
   - Q
   - W
   - E
-  - R
-  - {t: T, h: RALT}
+  - {t: R, h: RALT}
+  - T
   - DOWN ARROW
-  - {t: Y, h: RALT}
-  - U
+  - Y
+  - {t: U, h: RALT}
   - I
   - O
   - P
   - '='
   - ESC
   - A
-  - S
+  - {t: S, h: LALT}
   - {t: D, h: LCTRL}
   - {t: F, h: LSHFT}
-  - {t: G, h: LALT}
+  - G
   - LEFT ARROW
-  - {t: H, h: LALT}
+  - H
   - {t: J, h: RSHFT}
   - {t: K, h: RCTRL}
-  - L
+  - {t: L, h: LALT}
   - ;
   - ''''
   - \
@@ -159,10 +159,10 @@ layers:
   - {t: ▽, type: trans}
   - '`'
   - '{'
-  - '}'
+  - {t: '}', h: LALT}
   - {t: '[', h: LCTRL}
   - {t: ']', h: LSHFT}
-  - {t: +, h: LALT}
+  - +
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
