@@ -38,7 +38,9 @@ mise run build-right   # right half
 mise run build-reset   # settings reset
 ```
 
-Output files: `eyelash_sofle_studio_left.uf2`, `eyelash_sofle_right.uf2`, `settings_reset.uf2`
+**Do not run `build-left` and `build-right` in parallel** — they share `build/` and step on each other. Run sequentially.
+
+Output files: `eyelash_sofle_left.uf2`, `eyelash_sofle_right.uf2`, `settings_reset.uf2` (same names the `flash-release` flow uses after renaming the upstream-workflow artifacts).
 
 Flash the locally-built artifacts:
 ```bash

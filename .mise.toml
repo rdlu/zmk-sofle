@@ -11,6 +11,9 @@ west init -l config/
 west update
 west zephyr-export
 uv pip install -r zmk/zephyr/scripts/requirements.txt
+# ZMK Studio protobuf codegen needs pkg_resources (dropped in setuptools 81)
+# and google.protobuf (nanopb generator). Neither is in Zephyr's requirements.
+uv pip install 'setuptools<81' protobuf
 """
 
 [tasks.build-left]
@@ -22,7 +25,7 @@ west build -s zmk/app -b eyelash_sofle_left --pristine -- \
   -DCONFIG_ZMK_STUDIO=y \
   -DCONFIG_ZMK_STUDIO_LOCKING=n \
   -Dsnippet=studio-rpc-usb-uart
-cp build/zephyr/zmk.uf2 eyelash_sofle_studio_left.uf2
+cp build/zephyr/zmk.uf2 eyelash_sofle_left.uf2
 """
 
 [tasks.build-right]
@@ -48,7 +51,7 @@ description = "Flash locally-built left half — waits up to 60s for NICENANO mo
 run = """
 set -euo pipefail
 MOUNT="/run/media/$USER/NICENANO"
-UF2="eyelash_sofle_studio_left.uf2"
+UF2="eyelash_sofle_left.uf2"
 [ -f "$UF2" ] || { echo "ERROR: $UF2 not found — run 'mise run build-left' first"; exit 1; }
 echo ">> Double-tap RESET on the LEFT half now"
 for _ in $(seq 1 60); do [ -d "$MOUNT" ] && break; sleep 1; done
@@ -119,15 +122,22 @@ echo "   run $RUN_ID"
 
 gh run download "$RUN_ID" --repo "$REPO" --dir "$WORK" >/dev/null
 
-LEFT_UF2="$WORK/firmware/eyelash_sofle_studio_left.uf2"
-RIGHT_UF2="$WORK/firmware/nice_view-eyelash_sofle_right-zmk.uf2"
+# Upstream ZMK workflow names artifacts inconsistently. Rename to canonical
+# filenames so local and release flows use the same names everywhere.
+GH_LEFT="$WORK/firmware/eyelash_sofle_studio_left.uf2"
+GH_RIGHT="$WORK/firmware/nice_view-eyelash_sofle_right-zmk.uf2"
+LEFT_UF2="$WORK/firmware/eyelash_sofle_left.uf2"
+RIGHT_UF2="$WORK/firmware/eyelash_sofle_right.uf2"
 
-for f in "$LEFT_UF2" "$RIGHT_UF2"; do
+for f in "$GH_LEFT" "$GH_RIGHT"; do
   if [ ! -f "$f" ]; then
     echo "ERROR: expected artifact missing: $f"
     exit 1
   fi
 done
+
+mv "$GH_LEFT" "$LEFT_UF2"
+mv "$GH_RIGHT" "$RIGHT_UF2"
 
 wait_for_mount() {
   local label="$1"
@@ -186,8 +196,10 @@ echo ">> Fetching latest successful main build..."
 RUN_ID=$(gh run list --repo "$REPO" --workflow "Build ZMK firmware" --branch main --status success --limit 1 --json databaseId --jq '.[0].databaseId')
 gh run download "$RUN_ID" --repo "$REPO" --dir "$WORK" >/dev/null
 
-RESET_UF2="$WORK/firmware/settings_reset-nice_nano_v2-zmk.uf2"
-[ -f "$RESET_UF2" ] || { echo "ERROR: $RESET_UF2 missing"; exit 1; }
+GH_RESET="$WORK/firmware/settings_reset-nice_nano_v2-zmk.uf2"
+RESET_UF2="$WORK/firmware/settings_reset.uf2"
+[ -f "$GH_RESET" ] || { echo "ERROR: $GH_RESET missing"; exit 1; }
+mv "$GH_RESET" "$RESET_UF2"
 
 echo ""
 echo "==============================================="
