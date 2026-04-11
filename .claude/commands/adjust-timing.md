@@ -3,10 +3,13 @@ Adjust hold-tap timing parameters based on the user's description of the problem
 ## Steps
 
 1. Ask the user to describe the symptom if not already stated (false triggers, mods not firing, key repeat broken, etc.).
-2. Read `config/eyelash_sofle.keymap` — find the `behaviors {}` block with `hml`, `hmr`, and `ralt_mt`.
-3. Apply the appropriate change (see table below).
-4. Run `mise run draw` to regenerate the SVG.
-5. Commit all three files (`keymap`, `yaml`, `svg`) and push.
+2. If we're on `main`, create a feature branch first — never commit timing changes directly to `main`.
+3. Read `config/eyelash_sofle.keymap` — find the `behaviors {}` block with `hml`, `hmr`, and `ralt_mt`.
+4. Apply the appropriate change (see table below).
+5. Run `mise run draw` to regenerate the SVG.
+6. Commit all three files (`keymap`, `yaml`, `svg`) and push.
+7. Create or update a PR with `gh pr create --assignee rdlu --label "keymap"` — never leave the PR unassigned or unlabeled.
+8. After merge, wait for the `[Draw Keymap]` workflow to finish on main, then `git checkout main && git pull --ff-only` before starting more work.
 
 ## Parameters and what they control
 
@@ -48,3 +51,20 @@ Current values: `tapping-term-ms=280`, `require-prior-idle-ms=150`, `quick-tap-m
 ## Important
 
 Always update KEYMAP.md "Hold-tap timing reference" table if you change the current values, so the docs stay accurate.
+
+## Local iteration (no GH Actions)
+
+Timing tuning is almost always faster to test locally than through the PR/CI cycle — the feel of a mod or tap can only be judged by using the keyboard, and waiting for a full GH Actions build between each attempt is painful. Use this loop:
+
+```bash
+# Edit config/eyelash_sofle.keymap — change tapping-term-ms, require-prior-idle-ms, etc.
+mise run draw           # regenerate SVG
+mise run build-left     # build left half (only the left needs new timing)
+mise run flash-left     # prompts for double-tap, waits for NICENANO mount, flashes
+# Test on hardware — type, check mod triggers, check repeat behavior
+# Repeat
+```
+
+Only once the values feel right, commit + push + open a PR (with `--assignee rdlu --label "keymap"`). No need to open a PR for every tweak attempt.
+
+**Studio overlay warning:** if the user has ever used ZMK Studio and the new timing doesn't seem to take effect, the stored overlay is overriding the compiled firmware. Run `mise run flash-reset` on the left half first, then `mise run flash-left`.
