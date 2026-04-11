@@ -109,9 +109,9 @@
             bindings = <
 &kp GRAVE   &kp N1  &kp N2   &kp N3        &kp N4        &kp N5             &kp UP_ARROW     &kp N6           &kp N7        &kp N8        &kp N9   &kp N0      &kp MINUS
 &kp TAB     &kp Q   &kp W    &kp E         &kp R         &ralt_mt RALT T    &kp DOWN_ARROW   &ralt_mt RALT Y  &kp U         &kp I         &kp O    &kp P       &kp EQUAL
-&kp ESC     &kp A   &kp S    &hml LCTRL D  &hml LSHFT F  &hml LALT G        &kp LEFT_ARROW   &hmr LALT H      &hmr RSHFT J  &hmr RCTRL K  &kp L    &kp SEMI    &kp APOS
-&kp BSLH    &kp Z   &kp X    &kp C         &kp V         &kp B              &kp RIGHT_ARROW  &kp N            &kp M         &kp COMMA     &kp DOT  &kp FSLH    &kp RET
-&kp C_MUTE  &mo 4   &kp F11  &kp LGUI      &mo 1         &kp BSPC           &kp ENTER        &kp SPACE        &lt 2 DEL     &mo 3         &kp F12  &caps_word
+&kp ESC     &kp A   &kp S          &kp D             &kp F             &kp G                &kp LEFT_ARROW      &kp H               &kp J     &kp K        &kp L    &kp SEMI  &kp APOS
+&kp BSLH    &kp Z   &kp X          &kp C             &kp V             &kp B                &kp RIGHT_ARROW     &kp N               &kp M     &kp COMMA    &kp DOT  &kp FSLH  &kp RET
+&kp C_MUTE  &mo 4   &mo 1          &mt LSHFT SPACE   &mt LCTRL BSPC    &mt LALT F11         &mt LSHFT ENTER     &kp TAB             &lt 2 DEL &mo 3        &mt LGUI F12  &caps_word
             >;
 
             sensor-bindings = <&inc_dec_kp C_VOLUME_UP C_VOL_DN>;
@@ -135,7 +135,7 @@
             bindings = <
 &trans     &trans     &trans     &trans          &trans          &trans           &trans  &trans  &trans  &trans  &trans  &trans  &trans
 &trans     &trans     &trans     &trans          &trans          &trans           &trans  &trans  &trans  &trans  &trans  &trans  &trans
-&kp GRAVE  &kp LBRC   &kp RBRC   &mt LCTRL LBKT  &mt LSHFT RBKT  &mt LALT PLUS    &trans  &trans  &trans  &trans  &trans  &trans  &trans
+&kp GRAVE  &kp LBRC   &kp RBRC   &kp LBKT        &kp RBKT        &kp PLUS         &trans  &trans  &trans  &trans  &trans  &trans  &trans
 &trans     &kp MINUS  &kp UNDER  &kp LPAR        &kp RPAR        &kp EQUAL        &trans  &trans  &trans  &trans  &trans  &trans  &trans
 &trans     &trans     &trans     &trans          &trans          &trans           &trans  &trans  &trans  &trans  &trans  &trans
             >;
