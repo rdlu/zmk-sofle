@@ -152,11 +152,11 @@ If the halves fail to connect to each other, clear their Bluetooth bonds and let
 
 ## Firmware memory budget
 
-Headroom available for future keymap growth, measured on `v1.4.0` (local build). The left half is the tightest because ZMK Studio ships on it.
+Headroom available for future keymap growth, measured on `v1.4.1` (CI build). The left half is the tightest because ZMK Studio ships on it.
 
 | Build | Flash used | Flash free | RAM used | RAM free |
 |-------|-----------:|-----------:|---------:|---------:|
-| Left (Studio + nice_view) | 376 KB / 792 KB (47.5%) | **415 KB** | 96 KB / 256 KB (37.5%) | **160 KB** |
+| Left (Studio + nice_view) | 383 KB / 792 KB (48.4%) | **408 KB** | 103 KB / 256 KB (40.3%) | **153 KB** |
 | Right (nice_view) | 268 KB / 792 KB (33.9%) | **523 KB** | 61 KB / 256 KB (24.0%) | **194 KB** |
 | Settings reset | 45 KB / 792 KB (5.7%) | — | 11 KB / 256 KB (4.4%) | — |
 
