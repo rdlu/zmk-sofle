@@ -34,27 +34,27 @@ QWERTY with home row mods and AltGr mod-tap:
 
 | Key | Tap | Hold |
 |-----|-----|------|
+| S | S | LALT |
 | D | D | LCTRL |
 | F | F | LSHFT |
-| G | G | LALT |
-| H | H | LALT |
 | J | J | RSHFT |
 | K | K | RCTRL |
-| T | T | RALT (AltGr) |
-| Y | Y | RALT (AltGr) |
+| L | L | LALT |
+| R | R | RALT (AltGr) |
+| U | U | RALT (AltGr) |
 
 **Left thumb:** `mo(SYS|NUM)` · `F11` · `LGUI` · `mo(NAV)` · `BSPC`
 
 **Right thumb:** `SPACE` · `lt(CODE,DEL)` · `mo(MEDIA)` · `F12` · `CapsWord`
 
-Hold-tap timing: `tapping-term=280ms` · `require-prior-idle=150ms` · `quick-tap=175ms` · `flavor=balanced`
+Hold-tap timing: `tapping-term=280ms` · `require-prior-idle=230ms` · `quick-tap=175ms` · `flavor=balanced`
 
 ### NAV (1)
 
 - **Top row:** F12 · F1–F11
 - **Row 2:** mouse buttons (L/M/R/4/5) · Home · PgDn · PgUp · End · Ins · Print
-- **Home row:** WM monitor/workspace navigation (Super+key combos) · Left · Down · Up · Right · Del
-- **Bottom row:** WM move-to-workspace/monitor combos · workspace shortcuts (N=ws1, M=next, ,=prev, .=last, /=mon-left, RET=mon-right)
+- **Home row:** WM monitor/workspace navigation (Super+key combos) · **Left · Down · Up · Right** (HJKL) · Del
+- **Bottom row:** WM move-to-workspace/monitor combos · workspace shortcuts (ws1 · next · prev · last) · WM mon-left · WM mon-right
 - **Encoder D-pad:** mouse pointer movement
 - **Thumb:** Del · App menu · LCTRL · Left · Right
 
@@ -62,7 +62,7 @@ Hold-tap timing: `tapping-term=280ms` · `require-prior-idle=150ms` · `quick-ta
 
 Left home + bottom rows, right side transparent.
 
-**Home row:** `` ` `` · `{` · `}` · `[`(LCTRL) · `]`(LSHFT) · `+`(LALT)
+**Home row:** `` ` `` · `{` · `}`(LALT) · `[`(LCTRL) · `]`(LSHFT) · `+`
 
 **Bottom row:** `-` · `_` · `(` · `)` · `=`
 
@@ -152,15 +152,15 @@ If the halves fail to connect to each other, clear their Bluetooth bonds and let
 
 ## Firmware memory budget
 
-Headroom available for future keymap growth, measured on `v2.0.0-rc1` (main build `24290907254`). The left half is the tightest because ZMK Studio ships on it.
+Headroom available for future keymap growth, measured on `v1.4.0` (local build). The left half is the tightest because ZMK Studio ships on it.
 
 | Build | Flash used | Flash free | RAM used | RAM free |
 |-------|-----------:|-----------:|---------:|---------:|
-| Left (Studio + nice_view) | 389 KB / 792 KB (49.2%) | **402 KB** | 109 KB / 256 KB (42.5%) | **147 KB** |
+| Left (Studio + nice_view) | 376 KB / 792 KB (47.5%) | **415 KB** | 96 KB / 256 KB (37.5%) | **160 KB** |
 | Right (nice_view) | 268 KB / 792 KB (33.9%) | **523 KB** | 61 KB / 256 KB (24.0%) | **194 KB** |
 | Settings reset | 45 KB / 792 KB (5.7%) | — | 11 KB / 256 KB (4.4%) | — |
 
-Roughly half the flash is still free on the left half and two-thirds on the right, so new layers, macros, and combos have plenty of room. Dropping ZMK Studio from the left half would recover a large chunk of flash if a future feature ever needs it.
+Over half the flash is still free on the left half and two-thirds on the right, so new layers, macros, and combos have plenty of room. Dropping ZMK Studio from the left half would recover a large chunk of flash if a future feature ever needs it.
 
 Refresh the numbers after any significant keymap change by re-reading the `Memory region` block in the latest `Build ZMK firmware` run log.
 
