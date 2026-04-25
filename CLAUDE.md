@@ -51,7 +51,7 @@ Five layers, accessed as follows:
 | 3 | MEDIA   | hold `mo3` (right thumb) |
 | 4 | SYS\|NUM | hold `mo4` (left thumb) |
 
-Right thumb cluster (BASE): `SPACE · lt(CODE,DEL) · mo(MEDIA) · F12 · CapsWord`
+Right thumb cluster (BASE): `SPACE · lt(CODE,DEL) · CapsWord · ralt_mt(RALT, F12) · mo(MEDIA)`
 Left thumb cluster (BASE): `mo(SYS|NUM) · F11 · LGUI · mo(NAV) · BSPC`
 
 ## Key position numbering
@@ -78,7 +78,7 @@ See **KEYMAP.md** for the full timing reference and tuning tips.
 |----------|---------|------------------------|
 | `hml` | D(LCTRL) F(LSHFT) G(LALT) | triggers only when right-side keys pressed |
 | `hmr` | H(LALT) J(RSHFT) K(RCTRL) | triggers only when left-side keys pressed |
-| `ralt_mt` | T(RALT) Y(RALT) | none — AltGr combos span both hands |
+| `ralt_mt` | right-thumb F12 (tap = F12, hold = RALT) | none — AltGr combos span both hands and live on the thumb |
 
 Current timing: `tapping-term-ms=280`, `require-prior-idle-ms=150`, `quick-tap-ms=175`, `flavor=balanced`.
 
