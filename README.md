@@ -46,15 +46,17 @@ QWERTY with home row mods and AltGr mod-tap:
 
 **Right thumb:** `SPACE` · `lt(CODE,DEL)` · `CapsWord` · `F12 / RALT` · `mo(MEDIA)`
 
+**Central joystick column (top→bottom):** Vol↑ · Vol↓ · Play/Pause · Next · Mute — direct media access without holding `mo(MEDIA)`.
+
 Hold-tap timing: `tapping-term=280ms` · `require-prior-idle=230ms` · `quick-tap=175ms` · `flavor=balanced`
 
 ### NAV (1)
 
 - **Top row:** F12 · F1–F11
-- **Row 2:** mouse buttons (L/M/R/4/5) · Home · PgDn · PgUp · End · Ins · Print
+- **Row 2:** Home · PgDn · PgUp · End · Ins · Print (mouse buttons removed — see SYS|NUM)
 - **Home row:** WM monitor/workspace navigation (Super+key combos) · **Left · Down · Up · Right** (HJKL) · Del
 - **Bottom row:** WM move-to-workspace/monitor combos · workspace shortcuts (ws1 · next · prev · last) · WM mon-left · WM mon-right
-- **Encoder D-pad:** mouse pointer movement
+- **Central joystick column (top→bottom):** ↑ · ↓ · ← · → · Enter
 - **Thumb:** Del · App menu · LCTRL · Left · Right
 
 ### CODE (2)
@@ -71,13 +73,22 @@ Left home + bottom rows, right side transparent.
 
 **Bottom row:** F20 (mic mute) · Mute · Prev · Next
 
-**Encoder D-pad:** Vol↑/↓ (vertical) · Play/Pause (left) · Next (right) · Mute (center)
+**Central joystick column** mirrors the BASE central column (Vol↑/Vol↓/Play-Pause/Next/Mute) — kept duplicated for clarity.
 
 ### SYS|NUM (4)
 
 **Left — Bluetooth:** CLR · BT0–BT4
 
 **Left — RGB:** Brightness · Saturation · Hue · Effect (increase row 1 / decrease row 2) · RGB Toggle
+
+**Mouse — emergency fallback** (only on this layer; NAV no longer carries mouse keys):
+
+| Key | Action |
+|-----|--------|
+| `R` / `T` | Mouse 4 / Mouse 5 (back / forward) |
+| `F` / `G` / `V` | Mouse 1 / 2 / 3 (left / right / middle click) |
+| Central joystick column | Pointer move (↑/↓/←/→) |
+| Central joystick (row 4) | Left click |
 
 **Right — Numpad** (aligned with base layer 7/8/9):
 
@@ -87,8 +98,6 @@ NUM  7   8   9   -
  *   1   2   3  Ent
  =   0   ,   .   %
 ```
-
-**Encoder D-pad:** mouse pointer movement · center = left click
 
 ---
 
@@ -151,7 +160,7 @@ If the halves fail to connect to each other, clear their Bluetooth bonds and let
 
 ## Firmware memory budget
 
-Headroom available for future keymap growth, measured on `v1.4.2` (local build). The left half is the tightest because ZMK Studio ships on it.
+Headroom available for future keymap growth, measured on `v1.5.0` (local build). The left half is the tightest because ZMK Studio ships on it.
 
 | Build | Flash used | Flash free | RAM used | RAM free |
 |-------|-----------:|-----------:|---------:|---------:|

@@ -51,12 +51,15 @@ Used on: right thumb `F12` (single shared key — tap = F12, hold = RALT/AltGr)
   - Right: `J`=RSHFT · `K`=RCTRL · `L`=LALT
 - Right thumb `F12` — `ralt_mt` (tap = F12, hold = RALT/AltGr for Latin accents)
 - Right thumb: `SPACE` · `lt(CODE,DEL)` · `mo(MEDIA)` · `F12/RALT` · `CapsWord`
+- **Central joystick column (top→bottom):** Vol↑ · Vol↓ · Play/Pause · Next · Mute — direct media access without holding `mo(MEDIA)`. Encoder rotation also does Vol↑/↓.
 
 ### NAV (1) — hold `mo1`
 - Top row: F1–F11
 - Row 2: PgDn · PgUp · End · Ins · Print
-- Row 3: Right arrow · Del · Pause/Break
+- Row 3: Right-side arrows on H/J/K/L · Del · Pause/Break
+- **Central joystick column (top→bottom):** ↑ · ↓ · ← · → · Enter — secondary arrow cluster (the alpha block keeps the right-side HJKL arrows on row 2)
 - Thumb: Del · App menu · LCTRL · Left · Right
+- Mouse keys removed from this layer — moved to `SYS|NUM` as an emergency fallback
 
 ### CODE (2) — hold `lt(2, DEL)`
 Left home + bottom rows; right side transparent.
@@ -76,12 +79,14 @@ Left home + bottom rows; right side transparent.
 | V | `=` | |
 
 ### MEDIA (3) — hold `mo3`
-Right side only.
+Right side and central column.
 
 | | H | J | K | L |
 |---|---|---|---|---|
 | Home row | Vol ↓ | Vol ↑ | Play/Pause | Stop |
 | Bottom row | F20 (mic mute) | Mute | Prev | Next |
+
+**Central joystick column** mirrors the BASE central column (Vol↑/Vol↓/Play-Pause/Next/Mute). Kept duplicated rather than `&trans` for clarity when reading the layer.
 
 ### SYS\|NUM (4) — hold `mo4`
 **Left — Bluetooth (top row):** CLR · BT0 · BT1 · BT2 · BT3 · BT4
@@ -94,6 +99,18 @@ Right side only.
 | Row 2 (−) | Brightness− | Saturation− | Hue− | ←Effect |
 
 **Left bottom-left key:** RGB toggle
+
+**Mouse — emergency fallback** (kept on SYS\|NUM only — when the trackball or external mouse is unavailable):
+
+| Key | Action |
+|-----|--------|
+| `R` | Mouse 4 (back) |
+| `T` | Mouse 5 (forward) |
+| `F` | Mouse 1 (left click) |
+| `G` | Mouse 2 (right click) |
+| `V` | Mouse 3 (middle click) |
+| Central joystick column | Mouse pointer move (↑/↓/←/→) |
+| Central joystick (row 4) | Mouse 1 (left click) |
 
 **Right — Numpad** (aligned with base layer 7/8/9 positions):
 
