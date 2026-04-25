@@ -228,7 +228,26 @@ mise run flash-left    # or flash-right / flash-reset
 
 Each `flash-*` task prompts you to double-tap reset, waits up to 60 seconds for the `NICENANO` drive to mount, copies the `.uf2`, and syncs the write. The keyboard reboots automatically once the copy completes.
 
+For a one-shot rebuild + interactive flash of both halves with a memory-budget summary at the end:
+
+```bash
+mise run build-flash
+```
+
 > If you just want to flash a release without building from source, use `mise run flash-release` instead — it downloads the latest main artifacts from GitHub Actions. See the [Flashing](#flashing) section above.
+
+### 4b. Print the keymap layout (PDF)
+
+The keymap-drawer SVG can be wrapped into a printable A4 PDF (header with version + footer with date and repo URL). Three sources are available depending on what you want to print:
+
+```bash
+mise run draw-pdf         # use the SVG already in keymap-drawer/ (no regen, no fetch)
+mise run draw-pdf-fresh   # regenerate the SVG locally first (mise run draw), then build the PDF
+mise run draw-pdf-ci      # fetch the CI-rendered SVG from origin/main, then build the PDF
+mise run open-pdf         # generate from local SVG + open in default viewer (xdg-open)
+```
+
+The PDF is written to `keymap-drawer/eyelash_sofle.pdf` (gitignored — rebuild on demand). `weasyprint` is provisioned by mise via the `pipx:weasyprint` entry in `[tools]`; if it's missing, run `mise install`. To upgrade: `mise upgrade pipx:weasyprint`.
 
 ### 5. Keymap Editor (visual web editor + auto-build)
 
