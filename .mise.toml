@@ -1,5 +1,6 @@
 [tools]
 python = {version = "3.12", backend = "uv"}
+"pipx:weasyprint" = "latest"
 
 [env]
 _.python.venv = {path = ".venv", create = true}
@@ -95,20 +96,23 @@ echo "✅ settings_reset flashed. Now flash the normal firmware on top."
 """
 
 [tasks.build-flash]
-description = "Build both halves locally (sequentially), then interactively flash both"
+description = "Build both halves locally, flash interactively, print memory budget at end"
 run = """
 set -euo pipefail
 
 MOUNT="/run/media/$USER/NICENANO"
 LEFT_UF2="eyelash_sofle_left.uf2"
 RIGHT_UF2="eyelash_sofle_right.uf2"
+LEFT_LOG=$(mktemp)
+RIGHT_LOG=$(mktemp)
+trap 'rm -f "$LEFT_LOG" "$RIGHT_LOG"' EXIT
 
 echo ">> Building LEFT half..."
-mise run build-left
+mise run build-left 2>&1 | tee "$LEFT_LOG"
 
 echo ""
 echo ">> Building RIGHT half..."
-mise run build-right
+mise run build-right 2>&1 | tee "$RIGHT_LOG"
 
 [ -f "$LEFT_UF2" ]  || { echo "ERROR: $LEFT_UF2 missing after build";  exit 1; }
 [ -f "$RIGHT_UF2" ] || { echo "ERROR: $RIGHT_UF2 missing after build"; exit 1; }
@@ -150,6 +154,19 @@ cp "$RIGHT_UF2" "$MOUNT/"
 sync
 echo ">> Right flashed."
 
+# Print memory budget summary captured from the build logs
+print_budget() {
+  local label="$1" log="$2"
+  echo "  $label:"
+  awk '/^Memory region/{flag=1; next} flag && /^[ ]*FLASH:|^[ ]*RAM:/{print "    " $0} flag && /^[ ]*IDT_LIST:/{flag=0}' "$log"
+}
+
+echo ""
+echo "==============================================="
+echo "  Firmware memory budget"
+echo "==============================================="
+print_budget "Left  (Studio + nice_view)" "$LEFT_LOG"
+print_budget "Right (nice_view)         " "$RIGHT_LOG"
 echo ""
 echo "✅ Both halves built and flashed. They will auto-reset and re-pair over BT."
 """
@@ -275,4 +292,93 @@ sleep 1
 cp "$RESET_UF2" "$MOUNT/"
 sync
 echo "✅ settings_reset flashed. Now flash the normal firmware on top."
+"""
+
+[tasks.draw-pdf]
+description = "Convert the existing local SVG (keymap-drawer/eyelash_sofle.svg) to a printable A4 PDF"
+run = """
+set -euo pipefail
+SVG_FILE="keymap-drawer/eyelash_sofle.svg"
+PDF="keymap-drawer/eyelash_sofle.pdf"
+[ -f "$SVG_FILE" ] || { echo "ERROR: $SVG_FILE not found. Run 'mise run draw' (local) or 'mise run draw-pdf-ci' (CI version) first."; exit 1; }
+command -v weasyprint >/dev/null || { echo "ERROR: weasyprint not found. Run 'mise install' to provision the pipx:weasyprint tool from .mise.toml."; exit 1; }
+
+VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo dev)
+DATE=$(date -I)  # ISO 8601 — YYYY-MM-DD
+SVG_ABS=$(realpath "$SVG_FILE")
+TMP_HTML=$(mktemp --suffix=.html)
+trap 'rm -f "$TMP_HTML"' EXIT
+
+cat > "$TMP_HTML" <<'HTML_EOF'
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><style>
+  @page {
+    size: A4;
+    margin: 1.6cm 1.4cm 1.7cm 1.4cm;
+    @top-center {
+      content: "Eyelash Sofle — Keymap Layout · @@VERSION@@";
+      font: 600 11pt sans-serif;
+      padding-bottom: 6pt;
+      border-bottom: 0.5pt solid #999;
+      vertical-align: bottom;
+    }
+    @bottom-center {
+      content: "Generated @@DATE@@ · github.com/rdlu/zmk-sofle · Page " counter(page) " / " counter(pages);
+      font: 9pt sans-serif;
+      color: #666;
+      padding-top: 6pt;
+      border-top: 0.5pt solid #ccc;
+      vertical-align: top;
+    }
+  }
+  html, body { margin: 0; padding: 0; height: 100%; }
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  img { max-width: 100%; max-height: 100%; object-fit: contain; }
+</style></head>
+<body><img src="@@SVG@@" alt="Eyelash Sofle keymap"></body></html>
+HTML_EOF
+
+sed -i "s|@@VERSION@@|$VERSION|g; s|@@DATE@@|$DATE|g; s|@@SVG@@|file://$SVG_ABS|g" "$TMP_HTML"
+weasyprint "$TMP_HTML" "$PDF"
+echo "PDF written to $PDF (source: $SVG_FILE, version: $VERSION, date: $DATE)"
+"""
+
+[tasks.draw-pdf-fresh]
+description = "Regenerate the SVG locally (mise run draw) and then build the PDF"
+depends = ["draw"]
+run = "mise run draw-pdf"
+
+[tasks.draw-pdf-ci]
+description = "Fetch the CI-rendered SVG from origin/main and build the PDF (no local regen)"
+run = """
+set -euo pipefail
+command -v git >/dev/null || { echo "ERROR: git not found."; exit 1; }
+echo ">> Fetching latest origin/main..."
+git fetch origin main --quiet || { echo "ERROR: failed to fetch origin/main (no network or remote unreachable?)"; exit 1; }
+git show origin/main:keymap-drawer/eyelash_sofle.svg > keymap-drawer/.eyelash_sofle.ci.svg || {
+  rm -f keymap-drawer/.eyelash_sofle.ci.svg
+  echo "ERROR: keymap-drawer/eyelash_sofle.svg not found on origin/main."
+  exit 1
+}
+# Swap the local SVG with the CI version for this generation, then restore.
+mv keymap-drawer/eyelash_sofle.svg keymap-drawer/.eyelash_sofle.local.svg.bak
+mv keymap-drawer/.eyelash_sofle.ci.svg keymap-drawer/eyelash_sofle.svg
+trap 'mv -f keymap-drawer/.eyelash_sofle.local.svg.bak keymap-drawer/eyelash_sofle.svg 2>/dev/null || true' EXIT
+mise run draw-pdf
+echo ">> PDF built from CI-rendered SVG (origin/main)."
+"""
+
+[tasks.open-pdf]
+description = "Generate the PDF from the current local SVG and open it in the default viewer"
+depends = ["draw-pdf"]
+run = """
+set -euo pipefail
+PDF="keymap-drawer/eyelash_sofle.pdf"
+command -v xdg-open >/dev/null || { echo "ERROR: xdg-open not found. Install xdg-utils or open $PDF manually."; exit 1; }
+[ -f "$PDF" ] || { echo "ERROR: $PDF missing — generation failed."; exit 1; }
+xdg-open "$PDF"
 """

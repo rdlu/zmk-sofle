@@ -6,6 +6,9 @@ tools/
 .venv/
 *.uf2
 
+# Generated keymap printout (rebuild with `mise run draw-pdf`)
+keymap-drawer/eyelash_sofle.pdf
+
 # west-managed vendor sources
 eyelash_sofle/
 zephyr/
