@@ -40,12 +40,11 @@ QWERTY with home row mods and AltGr mod-tap:
 | J | J | RSHFT |
 | K | K | RCTRL |
 | L | L | LALT |
-| R | R | RALT (AltGr) |
-| U | U | RALT (AltGr) |
+| F12 (right thumb) | F12 | RALT (AltGr) |
 
 **Left thumb:** `mo(SYS|NUM)` · `F11` · `LGUI` · `mo(NAV)` · `BSPC`
 
-**Right thumb:** `SPACE` · `lt(CODE,DEL)` · `mo(MEDIA)` · `F12` · `CapsWord`
+**Right thumb:** `SPACE` · `lt(CODE,DEL)` · `CapsWord` · `F12 / RALT` · `mo(MEDIA)`
 
 Hold-tap timing: `tapping-term=280ms` · `require-prior-idle=230ms` · `quick-tap=175ms` · `flavor=balanced`
 
@@ -152,12 +151,12 @@ If the halves fail to connect to each other, clear their Bluetooth bonds and let
 
 ## Firmware memory budget
 
-Headroom available for future keymap growth, measured on `v1.4.1` (CI build). The left half is the tightest because ZMK Studio ships on it.
+Headroom available for future keymap growth, measured on `v1.4.2` (local build). The left half is the tightest because ZMK Studio ships on it.
 
 | Build | Flash used | Flash free | RAM used | RAM free |
 |-------|-----------:|-----------:|---------:|---------:|
-| Left (Studio + nice_view) | 383 KB / 792 KB (48.4%) | **408 KB** | 103 KB / 256 KB (40.3%) | **153 KB** |
-| Right (nice_view) | 268 KB / 792 KB (33.9%) | **523 KB** | 61 KB / 256 KB (24.0%) | **194 KB** |
+| Left (Studio + nice_view) | 376 KB / 792 KB (47.5%) | **416 KB** | 96 KB / 256 KB (37.5%) | **160 KB** |
+| Right (nice_view) | 269 KB / 792 KB (33.9%) | **523 KB** | 61 KB / 256 KB (24.0%) | **195 KB** |
 | Settings reset | 45 KB / 792 KB (5.7%) | — | 11 KB / 256 KB (4.4%) | — |
 
 Over half the flash is still free on the left half and two-thirds on the right, so new layers, macros, and combos have plenty of room. Dropping ZMK Studio from the left half would recover a large chunk of flash if a future feature ever needs it.

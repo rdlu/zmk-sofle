@@ -28,11 +28,11 @@ Finger mapping: ring=LALT, middle=LCTRL, index=LSHFT on both hands. Symmetric an
 
 ### `ralt_mt` — AltGr mod-tap
 
-Used on: `R` (left) and `U` (right)
+Used on: right thumb `F12` (single shared key — tap = F12, hold = RALT/AltGr)
 
-- Placed on index-finger home positions (not the index reach T/Y), which is easier to hold without misses
+- Moved off the alpha block onto the right-thumb cluster (`F12` position) so AltGr no longer steals the home/index `R` and `U` keys during fast typing
 - Same timing as `hml`/`hmr` but **no** `hold-trigger-key-positions` and **no** `hold-trigger-on-release`
-- Reason: AltGr accent combos (e.g. AltGr+E=é, AltGr+O=ó) target keys on both hands — a positional restriction would silently drop half the combos
+- Reason: AltGr accent combos (e.g. AltGr+E=é, AltGr+O=ó) target keys on both hands, and the thumb is comfortable to hold while reaching either side — no positional restriction needed
 
 ### Tuning tips
 
@@ -49,8 +49,8 @@ Used on: `R` (left) and `U` (right)
 - Home row mods — see timing reference above:
   - Left: `S`=LALT · `D`=LCTRL · `F`=LSHFT
   - Right: `J`=RSHFT · `K`=RCTRL · `L`=LALT
-- `R` / `U` — `ralt_mt` RALT (AltGr for Latin accents, unrestricted positional)
-- Right thumb: `SPACE` · `lt(CODE,DEL)` · `mo(MEDIA)` · `F12` · `CapsWord`
+- Right thumb `F12` — `ralt_mt` (tap = F12, hold = RALT/AltGr for Latin accents)
+- Right thumb: `SPACE` · `lt(CODE,DEL)` · `mo(MEDIA)` · `F12/RALT` · `CapsWord`
 
 ### NAV (1) — hold `mo1`
 - Top row: F1–F11
