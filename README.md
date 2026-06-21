@@ -190,7 +190,7 @@ If the halves fail to connect to each other, clear their Bluetooth bonds and let
 
 ## Firmware memory budget
 
-Headroom available for future keymap growth, measured on the `feat/gaming-mode` build (10 layers incl. gaming, local build). The left half is the tightest because ZMK Studio ships on it.
+Headroom available for future keymap growth, measured on `v2.0.0` (10 layers incl. gaming, local build). The left half is the tightest because ZMK Studio ships on it.
 
 | Build | Flash used | Flash free | RAM used | RAM free |
 |-------|-----------:|-----------:|---------:|---------:|
