@@ -24,7 +24,6 @@ keymap_drawer.config.yaml # keymap-drawer render config (icons, colors, labels)
 - **west workspace**: initialized; ZMK source at `zmk/` is **cormoran's fork** (`v0.3-branch+dya`, for DYA Studio) plus 5 cormoran DYA modules; Zephyr at `zephyr/`
 - **Zephyr SDK**: 0.17.0 at `tools/zephyr-sdk-0.17.0` — do NOT use AUR `zephyr-sdk` (requires Zephyr 4.2+, incompatible with the v0.3 base)
 - **Serial access**: user is in `uucp` group (required for DYA/ZMK Studio over USB)
-- **bun**: provisioned via mise `[tools]` for `mise run studio` (the DYA Studio web app)
 
 On a **new machine**, run `mise run setup` after cloning.
 

@@ -298,14 +298,14 @@ The PDF is written to `keymap-drawer/eyelash_sofle.pdf` (gitignored — rebuild 
 
 > The `build.yml` and `draw.yml` workflows trigger on `main` pushes only. Use `workflow_dispatch` from the Actions tab to build manually from any branch.
 
-### 6. DYA Studio (live keymap editing over USB + Bluetooth)
+### 6. Studio (live keymap editing over USB + Bluetooth)
 
-The left half ships **DYA Studio** firmware (cormoran's ZMK fork), so you can edit the keymap live — over **USB or Bluetooth** — without rebuilding:
+The left half ships cormoran's ZMK-Studio fork firmware, so you can edit the keymap live — over **USB or Bluetooth** — without rebuilding:
 
-1. Open DYA Studio in a Chromium browser (Chrome/Edge):
-   - Hosted: [studio.dya.cormoran.works](https://studio.dya.cormoran.works), or
-   - Locally: `mise run studio` — clones the app, runs `bun install` + `bun audit`, starts the dev server, and opens it as a **Chromium app window** (set `STUDIO_NO_BROWSER=1` to skip the browser and just serve at `http://localhost:5173`).
+1. Open a compatible ZMK-Studio web app in a Chromium browser (Chrome/Edge):
+   - **Sofle Studio** — a [`cormoran/dya-studio`](https://github.com/cormoran/dya-studio) fork tailored for this keyboard, maintained as a **separate project** (run it from there). *(work in progress)*
+   - or the upstream hosted app: [studio.dya.cormoran.works](https://studio.dya.cormoran.works)
 2. Connect the left half over **USB** (WebSerial) **or Bluetooth** (WebBluetooth).
-3. Changes apply immediately; click **Save** to persist to flash. The encoder, trackball, and BLE profiles are configurable here too.
+3. Changes apply immediately; click **Save** to persist to flash. The encoder and BLE profiles are configurable here too.
 
-> Locking is disabled, so no unlock step is needed. Rebuilding/reflashing overwrites Studio changes — export first if needed.
+> Locking is disabled, so no unlock step is needed. Rebuilding/reflashing overwrites Studio changes — export first if needed. The studio **web app** is a separate project — this repo only provides the firmware that talks to it.

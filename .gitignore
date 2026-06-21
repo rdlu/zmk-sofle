@@ -19,8 +19,5 @@ zmk-module-battery-history/
 zmk-module-settings-rpc/
 zmk-module-runtime-input-processor/
 
-# DYA Studio web app (cloned on demand by `mise run studio`)
-dya-studio/
-
 # Claude Code local machine settings (skills in .claude/commands/ remain tracked)
 .claude/settings.local.json

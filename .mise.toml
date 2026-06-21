@@ -1,7 +1,6 @@
 [tools]
 python = {version = "3.12", backend = "uv"}
 "pipx:weasyprint" = "latest"
-bun = "latest"   # for `mise run studio` (DYA Studio web app)
 
 [env]
 _.python.venv = {path = ".venv", create = true}
@@ -421,52 +420,3 @@ command -v xdg-open >/dev/null || { echo "ERROR: xdg-open not found. Install xdg
 [ -f "$PDF" ] || { echo "ERROR: $PDF missing — generation failed."; exit 1; }
 xdg-open "$PDF"
 """
-
-[tasks.studio]
-description = "Run DYA Studio locally + open it as a Chromium app window (USB + BLE keymap editing)"
-run = """
-set -euo pipefail
-DIR="dya-studio"
-URL="http://localhost:5173"
-command -v bun >/dev/null || { echo "ERROR: bun not found. Run 'mise install' to provision it from [tools], or see https://bun.sh."; exit 1; }
-[ -d "$DIR" ] || { echo ">> Cloning cormoran/dya-studio..."; git clone https://github.com/cormoran/dya-studio "$DIR"; }
-cd "$DIR"
-[ -d node_modules ] || { echo ">> Installing deps (bun install)..."; bun install; }
-# bun blocks the git-dependency postinstall builds (their run-script-os/`npm run
-# build` need npm's lifecycle env), so build the cormoran ZMK Studio client
-# packages directly. tsc may print type-only warnings (missing @types/web-*) but
-# still emits lib/. ts-client must build before react-hook (which imports it).
-export PATH="$PWD/node_modules/.bin:$PATH"
-for pkg in @zmkfirmware/zmk-studio-ts-client @cormoran/zmk-studio-react-hook; do
-  if [ -d "node_modules/$pkg" ] && [ ! -d "node_modules/$pkg/lib" ]; then
-    echo ">> Building $pkg (tsc; type-only warnings are non-fatal)..."
-    ( cd "node_modules/$pkg" && bun run build ) || true
-  fi
-done
-echo ">> Auditing dependencies (bun audit)..."
-bun audit || echo ">> WARNING: bun audit reported advisories — review them before trusting this third-party app."
-
-# Open DYA Studio as a standalone Chromium app window once the dev server is up.
-# Runs in the background; the dev server stays in the foreground (Ctrl+C stops both).
-# Set STUDIO_NO_BROWSER=1 to skip and just run the server.
-if [ "${STUDIO_NO_BROWSER:-0}" != "1" ]; then
-  BROWSER=""
-  for b in chromium chromium-browser google-chrome-stable google-chrome brave brave-browser microsoft-edge microsoft-edge-stable; do
-    command -v "$b" >/dev/null 2>&1 && { BROWSER="$b"; break; }
-  done
-  if [ -n "$BROWSER" ]; then
-    ( if command -v curl >/dev/null 2>&1; then
-        for _ in $(seq 1 60); do curl -sf "$URL" >/dev/null 2>&1 && break; sleep 0.5; done
-      else sleep 3; fi
-      echo ">> Opening $URL as a $BROWSER app window..."
-      "$BROWSER" --app="$URL" >/dev/null 2>&1 & ) &
-  else
-    echo ">> No Chromium-based browser found — open $URL manually (Chrome/Edge needed for WebSerial/WebBluetooth)."
-  fi
-fi
-
-echo ">> Starting DYA Studio dev server at $URL (Ctrl+C to stop). USB=WebSerial, BLE=WebBluetooth."
-echo ">> Hosted version: https://studio.dya.cormoran.works"
-bun run dev
-"""
-
