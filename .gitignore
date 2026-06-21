@@ -12,6 +12,15 @@ keymap-drawer/eyelash_sofle.pdf
 # west-managed vendor sources
 eyelash_sofle/
 zephyr/
+# cormoran DYA Studio modules (west-cloned into repo root)
+zmk-behavior-runtime-sensor-rotate/
+zmk-module-ble-management/
+zmk-module-battery-history/
+zmk-module-settings-rpc/
+zmk-module-runtime-input-processor/
+
+# DYA Studio web app (cloned on demand by `mise run studio`)
+dya-studio/
 
 # Claude Code local machine settings (skills in .claude/commands/ remain tracked)
 .claude/settings.local.json
