@@ -21,9 +21,10 @@ keymap_drawer.config.yaml # keymap-drawer render config (icons, colors, labels)
 ## Toolchain (already set up on the owner's machine)
 
 - **Python env**: mise + uv, auto-activates `.venv` on `cd`
-- **west workspace**: initialized, ZMK source at `zmk/`, Zephyr at `zephyr/`
-- **Zephyr SDK**: 0.17.0 at `tools/zephyr-sdk-0.17.0` — do NOT use AUR `zephyr-sdk` (requires Zephyr 4.2+, incompatible with ZMK v0.3.0)
-- **Serial access**: user is in `uucp` group (required for ZMK Studio USB)
+- **west workspace**: initialized; ZMK source at `zmk/` is **cormoran's fork** (`v0.3-branch+dya`, for DYA Studio) plus 5 cormoran DYA modules; Zephyr at `zephyr/`
+- **Zephyr SDK**: 0.17.0 at `tools/zephyr-sdk-0.17.0` — do NOT use AUR `zephyr-sdk` (requires Zephyr 4.2+, incompatible with the v0.3 base)
+- **Serial access**: user is in `uucp` group (required for DYA/ZMK Studio over USB)
+- **bun**: provisioned via mise `[tools]` for `mise run studio` (the DYA Studio web app)
 
 On a **new machine**, run `mise run setup` after cloning.
 
@@ -31,7 +32,7 @@ On a **new machine**, run `mise run setup` after cloning.
 
 ```bash
 mise run draw          # re-parse keymap + render SVG (do this after every keymap edit)
-mise run build-left    # build left half (ZMK Studio enabled)
+mise run build-left    # build left half (DYA Studio enabled)
 mise run build-right   # build right half
 mise run flash-left    # copy .uf2 to mounted NICENANO (double-tap reset first)
 ```
@@ -128,7 +129,8 @@ Include: what the user requested, what was changed (layer/key/behavior), and any
 - **Do not change the Zephyr SDK version** without verifying ZMK compatibility
 - `keymap-drawer` CLI is `keymap` (not `keymap-drawer`) when invoked via `uvx --from keymap-drawer`
 - The `eyelash_sofle/` directory is the vendor source — do not edit it; edit `config/` only
-- Left half gets ZMK Studio snippet (`studio-rpc-usb-uart`) for live editing; right half does not
+- Firmware is **shield-based** (since v2.5.0): build `-b nice_nano_v2 -DSHIELD="eyelash_sofle_left nice_view"`. The shield comes from the `eyelash_sofle` west module (pinned to the dya commit). The old tracked `boards/arm/eyelash_sofle/` board + root `zephyr/module.yml` were removed — they collided with the same-named shield.
+- **DYA Studio** = cormoran's ZMK fork + modules → keymap editing over USB **and BLE**. Central-only studio/RPC/BLE Kconfig ships in the module's `eyelash_sofle_left.conf`; keep it OUT of the shared `config/eyelash_sofle.conf`. Left half also gets the `studio-rpc-usb-uart` snippet (USB); right half is the peripheral (no central flags).
 - `soft_off` hold time is 2000 ms (combo: Q+A+Z simultaneously)
-- **Local left-half build needs `protobuf >= 7.35`** in `.venv` (nanopb gencode for ZMK Studio). If `mise run build-left` fails with a protobuf "gencode/runtime" VersionError, run `uv pip install --upgrade 'protobuf>=7.35'`. The right half doesn't build Studio, so it's unaffected.
+- **Local left-half build needs `protobuf >= 7.35`** in `.venv` (nanopb gencode for the Studio build). If `mise run build-left` fails with a protobuf "gencode/runtime" VersionError, run `uv pip install --upgrade 'protobuf>=7.35'`. The right half doesn't build Studio, so it's unaffected.
 - **Gaming entry is SYS pos 63, not pos 58** — pos 58 (joystick-center) is the mouse left-click since PR #25. Don't reuse it for `&to GAME`.

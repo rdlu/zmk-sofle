@@ -1,6 +1,7 @@
 [tools]
 python = {version = "3.12", backend = "uv"}
 "pipx:weasyprint" = "latest"
+bun = "latest"   # for `mise run studio` (DYA Studio web app)
 
 [env]
 _.python.venv = {path = ".venv", create = true}
@@ -422,16 +423,39 @@ xdg-open "$PDF"
 """
 
 [tasks.studio]
-description = "Run DYA Studio web app locally (USB + BLE keymap editing) at http://localhost:5173"
+description = "Run DYA Studio locally + open it as a Chromium app window (USB + BLE keymap editing)"
 run = """
 set -euo pipefail
 DIR="dya-studio"
-command -v npm >/dev/null || { echo "ERROR: npm not found. Install Node.js 18+ (e.g. via mise or your package manager)."; exit 1; }
+URL="http://localhost:5173"
+command -v bun >/dev/null || { echo "ERROR: bun not found. Run 'mise install' to provision it from [tools], or see https://bun.sh."; exit 1; }
 [ -d "$DIR" ] || { echo ">> Cloning cormoran/dya-studio..."; git clone https://github.com/cormoran/dya-studio "$DIR"; }
 cd "$DIR"
-[ -d node_modules ] || { echo ">> Installing deps (npm install)..."; npm install; }
-echo ">> Starting DYA Studio — open http://localhost:5173 in a Chromium browser (Chrome/Edge)."
-echo ">> USB uses WebSerial; Bluetooth uses WebBluetooth. The hosted version is at https://studio.dya.cormoran.works"
-npm run dev
+[ -d node_modules ] || { echo ">> Installing deps (bun install)..."; bun install; }
+echo ">> Auditing dependencies (bun audit)..."
+bun audit || echo ">> WARNING: bun audit reported advisories — review them before trusting this third-party app."
+
+# Open DYA Studio as a standalone Chromium app window once the dev server is up.
+# Runs in the background; the dev server stays in the foreground (Ctrl+C stops both).
+# Set STUDIO_NO_BROWSER=1 to skip and just run the server.
+if [ "${STUDIO_NO_BROWSER:-0}" != "1" ]; then
+  BROWSER=""
+  for b in chromium chromium-browser google-chrome-stable google-chrome brave brave-browser microsoft-edge microsoft-edge-stable; do
+    command -v "$b" >/dev/null 2>&1 && { BROWSER="$b"; break; }
+  done
+  if [ -n "$BROWSER" ]; then
+    ( if command -v curl >/dev/null 2>&1; then
+        for _ in $(seq 1 60); do curl -sf "$URL" >/dev/null 2>&1 && break; sleep 0.5; done
+      else sleep 3; fi
+      echo ">> Opening $URL as a $BROWSER app window..."
+      "$BROWSER" --app="$URL" >/dev/null 2>&1 & ) &
+  else
+    echo ">> No Chromium-based browser found — open $URL manually (Chrome/Edge needed for WebSerial/WebBluetooth)."
+  fi
+fi
+
+echo ">> Starting DYA Studio dev server at $URL (Ctrl+C to stop). USB=WebSerial, BLE=WebBluetooth."
+echo ">> Hosted version: https://studio.dya.cormoran.works"
+bun run dev
 """
 
