@@ -432,6 +432,17 @@ command -v bun >/dev/null || { echo "ERROR: bun not found. Run 'mise install' to
 [ -d "$DIR" ] || { echo ">> Cloning cormoran/dya-studio..."; git clone https://github.com/cormoran/dya-studio "$DIR"; }
 cd "$DIR"
 [ -d node_modules ] || { echo ">> Installing deps (bun install)..."; bun install; }
+# bun blocks the git-dependency postinstall builds (their run-script-os/`npm run
+# build` need npm's lifecycle env), so build the cormoran ZMK Studio client
+# packages directly. tsc may print type-only warnings (missing @types/web-*) but
+# still emits lib/. ts-client must build before react-hook (which imports it).
+export PATH="$PWD/node_modules/.bin:$PATH"
+for pkg in @zmkfirmware/zmk-studio-ts-client @cormoran/zmk-studio-react-hook; do
+  if [ -d "node_modules/$pkg" ] && [ ! -d "node_modules/$pkg/lib" ]; then
+    echo ">> Building $pkg (tsc; type-only warnings are non-fatal)..."
+    ( cd "node_modules/$pkg" && bun run build ) || true
+  fi
+done
 echo ">> Auditing dependencies (bun audit)..."
 bun audit || echo ">> WARNING: bun audit reported advisories — review them before trusting this third-party app."
 
