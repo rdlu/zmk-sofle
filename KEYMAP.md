@@ -120,3 +120,40 @@ NUM  7   8   9   -
  *   1   2   3   ↵
  =   0   ·   .   %
 ```
+
+**Gaming entry:** SYS right-thumb outer key (pos 63) = `&to 5` → opens the GAME? picker (layer 5).
+
+### Gaming layers (5–7)
+
+Locked layers with **no HRM, no hold-tap, no caps_word** — WASD, SPACE and all modifiers are pure `&kp`, so holds work for movement/run/crouch. Designed in [#11](https://github.com/rdlu/zmk-sofle/issues/11).
+
+#### GAME? (5) — picker
+Transient launcher. Joystick selects; everything else is `&none` so a stray press can't escape.
+
+| Joystick | → |
+|----------|---|
+| ↑ (pos 6) | `&GAME_MC_TO` → MINECRFT (layer 6), underglow green |
+| ↓ (pos 19) | `&GAME_GEN_TO` → GAME (layer 7), underglow blue |
+| center (pos 58) | `&to 0` (cancel) |
+
+#### MINECRFT (6) / GAME (7) — shared chassis
+Identical except **pos 0**: `F3` (MC debug) vs `` ` `` (generic console).
+
+```
+Row 0:  F3/`  1  2  3  4  5    [Vol+]   6  7  8  9  0  -
+Row 1:  TAB   Q  W  E  R  T    [Vol-]   Y  U  I  O  P  =
+Row 2:  ESC   A  S  D  F  G    [Mute]   H  J  K  L  ;  '
+Row 3:  LCTRL Z  X  C  V  B    [P/P]    N  M  ,  .  /  ↵
+Row 4:  Mute  F2 F11 LGUI SPACE LSHIFT | ENTER | SPACE BSPC LALT F13 mo(MEDIA)
+```
+
+- **LCTRL @ pos 39** (pinky, replaces base `\`) — sprint/crouch
+- **LSHIFT @ pos 57** (left thumb) — sneak/walk; **SPACE on both thumbs** (pos 56 + 59)
+- **F13 @ pos 62** — push-to-talk (bind in Discord/OBS); `mo(MEDIA)` @ 63 still reachable
+- **Joystick** = 4-way audio cluster (Vol↑/Vol↓/Mute/Play-Pause) + center Enter; encoder = volume
+
+#### Exit / re-pick (combos, scoped to layers 6 & 7)
+- **Exit → BASE:** positions `0 + 12` (top corners) → `&GAME_EXIT` (RGB off + `&to 0`)
+- **Re-pick:** positions `0 + 5` (top-left pair) → `&to 5`
+
+> **RGB caveat:** the per-game underglow colour is set by the entry macros but `CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB=y` suppresses it on USB power (wired gaming). The OLED `display-name` (`GAME?` / `MINECRFT` / `GAME`) is the reliable active-mode indicator.

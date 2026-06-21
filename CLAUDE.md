@@ -41,7 +41,7 @@ Alternatively, push to the branch and download `.uf2` artifacts from GitHub Acti
 
 ## Keymap structure
 
-Five layers, accessed as follows:
+Eight layers, accessed as follows:
 
 | # | Name    | Access              |
 |---|---------|---------------------|
@@ -50,9 +50,22 @@ Five layers, accessed as follows:
 | 2 | CODE    | hold `lt(2, DEL)` (right thumb) |
 | 3 | MEDIA   | hold `mo3` (right thumb) |
 | 4 | SYS\|NUM | hold `mo4` (left thumb) |
+| 5 | GAME?   | `&to 5` from SYS (right-thumb outer key, pos 63) — transient picker |
+| 6 | MINECRFT | picker joystick ↑ (`&GAME_MC_TO` → `&to 6`) |
+| 7 | GAME    | picker joystick ↓ (`&GAME_GEN_TO` → `&to 7`) — generic FPS/MOBA |
 
 Right thumb cluster (BASE): `SPACE · lt(CODE,DEL) · CapsWord · ralt_mt(RALT, F12) · mo(MEDIA)`
 Left thumb cluster (BASE): `mo(SYS|NUM) · F11 · LGUI · mo(NAV) · BSPC`
+
+### Gaming mode (layers 5–7)
+
+Locked gaming layers that strip all HRM/hold-tap/caps_word so WASD + modifiers are pure `&kp`. Designed in issue #11; re-applied onto current main in `feat/gaming-mode` (the older `gaming` branch / `v2.0.0-rc1` was built on a pre-v1.4 base and is superseded).
+
+- **Entry:** hold `mo(SYS|NUM)` → tap SYS **pos 63** (`&to 5`). The original design used the SYS joystick-center (pos 58), but PR #25 turned the SYS joystick into a mouse (pos 58 = `&mkp LCLK`), so entry moved to the free right-thumb outer key.
+- **Picker (layer 5, "GAME?"):** joystick ↑ → MINECRFT, ↓ → generic GAME, center → `&to 0` (cancel). All other keys `&none`.
+- **Game chassis (layers 6 & 7, identical except pos 0):** `LCTRL`@39 (pinky), `LSHIFT`@57 (left thumb), `SPACE`@56 + @59 (both thumbs), `BSPC`@60, `LALT`@61, `F13`@62 (PTT), `mo(MEDIA)`@63. Joystick = audio cluster (Vol±/Mute/PlayPause) + center Enter. pos 0: MC = `F3`, generic = `` ` ``.
+- **Exit/switch combos:** `0 + 12` → `&GAME_EXIT` (RGB off + `&to 0`); `0 + 5` → `&to 5` (re-pick). Both scoped `layers = <6 7>`.
+- **RGB feedback** (`GAME_MC_TO`/`GAME_GEN_TO` set `RGB_COLOR_HSB`): only visible on battery/BLE — `CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB=y` kills it on USB. OLED `display-name` is the primary indicator.
 
 ## Key position numbering
 
@@ -93,7 +106,7 @@ Current timing: `tapping-term-ms=280`, `require-prior-idle-ms=150`, `quick-tap-m
 ## Branch / PR conventions
 
 - Always work on a feature branch and keep an open PR — **never commit directly to `main`** unless explicitly asked
-- Active branch: `feat/home-row-mods` (PR #1). Create a new branch/PR if starting a distinct new topic
+- Active branch: `feat/gaming-mode` (gaming layers 5–7, re-applied onto v1.6.0). Create a new branch/PR if starting a distinct new topic
 - Main branch is `main`
 
 ### PR description hygiene
@@ -117,3 +130,5 @@ Include: what the user requested, what was changed (layer/key/behavior), and any
 - The `eyelash_sofle/` directory is the vendor source — do not edit it; edit `config/` only
 - Left half gets ZMK Studio snippet (`studio-rpc-usb-uart`) for live editing; right half does not
 - `soft_off` hold time is 2000 ms (combo: Q+A+Z simultaneously)
+- **Local left-half build needs `protobuf >= 7.35`** in `.venv` (nanopb gencode for ZMK Studio). If `mise run build-left` fails with a protobuf "gencode/runtime" VersionError, run `uv pip install --upgrade 'protobuf>=7.35'`. The right half doesn't build Studio, so it's unaffected.
+- **Gaming entry is SYS pos 63, not pos 58** — pos 58 (joystick-center) is the mouse left-click since PR #25. Don't reuse it for `&to GAME`.
