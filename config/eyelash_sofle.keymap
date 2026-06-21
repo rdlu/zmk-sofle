@@ -126,6 +126,24 @@
             timeout-ms = <80>;
             layers = <0>;
         };
+
+        // Exit any game layer back to BASE. Top corners (pos 0 + 12) are
+        // physically far apart — impossible to brush during gameplay, easy to
+        // hit deliberately. Scoped to the game layers only.
+        combo_game_exit {
+            bindings = <&GAME_EXIT>;
+            key-positions = <0 12>;
+            timeout-ms = <50>;
+            layers = <6 7>;
+        };
+
+        // Re-open the picker without bouncing through BASE.
+        combo_game_repick {
+            bindings = <&to 5>;
+            key-positions = <0 5>;
+            timeout-ms = <50>;
+            layers = <6 7>;
+        };
     };
 
     macros {
@@ -359,6 +377,32 @@
             bindings = <&kp LT &kp PRCNT &kp SPACE &kp SPACE &kp PRCNT &kp GT &kp LEFT &kp LEFT &kp LEFT>;
             label = "EEX_NONPRINT";
         };
+
+        // Game-mode entry macros: enable RGB underglow, set a solid per-game
+        // color, then activate the matching layer. The color shows on battery /
+        // BLE; CONFIG_..._AUTO_OFF_USB suppresses it when wired, so the OLED
+        // display-name ("MINECRFT" / "GAME") is the primary active-mode cue.
+        GAME_MC_TO: GAME_MC_TO {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&rgb_ug RGB_ON>, <&rgb_ug RGB_COLOR_HSB(120,100,50)>, <&to 6>;
+            label = "GAME_MC_TO";
+        };
+
+        GAME_GEN_TO: GAME_GEN_TO {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&rgb_ug RGB_ON>, <&rgb_ug RGB_COLOR_HSB(220,100,50)>, <&to 7>;
+            label = "GAME_GEN_TO";
+        };
+
+        // Exit: turn off the underglow and return to BASE.
+        GAME_EXIT: GAME_EXIT {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&rgb_ug RGB_OFF>, <&to 0>;
+            label = "GAME_EXIT";
+        };
     };
 
     keymap {
@@ -422,11 +466,61 @@
 &rgb_ug RGB_BRI  &rgb_ug RGB_SAI  &rgb_ug RGB_HUI  &rgb_ug RGB_EFF  &mkp MB4      &mkp MB5        &mmv MOVE_DOWN   &kp KP_SLASH     &kp KP_N4  &kp KP_N5  &kp KP_N6   &kp KP_PLUS   &trans
 &rgb_ug RGB_BRD  &rgb_ug RGB_SAD  &rgb_ug RGB_HUD  &rgb_ug RGB_EFR  &mkp LCLK     &mkp RCLK       &mmv MOVE_LEFT   &kp KP_ASTERISK  &kp KP_N1  &kp KP_N2  &kp KP_N3   &kp KP_ENTER  &trans
 &rgb_ug RGB_TOG  &trans           &trans           &trans           &mkp MCLK     &trans          &mmv MOVE_RIGHT  &kp KP_EQUAL     &kp KP_N0  &kp COMMA  &kp KP_DOT  &kp PERCENT   &trans
-&trans           &trans           &trans           &trans           &trans        &trans          &mkp LCLK        &trans           &trans     &trans     &trans      &trans
+&trans           &trans           &trans           &trans           &trans        &trans          &mkp LCLK        &trans           &trans     &trans     &trans      &to 5
             >;
 
             display-name = "SYS|NUM";
             sensor-bindings = <&scroll_encoder>;
+        };
+
+        // Layer 5 — GAME_PICK: transient launcher reached from the SYS layer
+        // (hold left-thumb SYS, tap right-thumb outer key → &to 5). Joystick
+        // UP = Minecraft, DOWN = generic GAME, CENTER = cancel back to BASE.
+        // Every other key is &none so a stray press can't escape the picker.
+        layer_5 {
+            bindings = <
+&none  &none  &none  &none  &none  &none      &GAME_MC_TO   &none  &none  &none  &none  &none  &none
+&none  &none  &none  &none  &none  &none      &GAME_GEN_TO  &none  &none  &none  &none  &none  &none
+&none  &none  &none  &none  &none  &none      &none         &none  &none  &none  &none  &none  &none
+&none  &none  &none  &none  &none  &none      &none         &none  &none  &none  &none  &none  &none
+&none  &none  &none  &none  &none  &none      &to 0         &none  &none  &none  &none  &none
+            >;
+
+            display-name = "GAME?";
+            sensor-bindings = <&inc_dec_kp C_VOLUME_UP C_VOL_DN>;
+        };
+
+        // Layer 6 — GAME_MC (Minecraft). Plain WASD/QWER, no HRM. LCTRL@39
+        // sprint, LSHIFT@57 sneak, SPACE on both thumbs. Right half stays plain
+        // QWERTY for chat. Joystick = 4-way audio cluster. F13@62 = push-to-talk
+        // for Discord/in-game voice. F3@0 = debug screen.
+        layer_6 {
+            bindings = <
+&kp F3      &kp N1  &kp N2  &kp N3    &kp N4     &kp N5         &kp C_VOL_UP  &kp N6     &kp N7    &kp N8     &kp N9    &kp N0     &kp MINUS
+&kp TAB     &kp Q   &kp W   &kp E     &kp R      &kp T          &kp C_VOL_DN  &kp Y      &kp U     &kp I      &kp O     &kp P      &kp EQUAL
+&kp ESC     &kp A   &kp S   &kp D     &kp F      &kp G          &kp C_MUTE    &kp H      &kp J     &kp K      &kp L     &kp SEMI   &kp APOS
+&kp LCTRL   &kp Z   &kp X   &kp C     &kp V      &kp B          &kp C_PP      &kp N      &kp M     &kp COMMA  &kp DOT   &kp FSLH   &kp RET
+&kp C_MUTE  &kp F2  &kp F11 &kp LGUI  &kp SPACE  &kp LSHFT      &kp ENTER     &kp SPACE  &kp BSPC  &kp LALT   &kp F13   &mo 3
+            >;
+
+            display-name = "MINECRFT";
+            sensor-bindings = <&inc_dec_kp C_VOLUME_UP C_VOL_DN>;
+        };
+
+        // Layer 7 — GAME (generic FPS/MOBA: LoL / Doom / CS2 / etc.). Same
+        // chassis as MC, but GRAVE@0 = console. Default binds live at their
+        // natural letter positions (QWER abilities, B/R/E/G actions, 1-6 items).
+        layer_7 {
+            bindings = <
+&kp GRAVE   &kp N1  &kp N2  &kp N3    &kp N4     &kp N5         &kp C_VOL_UP  &kp N6     &kp N7    &kp N8     &kp N9    &kp N0     &kp MINUS
+&kp TAB     &kp Q   &kp W   &kp E     &kp R      &kp T          &kp C_VOL_DN  &kp Y      &kp U     &kp I      &kp O     &kp P      &kp EQUAL
+&kp ESC     &kp A   &kp S   &kp D     &kp F      &kp G          &kp C_MUTE    &kp H      &kp J     &kp K      &kp L     &kp SEMI   &kp APOS
+&kp LCTRL   &kp Z   &kp X   &kp C     &kp V      &kp B          &kp C_PP      &kp N      &kp M     &kp COMMA  &kp DOT   &kp FSLH   &kp RET
+&kp C_MUTE  &kp F2  &kp F11 &kp LGUI  &kp SPACE  &kp LSHFT      &kp ENTER     &kp SPACE  &kp BSPC  &kp LALT   &kp F13   &mo 3
+            >;
+
+            display-name = "GAME";
+            sensor-bindings = <&inc_dec_kp C_VOLUME_UP C_VOL_DN>;
         };
     };
 };

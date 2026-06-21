@@ -204,6 +204,14 @@ parse_config:
       tap: $$mdi:apple-keyboard-shift$$
       hold: $$mdi:toggle-switch$$
 
+    # Game mode (launcher macros + exit)
+    "&GAME_MC_TO":
+      tap: $$mdi:minecraft$$
+    "&GAME_GEN_TO":
+      tap: $$mdi:gamepad-variant$$
+    "&GAME_EXIT":
+      tap: $$mdi:exit-run$$
+
     # Empty
     "&none":
       tap: $$mdi:minus-circle-outline$$

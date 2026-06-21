@@ -27,6 +27,9 @@ See [WM_KEYBINDS.md](WM_KEYBINDS.md) for suggested window manager keybind config
 | 2 | CODE | hold `lt(2,DEL)` — right thumb |
 | 3 | MEDIA | hold `mo3` — right thumb |
 | 4 | SYS\|NUM | hold `mo4` — left thumb |
+| 5 | GAME? (picker) | `&to 5` — SYS right-thumb outer key |
+| 6 | MINECRFT | picker joystick ↑ |
+| 7 | GAME (generic) | picker joystick ↓ |
 
 ### BASE
 
@@ -99,6 +102,33 @@ NUM  7   8   9   -
  =   0   ,   .   %
 ```
 
+### Gaming mode (5–7)
+
+Locked gaming layers that bypass the home-row-mod / hold-tap machinery entirely, so WASD, SPACE and the modifiers behave as pure keys. Entered explicitly and held by a toggle — no key needs to stay pressed. (See [issue #11](https://github.com/rdlu/zmk-sofle/issues/11) for the design.)
+
+**Enter:** hold `mo(SYS|NUM)` (left thumb) → tap the **right-thumb outer key** (`&to 5`) → the **GAME?** picker opens. Then push the **joystick** to choose:
+
+| Joystick | Goes to | OLED | Underglow |
+|----------|---------|------|-----------|
+| ↑ | **MINECRFT** (layer 6) | `MINECRFT` | green |
+| ↓ | **GAME** generic FPS/MOBA (layer 7) | `GAME` | blue |
+| center | cancel → BASE | | |
+
+Every other key on the picker is `&none`, so a stray press can't fall through to BASE.
+
+**Inside a game layer:**
+- WASD/QWER and the right half are plain `&kp` (chat/console work normally) — zero relearning, just no HRM.
+- **LCTRL** on the bottom-left pinky (replaces `\`), **LSHIFT** on the left thumb, **SPACE** on *both* thumbs, **BSPC** + **LALT** on the right thumb.
+- **F13** on the right thumb = push-to-talk (bind it in Discord/OBS). `mo(MEDIA)` is still reachable.
+- Joystick = audio cluster (Vol↑ / Vol↓ / Mute / Play-Pause) + center Enter. Encoder = volume.
+- **MINECRFT** has `F3` (debug) top-left; the generic **GAME** layer has `` ` `` (console) there.
+
+**Exit / switch:**
+- **Exit → BASE:** press the two **top corners** together (positions 0 + 12) — `GAME_EXIT` turns the underglow off and returns to BASE.
+- **Re-pick:** press **top-left two keys** together (positions 0 + 5) to reopen the picker without bouncing through BASE.
+
+> **RGB caveat:** the per-game underglow colour only shows on battery/BLE. `CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB=y` turns underglow off on USB power (typical wired desktop gaming), so the **OLED name** (`MINECRFT` / `GAME`) is the primary active-mode indicator. Set `AUTO_OFF_USB=n` if you want the colour while wired.
+
 ---
 
 ## Flashing
@@ -160,11 +190,11 @@ If the halves fail to connect to each other, clear their Bluetooth bonds and let
 
 ## Firmware memory budget
 
-Headroom available for future keymap growth, measured on `v1.5.0` (local build). The left half is the tightest because ZMK Studio ships on it.
+Headroom available for future keymap growth, measured on `v2.0.0` (10 layers incl. gaming, local build). The left half is the tightest because ZMK Studio ships on it.
 
 | Build | Flash used | Flash free | RAM used | RAM free |
 |-------|-----------:|-----------:|---------:|---------:|
-| Left (Studio + nice_view) | 376 KB / 792 KB (47.5%) | **416 KB** | 96 KB / 256 KB (37.5%) | **160 KB** |
+| Left (Studio + nice_view) | 380 KB / 792 KB (48.0%) | **412 KB** | 100 KB / 256 KB (38.9%) | **156 KB** |
 | Right (nice_view) | 269 KB / 792 KB (33.9%) | **523 KB** | 61 KB / 256 KB (24.0%) | **195 KB** |
 | Settings reset | 45 KB / 792 KB (5.7%) | — | 11 KB / 256 KB (4.4%) | — |
 
