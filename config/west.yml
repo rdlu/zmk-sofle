@@ -2,22 +2,35 @@ manifest:
   remotes:
     - name: zmkfirmware
       url-base: https://github.com/zmkfirmware
-      # Additional modules containing boards/shields/custom code can be listed here as well.
-      # See:
-      # - https://zmk.dev/docs/features/modules
-      # - https://docs.zephyrproject.org/3.5.0/develop/west/manifest.html#projects
-  #  - name: gpeye
-  #    url-base: https://github.com/GPeye
+    - name: cormoran
+      url-base: https://github.com/cormoran
   projects:
-   # - name: mario-peripheral-animation
-   #   remote: gpeye
-   #    revision: main 
+    # eyelash_sofle board/shield module — pinned to the "adapt to dyastudio"
+    # commit (#98), which provides boards/shields/eyelash_sofle/ + per-side
+    # studio confs. Pinned (not `main`) for reproducible builds.
     - name: eyelash_sofle
       url: https://github.com/a741725193/zmk-sofle
-      revision: main
+      revision: 4848e21f8c42b99adc05eeb699fb02c91146dca8
+    # cormoran's ZMK fork (v0.3 base) — adds DYA Studio BLE keymap editing.
     - name: zmk
-      remote: zmkfirmware
-      revision: v0.3.0
+      remote: cormoran
+      revision: v0.3-branch+dya
       import: app/west.yml
+    # DYA Studio support modules (cormoran).
+    - name: zmk-behavior-runtime-sensor-rotate
+      remote: cormoran
+      revision: main
+    - name: zmk-module-ble-management
+      remote: cormoran
+      revision: zmk-v0.3.0.0
+    - name: zmk-module-battery-history
+      remote: cormoran
+      revision: main
+    - name: zmk-module-settings-rpc
+      remote: cormoran
+      revision: main
+    - name: zmk-module-runtime-input-processor
+      remote: cormoran
+      revision: zmk-v0.3.0.0
   self:
-    path: boards
+    path: config

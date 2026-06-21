@@ -20,9 +20,9 @@ uv pip install 'setuptools<81' protobuf
 [tasks.build-left]
 description = "Build left half firmware (ZMK Studio enabled)"
 run = """
-west build -s zmk/app -b eyelash_sofle_left --pristine -- \
+west build -s zmk/app -b nice_nano_v2 --pristine -- \
   -DZMK_CONFIG="$(pwd)/config" \
-  -DSHIELD=nice_view \
+  -DSHIELD="eyelash_sofle_left nice_view" \
   -DCONFIG_ZMK_STUDIO=y \
   -DCONFIG_ZMK_STUDIO_LOCKING=n \
   -Dsnippet=studio-rpc-usb-uart
@@ -32,9 +32,9 @@ cp build/zephyr/zmk.uf2 eyelash_sofle_left.uf2
 [tasks.build-right]
 description = "Build right half firmware"
 run = """
-west build -s zmk/app -b eyelash_sofle_right --pristine -- \
+west build -s zmk/app -b nice_nano_v2 --pristine -- \
   -DZMK_CONFIG="$(pwd)/config" \
-  -DSHIELD=nice_view
+  -DSHIELD="eyelash_sofle_right nice_view"
 cp build/zephyr/zmk.uf2 eyelash_sofle_right.uf2
 """
 
