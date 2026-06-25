@@ -106,7 +106,7 @@ Current timing: `tapping-term-ms=280`, `require-prior-idle-ms=150`, `quick-tap-m
 ## Branch / PR conventions
 
 - Always work on a feature branch and keep an open PR — **never commit directly to `main`** unless explicitly asked
-- Active branch: `feat/gaming-mode` (gaming layers 5–7, re-applied onto v1.6.0). Create a new branch/PR if starting a distinct new topic
+- No active feature branch — latest release is **v2.5.0** (DYA Studio firmware, PR #31 merged). Gaming mode (PR #27) and Studio firmware (PR #31) are both in `main`. Start a new branch/PR for the next topic.
 - Main branch is `main`
 
 ### PR description hygiene
@@ -130,6 +130,8 @@ Include: what the user requested, what was changed (layer/key/behavior), and any
 - The `eyelash_sofle/` directory is the vendor source — do not edit it; edit `config/` only
 - Firmware is **shield-based** (since v2.5.0): build `-b nice_nano_v2 -DSHIELD="eyelash_sofle_left nice_view"`. The shield comes from the `eyelash_sofle` west module (pinned to the dya commit). The old tracked `boards/arm/eyelash_sofle/` board + root `zephyr/module.yml` were removed — they collided with the same-named shield.
 - **DYA Studio** = cormoran's ZMK fork + modules → keymap editing over USB **and BLE**. Central-only studio/RPC/BLE Kconfig ships in the module's `eyelash_sofle_left.conf`; keep it OUT of the shared `config/eyelash_sofle.conf`. Left half also gets the `studio-rpc-usb-uart` snippet (USB); right half is the peripheral (no central flags).
+- **Snippet flag is case-sensitive: `-DSNIPPET`, NOT `-Dsnippet`.** Zephyr reads the uppercase `SNIPPET` CMake var; a lowercase `-Dsnippet=studio-rpc-usb-uart` is *silently ignored*, so the USB CDC-ACM transport never compiles in and the left half ships BLE-only (no `/dev/ttyACM`, Studio can't connect over USB). Verify a left build with `grep -E 'TRANSPORT_UART=|USB_CDC_ACM=' build/zephyr/.config`. CI (`build.yaml` `snippet:` key) is unaffected — this only ever bit the local `mise run build-left` task (fixed in v2.5.0).
+- **BLE Studio editing on Linux needs a Chrome flag** — "BLE Not Supported on your Browser" = enable `chrome://flags/#enable-experimental-web-platform-features` (Web Bluetooth is off by default on Chrome/Linux) and relaunch. Not a firmware issue; BLE *HID* (typing) is unaffected. With `CONFIG_ZMK_STUDIO_LOCKING=n` there's no studio-unlock key.
 - `soft_off` hold time is 2000 ms (combo: Q+A+Z simultaneously)
 - **Local left-half build needs `protobuf >= 7.35`** in `.venv` (nanopb gencode for the Studio build). If `mise run build-left` fails with a protobuf "gencode/runtime" VersionError, run `uv pip install --upgrade 'protobuf>=7.35'`. The right half doesn't build Studio, so it's unaffected.
 - **Gaming entry is SYS pos 63, not pos 58** — pos 58 (joystick-center) is the mouse left-click since PR #25. Don't reuse it for `&to GAME`.
