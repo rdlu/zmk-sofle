@@ -6,7 +6,7 @@
 
 > Original hardware by [380465425@qq.com](mailto:380465425@qq.com) · Original README (Chinese): [README_JP.md](README_JP.md)
 
-ZMK firmware configuration for the **Eyelash Sofle** split keyboard (NRF52840, nice!nano v2, nice!view display). Features home row mods, a full 5-layer layout, and ZMK Studio support on the left half.
+ZMK firmware configuration for the **Eyelash Sofle** split keyboard (NRF52840, nice!nano v2, nice!view display). Features home row mods, an 8-layer layout (including gaming layers), and **DYA Studio** support — live keymap editing over USB **and Bluetooth** — on the left half.
 
 ## Keymap
 
@@ -190,15 +190,15 @@ If the halves fail to connect to each other, clear their Bluetooth bonds and let
 
 ## Firmware memory budget
 
-Headroom available for future keymap growth, measured on `v2.0.0` (10 layers incl. gaming, local build). The left half is the tightest because ZMK Studio ships on it.
+Headroom available for future keymap growth, measured on `v2.5.0` (DYA Studio: cormoran ZMK fork + 5 modules) from the `Build ZMK firmware` CI run. The left half is the tightest because Studio + the DYA modules ship on it (USB CDC-ACM + BLE GATT studio transports both compiled in).
 
 | Build | Flash used | Flash free | RAM used | RAM free |
 |-------|-----------:|-----------:|---------:|---------:|
-| Left (Studio + nice_view) | 380 KB / 792 KB (48.0%) | **412 KB** | 100 KB / 256 KB (38.9%) | **156 KB** |
-| Right (nice_view) | 269 KB / 792 KB (33.9%) | **523 KB** | 61 KB / 256 KB (24.0%) | **195 KB** |
+| Left (Studio + nice_view) | 408 KB / 792 KB (51.5%) | **384 KB** | 107 KB / 256 KB (41.9%) | **149 KB** |
+| Right (nice_view) | 270 KB / 792 KB (34.2%) | **522 KB** | 62 KB / 256 KB (24.3%) | **194 KB** |
 | Settings reset | 45 KB / 792 KB (5.7%) | — | 11 KB / 256 KB (4.4%) | — |
 
-Over half the flash is still free on the left half and two-thirds on the right, so new layers, macros, and combos have plenty of room. Dropping ZMK Studio from the left half would recover a large chunk of flash if a future feature ever needs it.
+Just under half the flash is still free on the left half and two-thirds on the right, so new layers, macros, and combos have plenty of room. The DYA Studio modules added ~21 KB to the left half. Dropping Studio from the left half would recover a large chunk of flash if a future feature ever needs it.
 
 Refresh the numbers after any significant keymap change by re-reading the `Memory region` block in the latest `Build ZMK firmware` run log.
 
@@ -245,7 +245,7 @@ mise run setup
 Build the firmware locally:
 
 ```bash
-mise run build-left    # left half (ZMK Studio enabled)
+mise run build-left    # left half (DYA Studio enabled)
 mise run build-right   # right half
 mise run build-reset   # settings reset (clears Studio overlay + BT bonds)
 ```
@@ -298,12 +298,14 @@ The PDF is written to `keymap-drawer/eyelash_sofle.pdf` (gitignored — rebuild 
 
 > The `build.yml` and `draw.yml` workflows trigger on `main` pushes only. Use `workflow_dispatch` from the Actions tab to build manually from any branch.
 
-### 6. ZMK Studio (live keymap editing)
+### 6. Studio (live keymap editing over USB + Bluetooth)
 
-With the Studio firmware on the left half, you can edit keymaps live without rebuilding:
+The left half ships cormoran's ZMK-Studio fork firmware, so you can edit the keymap live — over **USB or Bluetooth** — without rebuilding:
 
-1. Connect the left half via USB.
-2. Open [studio.zmk.dev](https://studio.zmk.dev) in Chrome/Edge (WebSerial required).
-3. Changes apply immediately; click **Save** to persist to flash.
+1. Open a compatible ZMK-Studio web app in a Chromium browser (Chrome/Edge):
+   - **Sofle Studio** — a [`cormoran/dya-studio`](https://github.com/cormoran/dya-studio) fork tailored for this keyboard, maintained as a **separate project** (run it from there). *(work in progress)*
+   - or the upstream hosted app: [studio.dya.cormoran.works](https://studio.dya.cormoran.works)
+2. Connect the left half over **USB** (WebSerial) **or Bluetooth** (WebBluetooth).
+3. Changes apply immediately; click **Save** to persist to flash. The encoder and BLE profiles are configurable here too.
 
-> Rebuilding and reflashing will overwrite Studio changes — export your keymap first if needed.
+> Locking is disabled, so no unlock step is needed. Rebuilding/reflashing overwrites Studio changes — export first if needed. The studio **web app** is a separate project — this repo only provides the firmware that talks to it.

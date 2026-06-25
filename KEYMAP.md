@@ -51,7 +51,7 @@ Used on: right thumb `F12` (single shared key — tap = F12, hold = RALT/AltGr)
   - Right: `J`=RSHFT · `K`=RCTRL · `L`=LALT
 - Right thumb `F12` — `ralt_mt` (tap = F12, hold = RALT/AltGr for Latin accents)
 - Right thumb: `SPACE` · `lt(CODE,DEL)` · `mo(MEDIA)` · `F12/RALT` · `CapsWord`
-- **Central joystick column (top→bottom):** Vol↑ · Vol↓ · Play/Pause · Next · Mute — direct media access without holding `mo(MEDIA)`. Encoder rotation also does Vol↑/↓.
+- **Central joystick column (top→bottom):** Vol↑ · Vol↓ · Play/Pause · Next · Mute — direct media access without holding `mo(MEDIA)`. The **encoder** defaults to Vol↑/↓ and is **live-configurable in DYA Studio** (runtime-sensor-rotate) on every layer.
 
 ### NAV (1) — hold `mo1`
 - Top row: F1–F11
@@ -150,7 +150,7 @@ Row 4:  Mute  F2 F11 LGUI SPACE LSHIFT | ENTER | SPACE BSPC LALT F13 mo(MEDIA)
 - **LCTRL @ pos 39** (pinky, replaces base `\`) — sprint/crouch
 - **LSHIFT @ pos 57** (left thumb) — sneak/walk; **SPACE on both thumbs** (pos 56 + 59)
 - **F13 @ pos 62** — push-to-talk (bind in Discord/OBS); `mo(MEDIA)` @ 63 still reachable
-- **Joystick** = 4-way audio cluster (Vol↑/Vol↓/Mute/Play-Pause) + center Enter; encoder = volume
+- **Joystick** = 4-way audio cluster (Vol↑/Vol↓/Mute/Play-Pause) + center Enter; encoder = volume (default; live-configurable in DYA Studio)
 
 #### Exit / re-pick (combos, scoped to layers 6 & 7)
 - **Exit → BASE:** positions `0 + 12` (top corners) → `&GAME_EXIT` (RGB off + `&to 0`)
