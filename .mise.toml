@@ -25,7 +25,7 @@ west build -s zmk/app -b nice_nano_v2 --pristine -- \
   -DSHIELD="eyelash_sofle_left nice_view" \
   -DCONFIG_ZMK_STUDIO=y \
   -DCONFIG_ZMK_STUDIO_LOCKING=n \
-  -Dsnippet=studio-rpc-usb-uart
+  -DSNIPPET="studio-rpc-usb-uart"
 cp build/zephyr/zmk.uf2 eyelash_sofle_left.uf2
 """
 
