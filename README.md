@@ -190,11 +190,11 @@ If the halves fail to connect to each other, clear their Bluetooth bonds and let
 
 ## Firmware memory budget
 
-Headroom available for future keymap growth, measured on `v2.5.0` (DYA Studio: cormoran ZMK fork + 5 modules) from the `Build ZMK firmware` CI run. The left half is the tightest because Studio + the DYA modules ship on it (USB CDC-ACM + BLE GATT studio transports both compiled in).
+Headroom available for future keymap growth, measured on the `feat/layer-rgb-feedback` branch (DYA Studio: cormoran ZMK fork + 5 modules). The left half is the tightest because Studio + the DYA modules ship on it (USB CDC-ACM + BLE GATT studio transports both compiled in).
 
 | Build | Flash used | Flash free | RAM used | RAM free |
 |-------|-----------:|-----------:|---------:|---------:|
-| Left (Studio + nice_view) | 408 KB / 792 KB (51.5%) | **384 KB** | 107 KB / 256 KB (41.9%) | **149 KB** |
+| Left (Studio + nice_view) | 409 KB / 792 KB (51.6%) | **383 KB** | 108 KB / 256 KB (42.2%) | **148 KB** |
 | Right (nice_view) | 270 KB / 792 KB (34.2%) | **522 KB** | 62 KB / 256 KB (24.3%) | **194 KB** |
 | Settings reset | 45 KB / 792 KB (5.7%) | — | 11 KB / 256 KB (4.4%) | — |
 
