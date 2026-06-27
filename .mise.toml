@@ -22,6 +22,7 @@ description = "Build left half firmware (ZMK Studio enabled)"
 run = """
 west build -s zmk/app -b nice_nano_v2 --pristine -- \
   -DZMK_CONFIG="$(pwd)/config" \
+  -DZMK_EXTRA_MODULES="$(pwd)/zmk-rgb-layer" \
   -DSHIELD="eyelash_sofle_left nice_view" \
   -DCONFIG_ZMK_STUDIO=y \
   -DCONFIG_ZMK_STUDIO_LOCKING=n \
@@ -34,6 +35,7 @@ description = "Build right half firmware"
 run = """
 west build -s zmk/app -b nice_nano_v2 --pristine -- \
   -DZMK_CONFIG="$(pwd)/config" \
+  -DZMK_EXTRA_MODULES="$(pwd)/zmk-rgb-layer" \
   -DSHIELD="eyelash_sofle_right nice_view"
 cp build/zephyr/zmk.uf2 eyelash_sofle_right.uf2
 """
