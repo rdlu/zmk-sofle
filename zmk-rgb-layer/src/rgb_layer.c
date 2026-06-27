@@ -39,16 +39,23 @@ LOG_MODULE_REGISTER(zmk_rgb_layer, CONFIG_ZMK_LOG_LEVEL);
 #define SYS_LAYER 4
 #define MOOD_CYCLE_POSITION 41
 
+/* ZMK underglow effect ids (see rgb_underglow.c UNDERGLOW_EFFECT_*). */
 #define EFFECT_SOLID 0
+#define EFFECT_BREATHE 1
+#define EFFECT_SPECTRUM 2
 #define EFFECT_SWIRL 3
 
 #define NO_COLOR 0xFFFFFFFFu /* impossible packed HSB — cache "unknown" sentinel */
 
+/* Audition set: DARK + TEAL + the three built-in animations. Once a favourite
+ * animation is chosen this list is trimmed back to {DARK, TEAL, <favourite>}. */
 enum base_mood {
     MOOD_DARK = 0,
     MOOD_TEAL = 1,
-    MOOD_SWIRL = 2,
-    MOOD_COUNT = 3,
+    MOOD_BREATHE = 2,
+    MOOD_SPECTRUM = 3,
+    MOOD_SWIRL = 4,
+    MOOD_COUNT = 5,
 };
 
 static enum base_mood base_mood = MOOD_TEAL;
@@ -72,10 +79,12 @@ static const struct layer_color layer_colors[] = {
 
 #define NUM_LAYER_COLORS (sizeof(layer_colors) / sizeof(layer_colors[0]))
 
-/* Desired underglow state for a layer. `color` is valid only when on && solid. */
+/* Desired underglow state for a layer. `color` applies when has_color (solid
+ * and breathe use a base colour; spectrum/swirl cycle hues and ignore it). */
 struct desired {
     bool on;
     int effect;
+    bool has_color;
     uint32_t color;
 };
 
@@ -105,17 +114,21 @@ static struct desired desired_for(uint8_t layer) {
     if (layer != 0) {
         struct layer_color c =
             (layer < NUM_LAYER_COLORS) ? layer_colors[layer] : (struct layer_color){0, 0, 0};
-        return (struct desired){true, EFFECT_SOLID, RGB_COLOR_HSB_VAL(c.h, c.s, c.v)};
+        return (struct desired){true, EFFECT_SOLID, true, RGB_COLOR_HSB_VAL(c.h, c.s, c.v)};
     }
 
     switch (base_mood) {
     case MOOD_DARK:
-        return (struct desired){false, EFFECT_SOLID, 0};
+        return (struct desired){false, EFFECT_SOLID, false, 0};
+    case MOOD_BREATHE:
+        return (struct desired){true, EFFECT_BREATHE, true, RGB_COLOR_HSB_VAL(160, 100, 50)};
+    case MOOD_SPECTRUM:
+        return (struct desired){true, EFFECT_SPECTRUM, false, 0};
     case MOOD_SWIRL:
-        return (struct desired){true, EFFECT_SWIRL, 0};
+        return (struct desired){true, EFFECT_SWIRL, false, 0};
     case MOOD_TEAL:
     default:
-        return (struct desired){true, EFFECT_SOLID, RGB_COLOR_HSB_VAL(160, 100, 15)};
+        return (struct desired){true, EFFECT_SOLID, true, RGB_COLOR_HSB_VAL(160, 100, 15)};
     }
 }
 
@@ -136,7 +149,7 @@ static void apply_desired(struct desired d) {
         invoke_rgb(RGB_EFS_CMD, d.effect);
         cur_effect = d.effect;
     }
-    if (d.effect == EFFECT_SOLID && d.color != cur_color) {
+    if (d.has_color && d.color != cur_color) {
         invoke_rgb(RGB_COLOR_HSB_CMD, d.color);
         cur_color = d.color;
     }
