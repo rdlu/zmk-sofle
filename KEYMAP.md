@@ -55,7 +55,7 @@ dim teal BASE resting colour on release.
 | NAV | indigo | `250,100,50` |
 | CODE | magenta | `290,100,50` |
 | MEDIA | amber | `35,100,50` |
-| SYS\|NUM | *(no colour — control layer, see below)* | — |
+| SYS\|NUM | red | `0,100,50` |
 | MINECRFT / GAME | green / blue | `120…` / `220…` |
 
 **Three BASE moods, selected from the SYS layer** (left bottom row, pos 40/41/42):
@@ -76,11 +76,15 @@ dim teal BASE resting colour on release.
   feature off on USB power; the OLED `display-name` is the wired indicator. The
   macros never call `RGB_ON/OFF`, so they never fight auto-off-USB, and the OFF
   mood stays dark.
-- **Restore is always dim-solid**, and **SYS\|NUM is intentionally *not* colour
-  wrapped** (stays plain `&mo 4`). A stateless keymap can't remember which mood
-  you were in, and if SYS auto-restored on release it would instantly clobber a
-  SWIRL/OFF mood you'd just picked from inside it. Cost: SYS has no colour of
-  its own, and using a colour layer ends a SWIRL/OFF mood (re-pick from SYS).
+- **Restore is always dim-solid** (the stateless keymap can't remember which
+  mood you were in), so using a colour layer ends a SWIRL/OFF mood — re-pick it
+  from SYS.
+- **SYS\|NUM is colour-wrapped (red) even though it hosts the mood keys.** This
+  works because the restore only sets a *colour*: SWIRL's effect ignores a
+  static colour so it survives release, and OFF keeps the strip dark so it
+  survives too. Picking a mood *from inside* SYS therefore sticks. The only
+  casualty is a **passive** SYS visit (no mood re-pick) while already in SWIRL
+  mood — that resets to dim teal on release.
 - **Stacking caveat:** holding two momentary layers at once (e.g. NAV + MEDIA)
   then releasing one repaints dim BASE rather than the still-held layer. Rare in
   normal hold→type→release use.

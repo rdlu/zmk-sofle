@@ -218,6 +218,8 @@ parse_config:
       tap: NAV
     "&media_rgb":
       tap: MEDIA
+    "&sys_rgb":
+      tap: SYS
     "&code_hold":
       tap: CODE
     # BASE underglow moods on the SYS layer
