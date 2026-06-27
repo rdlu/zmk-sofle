@@ -174,7 +174,7 @@ echo "✅ Both halves built and flashed. They will auto-reset and re-pair over B
 [tasks.draw]
 description = "Regenerate keymap SVG locally using keymap-drawer"
 run = """
-uvx --from keymap-drawer keymap parse -z config/eyelash_sofle.keymap -o keymap-drawer/eyelash_sofle.yaml
+uvx --from keymap-drawer keymap -c keymap_drawer.config.yaml parse -z config/eyelash_sofle.keymap -o keymap-drawer/eyelash_sofle.yaml
 uvx --from keymap-drawer keymap -c keymap_drawer.config.yaml draw -z eyelash_sofle keymap-drawer/eyelash_sofle.yaml -o keymap-drawer/eyelash_sofle.svg
 echo "SVG written to keymap-drawer/eyelash_sofle.svg"
 """

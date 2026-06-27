@@ -212,6 +212,17 @@ parse_config:
     "&GAME_EXIT":
       tap: $$mdi:exit-run$$
 
+    # Per-layer RGB feedback (momentary layers + the &code_hold hold action).
+    # Text labels matching the OLED display-names; the RGB recolor is implicit.
+    "&nav_rgb":
+      tap: NAV
+    "&media_rgb":
+      tap: MEDIA
+    "&sys_rgb":
+      tap: SYS
+    "&code_hold":
+      tap: CODE
+
     # Empty
     "&none":
       tap: $$mdi:minus-circle-outline$$
