@@ -222,13 +222,6 @@ parse_config:
       tap: SYS
     "&code_hold":
       tap: CODE
-    # BASE underglow moods on the SYS layer
-    "&BASE_OFF":
-      tap: $$mdi:lightbulb-off-outline$$
-    "&BASE_DIM":
-      tap: $$mdi:lightbulb-on-outline$$
-    "&BASE_SWIRL":
-      tap: $$mdi:looks$$
 
     # Empty
     "&none":

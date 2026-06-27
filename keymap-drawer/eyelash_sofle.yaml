@@ -301,9 +301,9 @@ layers:
   - KP ENTER
   - {t: '$$mdi:transfer$$', type: trans}
   - RGB TOG
-  - $$mdi:lightbulb-off-outline$$
-  - $$mdi:lightbulb-on-outline$$
-  - $$mdi:looks$$
+  - {t: '$$mdi:transfer$$', type: trans}
+  - {t: '$$mdi:transfer$$', type: trans}
+  - {t: '$$mdi:transfer$$', type: trans}
   - $$mdi:mouse-scroll-wheel$$
   - {t: '$$mdi:transfer$$', type: trans}
   - {t: '$$mdi:menu-right$$', s: '$$mdi:mouse$$'}

@@ -45,49 +45,37 @@ Used on: right thumb `F12` (single shared key — tap = F12, hold = RALT/AltGr)
 
 ## Underglow / per-layer RGB feedback
 
-The underglow strip shows which layer is active by colour. Holding a momentary
-layer paints a solid colour for as long as you hold it, then drops back to the
-dim teal BASE resting colour on release.
+**Smart-off:** the base layer rests with the underglow **off**. Holding a
+momentary layer turns it **on** with a solid colour for as long as you hold it,
+then turns it **off** again on release. So the strip lights up only while you're
+in a non-base layer.
 
 | Layer | Colour | HSB |
 |-------|--------|-----|
-| BASE (resting) | dim teal | `160,100,15` |
+| BASE (resting) | off (dark) | — |
 | NAV | indigo | `250,100,50` |
 | CODE | magenta | `290,100,50` |
 | MEDIA | amber | `35,100,50` |
 | SYS\|NUM | red | `0,100,50` |
 | MINECRFT / GAME | green / blue | `120…` / `220…` |
 
-**Three BASE moods, selected from the SYS layer** (left bottom row, pos 40/41/42):
-
-| Key | Macro | Effect |
-|-----|-------|--------|
-| pos 40 | `&BASE_OFF` | underglow off |
-| pos 41 | `&BASE_DIM` | solid dim teal resting colour (the mood layers restore to) |
-| pos 42 | `&BASE_SWIRL` | animated rainbow swirl |
-
 **How it works / deliberate limits:**
 - Implemented purely in the keymap: each momentary layer key is a macro
-  (`&nav_rgb`, `&media_rgb`, and `&code_hold` behind `&lt_code`) that wraps
-  `&mo N` with `&rgb_ug` colour calls. `RGB_EFS_CMD 0` forces the **solid**
-  effect so the colour reads even from the SWIRL mood. Config requires
-  `EFF_START=0` + `ON_START=y`.
-- **Battery-only.** `CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB=y` keeps the whole
-  feature off on USB power; the OLED `display-name` is the wired indicator. The
-  macros never call `RGB_ON/OFF`, so they never fight auto-off-USB, and the OFF
-  mood stays dark.
-- **Restore is always dim-solid** (the stateless keymap can't remember which
-  mood you were in), so using a colour layer ends a SWIRL/OFF mood — re-pick it
-  from SYS.
-- **SYS\|NUM is colour-wrapped (red) even though it hosts the mood keys.** This
-  works because the restore only sets a *colour*: SWIRL's effect ignores a
-  static colour so it survives release, and OFF keeps the strip dark so it
-  survives too. Picking a mood *from inside* SYS therefore sticks. The only
-  casualty is a **passive** SYS visit (no mood re-pick) while already in SWIRL
-  mood — that resets to dim teal on release.
+  (`&nav_rgb`, `&media_rgb`, `&sys_rgb`, and `&code_hold` behind `&lt_code`) that
+  wraps `&mo N` with `&rgb_ug` calls — `RGB_ON` + `RGB_EFS_CMD 0` (force solid) +
+  the colour on press, `RGB_OFF` on release. Config: `EFF_START=0`, `ON_START=n`.
+- **No persistent base colour / no moods.** This is the stateless trade-off: a
+  keymap macro can't remember a base mood to restore on release, so "release"
+  always means off. Persistent dim/swirl base looks would need an event-driven
+  firmware module — see the tracked issue.
+- **Works the same on USB and battery.** `AUTO_OFF_USB` is disabled — note it is
+  *not* "battery-only"; it's the battery-saver "turn underglow off when USB is
+  disconnected" (and forces it on at boot when USB is powered), which would have
+  lit the base layer on USB. With it off, the base is dark and colours appear on
+  holds regardless of USB/BLE. The only base draw is during a hold.
 - **Stacking caveat:** holding two momentary layers at once (e.g. NAV + MEDIA)
-  then releasing one repaints dim BASE rather than the still-held layer. Rare in
-  normal hold→type→release use.
+  then releasing one turns the strip off rather than showing the still-held
+  layer. Rare in normal hold→type→release use.
 
 ## Layer summary
 
@@ -144,9 +132,7 @@ Right side and central column.
 | Row 1 (+) | Brightness+ | Saturation+ | Hue+ | Effect→ |
 | Row 2 (−) | Brightness− | Saturation− | Hue− | ←Effect |
 
-**Left bottom-left key:** RGB toggle. **Pos 40/41/42** (left bottom row) =
-`&BASE_OFF` / `&BASE_DIM` / `&BASE_SWIRL` — the three BASE underglow moods (see
-[Underglow / per-layer RGB feedback](#underglow--per-layer-rgb-feedback)).
+**Left bottom-left key:** RGB toggle
 
 **Mouse — emergency fallback** (kept on SYS\|NUM only — when the trackball or external mouse is unavailable):
 
@@ -201,7 +187,7 @@ Row 4:  Mute  F2 F11 LGUI SPACE LSHIFT | ENTER | SPACE BSPC LALT F13 mo(MEDIA)
 - **Joystick** = 4-way audio cluster (Vol↑/Vol↓/Mute/Play-Pause) + center Enter; encoder = volume (default; live-configurable in DYA Studio)
 
 #### Exit / re-pick (combos, scoped to layers 6 & 7)
-- **Exit → BASE:** positions `0 + 12` (top corners) → `&GAME_EXIT` (restore dim teal BASE colour + `&to 0`)
+- **Exit → BASE:** positions `0 + 12` (top corners) → `&GAME_EXIT` (RGB off + `&to 0`)
 - **Re-pick:** positions `0 + 5` (top-left pair) → `&to 5`
 
 > **RGB caveat:** the per-game underglow colour is set by the entry macros but `CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB=y` suppresses it on USB power (wired gaming). The OLED `display-name` (`GAME?` / `MINECRFT` / `GAME`) is the reliable active-mode indicator.
