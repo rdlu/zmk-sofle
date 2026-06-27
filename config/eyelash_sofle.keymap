@@ -443,7 +443,7 @@
                 , <&rgb_ug RGB_COLOR_HSB(250,100,50)>   // NAV = indigo
                 , <&macro_pause_for_release>
                 , <&macro_release &mo 1>
-                , <&rgb_ug RGB_COLOR_HSB(160,100,15)>;  // restore dim teal
+                , <&macro_tap &rgb_ug RGB_COLOR_HSB(160,100,15)>;  // restore dim teal
             label = "NAV_RGB";
         };
 
@@ -458,7 +458,7 @@
                 , <&rgb_ug RGB_COLOR_HSB(35,100,50)>    // MEDIA = amber
                 , <&macro_pause_for_release>
                 , <&macro_release &mo 3>
-                , <&rgb_ug RGB_COLOR_HSB(160,100,15)>;
+                , <&macro_tap &rgb_ug RGB_COLOR_HSB(160,100,15)>;
             label = "MEDIA_RGB";
         };
 
@@ -474,7 +474,7 @@
                 , <&rgb_ug RGB_COLOR_HSB(290,100,50)>   // CODE = magenta
                 , <&macro_pause_for_release>
                 , <&macro_release &mo 2>
-                , <&rgb_ug RGB_COLOR_HSB(160,100,15)>;
+                , <&macro_tap &rgb_ug RGB_COLOR_HSB(160,100,15)>;
             label = "CODE_HOLD";
         };
 
