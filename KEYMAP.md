@@ -67,7 +67,7 @@ in a non-base layer.
 - **No persistent base colour / no moods.** This is the stateless trade-off: a
   keymap macro can't remember a base mood to restore on release, so "release"
   always means off. Persistent dim/swirl base looks would need an event-driven
-  firmware module — see the tracked issue.
+  firmware module — see [#33](https://github.com/rdlu/zmk-sofle/issues/33).
 - **Works the same on USB and battery.** `AUTO_OFF_USB` is disabled — note it is
   *not* "battery-only"; it's the battery-saver "turn underglow off when USB is
   disconnected" (and forces it on at boot when USB is powered), which would have
