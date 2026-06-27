@@ -45,37 +45,42 @@ Used on: right thumb `F12` (single shared key — tap = F12, hold = RALT/AltGr)
 
 ## Underglow / per-layer RGB feedback
 
-**Smart-off:** the base layer rests with the underglow **off**. Holding a
-momentary layer turns it **on** with a solid colour for as long as you hold it,
-then turns it **off** again on release. So the strip lights up only while you're
-in a non-base layer.
+Handled by the **`zmk-rgb-layer` firmware module** (an event-driven listener),
+not keymap macros. It paints the underglow the highest active layer's colour by
+invoking the global `&rgb_ug` behaviour, which ZMK forwards to both halves.
 
 | Layer | Colour | HSB |
 |-------|--------|-----|
-| BASE (resting) | off (dark) | — |
 | NAV | indigo | `250,100,50` |
 | CODE | magenta | `290,100,50` |
 | MEDIA | amber | `35,100,50` |
 | SYS\|NUM | red | `0,100,50` |
+| GAME? | violet | `280,100,50` |
 | MINECRFT / GAME | green / blue | `120…` / `220…` |
 
-**How it works / deliberate limits:**
-- Implemented purely in the keymap: each momentary layer key is a macro
-  (`&nav_rgb`, `&media_rgb`, `&sys_rgb`, and `&code_hold` behind `&lt_code`) that
-  wraps `&mo N` with `&rgb_ug` calls — `RGB_ON` + `RGB_EFS_CMD 0` (force solid) +
-  the colour on press, `RGB_OFF` on release. Config: `EFF_START=0`, `ON_START=n`.
-- **No persistent base colour / no moods.** This is the stateless trade-off: a
-  keymap macro can't remember a base mood to restore on release, so "release"
-  always means off. Persistent dim/swirl base looks would need an event-driven
-  firmware module — see [#33](https://github.com/rdlu/zmk-sofle/issues/33).
-- **Works the same on USB and battery.** `AUTO_OFF_USB` is disabled — note it is
-  *not* "battery-only"; it's the battery-saver "turn underglow off when USB is
-  disconnected" (and forces it on at boot when USB is powered), which would have
-  lit the base layer on USB. With it off, the base is dark and colours appear on
-  holds regardless of USB/BLE. The only base draw is during a hold.
-- **Stacking caveat:** holding two momentary layers at once (e.g. NAV + MEDIA)
-  then releasing one turns the strip off rather than showing the still-held
-  layer. Rare in normal hold→type→release use.
+**BASE moods** (the resting look, runtime-selectable): cycle by pressing the
+mood key — **SYS layer, pos 41 (the left `X`-position key, set to `&none`)** —
+while holding SYS. The change previews live as you cycle; release SYS to settle.
+
+| Mood | BASE appearance |
+|------|-----------------|
+| DARK | underglow off |
+| TEAL (default) | solid dim teal `160,100,15` |
+| SWIRL | animated rainbow swirl |
+
+**How it works / notes:**
+- Module: `zmk-rgb-layer/` (in-tree Zephyr module, `CONFIG_ZMK_RGB_LAYER_INDICATOR=y`).
+  Central-only; the peripheral strip updates via the forwarded global behaviour.
+- **One `&rgb_ug` call per change** in steady state — the module caches on/effect/
+  colour and emits only the diff, minimising split-bus traffic (the main latency
+  source). Full on+solid+colour is only sent when actually transitioning.
+- **Works the same on USB and battery** (`AUTO_OFF_USB=n`; it's the battery-saver
+  "off when USB disconnected", not "off on USB").
+- **Mood persistence across reboots is not yet implemented** — resets to TEAL on
+  boot. Planned follow-up. Tracked with the broader module work in
+  [#33](https://github.com/rdlu/zmk-sofle/issues/33).
+- CODE is now a plain `&mo 2` (instant colour, no hold-tap); **DEL moved to the
+  MEDIA layer** (left-index home, pos 30).
 
 ## Layer summary
 
