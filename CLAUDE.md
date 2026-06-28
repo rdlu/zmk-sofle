@@ -106,7 +106,7 @@ Current timing: `tapping-term-ms=280`, `require-prior-idle-ms=150`, `quick-tap-m
 ## Branch / PR conventions
 
 - Always work on a feature branch and keep an open PR — **never commit directly to `main`** unless explicitly asked
-- No active feature branch — latest release is **v2.6.0** (per-layer underglow colour feedback / smart-off, PR #32 merged). Gaming mode (PR #27), Studio firmware (PR #31), and RGB layer feedback (PR #32) are all in `main`. Start a new branch/PR for the next topic.
+- No active feature branch — latest release is **v2.7.0** (event-driven `zmk-rgb-layer` module: per-layer colours, switchable base moods, master brightness, reboot persistence, split resync; PR #34 merged, closed #33). The in-repo module is built in CI via `-DZMK_EXTRA_MODULES` in `build.yaml` (see the in-repo-module CI gotchas below). Gaming mode (PR #27), Studio firmware (PR #31), and the v2.6.0 macro-based RGB feedback (PR #32, since superseded by the module) are also in `main`. The reactive per-column underglow effect is deferred to issue #35. Start a new branch/PR for the next topic.
 - Main branch is `main`
 
 ### PR description hygiene
