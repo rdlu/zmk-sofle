@@ -16,12 +16,18 @@
  * layer change usually emits a SINGLE &rgb_ug call, which keeps the split-bus
  * traffic — the dominant latency source — low.
  *
- * Not yet persisted across reboots (mood resets to TEAL) — planned follow-up.
+ * Persistence: the chosen mood + master brightness are saved to the settings
+ * partition (debounced, mirroring ZMK's own rgb_underglow). They are restored
+ * on boot so a power-cycle / soft-off comes back with the look you last set,
+ * not the TEAL/50 defaults. Because ZMK runs settings_load() in main() — AFTER
+ * every SYS_INIT — the boot paint is deferred to a short delayed-work item so
+ * it fires once the persisted values are loaded (and the split link is up).
  */
 
 #include <zephyr/kernel.h>
 #include <zephyr/init.h>
 #include <zephyr/logging/log.h>
+#include <zephyr/settings/settings.h>
 
 #include <zmk/behavior.h>
 #include <zmk/event_manager.h>
@@ -177,12 +183,69 @@ static void apply_layer(uint8_t layer) {
     apply_desired(desired_for(layer));
 }
 
+/* --- Persistence (mood + brightness) ------------------------------------- *
+ * Mirrors ZMK's rgb_underglow: a debounced delayable work writes a tiny blob
+ * to the settings partition; a static handler restores it during settings_load.
+ */
+struct rgb_layer_persist {
+    uint8_t mood;
+    uint8_t brightness;
+};
+
+#if IS_ENABLED(CONFIG_SETTINGS)
+static struct k_work_delayable save_work;
+
+/* Short, dedicated debounce — NOT ZMK's 60 s CONFIG_ZMK_SETTINGS_SAVE_DEBOUNCE.
+ * Mood/brightness changes are deliberate and infrequent, and the whole point is
+ * that they survive a soft-off that may follow within seconds of the change.
+ * 3 s still coalesces a burst of brightness-key repeats into one flash write. */
+#define RGB_LAYER_SAVE_DEBOUNCE_MS 3000
+
+static void rgb_layer_save_work(struct k_work *work) {
+    struct rgb_layer_persist blob = {.mood = (uint8_t)base_mood, .brightness = brightness};
+    settings_save_one("rgb_layer/state", &blob, sizeof(blob));
+}
+
+static void persist_state(void) {
+    k_work_reschedule(&save_work, K_MSEC(RGB_LAYER_SAVE_DEBOUNCE_MS));
+}
+
+static int rgb_layer_settings_set(const char *name, size_t len, settings_read_cb read_cb,
+                                  void *cb_arg) {
+    const char *next;
+    if (settings_name_steq(name, "state", &next) && !next) {
+        struct rgb_layer_persist blob;
+        if (len != sizeof(blob)) {
+            return -EINVAL;
+        }
+        int rc = read_cb(cb_arg, &blob, sizeof(blob));
+        if (rc < 0) {
+            return rc;
+        }
+        if (blob.mood <= MOOD_SWIRL) {
+            base_mood = (enum base_mood)blob.mood;
+        }
+        if (blob.brightness >= BRIGHT_MIN && blob.brightness <= BRIGHT_MAX) {
+            brightness = blob.brightness;
+        }
+        LOG_INF("restored mood=%d brightness=%d", base_mood, brightness);
+        return 0;
+    }
+    return -ENOENT;
+}
+
+SETTINGS_STATIC_HANDLER_DEFINE(rgb_layer, "rgb_layer", NULL, rgb_layer_settings_set, NULL, NULL);
+#else
+static void persist_state(void) {}
+#endif
+
 static void set_mood(enum base_mood m) {
     base_mood = m;
     LOG_INF("base mood -> %d", m);
     /* Live preview: paint the chosen base mood now even though SYS is held, so
      * the change is visible immediately. Releasing SYS repaints base anyway. */
     apply_desired(desired_for(0));
+    persist_state();
 }
 
 /* The effects key steps through the animations; from DARK/TEAL it enters at the
@@ -215,6 +278,7 @@ static void adjust_brightness(int delta) {
     LOG_INF("brightness -> %d", brightness);
     /* Repaint the active layer so the new level shows immediately (and sticks). */
     apply_layer(zmk_keymap_highest_layer_active());
+    persist_state();
 }
 
 static int rgb_layer_listener(const zmk_event_t *eh) {
@@ -253,10 +317,22 @@ ZMK_LISTENER(rgb_layer, rgb_layer_listener);
 ZMK_SUBSCRIPTION(rgb_layer, zmk_layer_state_changed);
 ZMK_SUBSCRIPTION(rgb_layer, zmk_position_state_changed);
 
-/* Paint the resting base mood at boot (no layer-state event fires for the
- * always-on default layer). */
+/* Paint the resting base mood shortly after boot. Deferred (not painted inline
+ * in the SYS_INIT) because ZMK runs settings_load() in main(), AFTER every
+ * SYS_INIT — so the persisted mood/brightness aren't available yet at init
+ * time. The delay also gives the split link time to come up so the forwarded
+ * &rgb_ug reaches the peripheral half. */
+static void rgb_layer_boot_paint(struct k_work *work) {
+    apply_layer(zmk_keymap_highest_layer_active());
+}
+
+static K_WORK_DELAYABLE_DEFINE(boot_paint_work, rgb_layer_boot_paint);
+
 static int rgb_layer_init(void) {
-    apply_layer(0);
+#if IS_ENABLED(CONFIG_SETTINGS)
+    k_work_init_delayable(&save_work, rgb_layer_save_work);
+#endif
+    k_work_schedule(&boot_paint_work, K_MSEC(1500));
     return 0;
 }
 

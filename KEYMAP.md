@@ -81,9 +81,12 @@ module owns. All layer colours scale to it; the TEAL base sits at ~30% of it.
   source). Full on+solid+colour is only sent when actually transitioning.
 - **Works the same on USB and battery** (`AUTO_OFF_USB=n`; it's the battery-saver
   "off when USB disconnected", not "off on USB").
-- **Mood persistence across reboots is not yet implemented** — resets to TEAL on
-  boot. Planned follow-up. Tracked with the broader module work in
-  [#33](https://github.com/rdlu/zmk-sofle/issues/33).
+- **Mood + brightness persist across reboots** — both are saved to the settings
+  partition (debounced ~3 s, mirroring ZMK's own underglow persistence) and
+  restored on boot, so a power-cycle / soft-off comes back with the look you
+  last set instead of the TEAL/50 defaults. The boot paint is deferred ~1.5 s so
+  it runs after ZMK's `settings_load()` (which happens in `main()`, after every
+  `SYS_INIT`) and after the split link is up.
 - CODE is now a plain `&mo 2` (instant colour, no hold-tap); **DEL moved to the
   MEDIA layer** (left-index home, pos 30).
 
