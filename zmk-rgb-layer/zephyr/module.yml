@@ -1,0 +1,4 @@
+name: zmk-rgb-layer
+build:
+  cmake: .
+  kconfig: Kconfig
