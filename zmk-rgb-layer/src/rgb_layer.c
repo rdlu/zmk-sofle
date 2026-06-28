@@ -33,11 +33,13 @@
 
 LOG_MODULE_REGISTER(zmk_rgb_layer, CONFIG_ZMK_LOG_LEVEL);
 
-/* Keymap coupling: the mood-cycle key. Pressing physical position
- * MOOD_CYCLE_POSITION while the SYS layer is the highest active layer cycles
- * the base mood. That keymap position must be &none so it has no other effect. */
+/* Keymap coupling: three dedicated mood keys on the SYS layer (each a &none key
+ * so it has no other effect). Pressed while SYS is the highest active layer:
+ *   pos 40 -> DARK, pos 41 -> DIM (teal), pos 42 -> cycle the animations. */
 #define SYS_LAYER 4
-#define MOOD_CYCLE_POSITION 41
+#define MOOD_KEY_DARK 40
+#define MOOD_KEY_DIM 41
+#define MOOD_KEY_FX 42
 
 /* ZMK underglow effect ids (see rgb_underglow.c UNDERGLOW_EFFECT_*). */
 #define EFFECT_SOLID 0
@@ -47,15 +49,14 @@ LOG_MODULE_REGISTER(zmk_rgb_layer, CONFIG_ZMK_LOG_LEVEL);
 
 #define NO_COLOR 0xFFFFFFFFu /* impossible packed HSB — cache "unknown" sentinel */
 
-/* Audition set: DARK + TEAL + the three built-in animations. Once a favourite
- * animation is chosen this list is trimmed back to {DARK, TEAL, <favourite>}. */
+/* BASE moods: DARK and TEAL are set directly by their keys; the three
+ * animations are reached by the effects key, which steps through them. */
 enum base_mood {
     MOOD_DARK = 0,
     MOOD_TEAL = 1,
     MOOD_BREATHE = 2,
     MOOD_SPECTRUM = 3,
     MOOD_SWIRL = 4,
-    MOOD_COUNT = 5,
 };
 
 static enum base_mood base_mood = MOOD_TEAL;
@@ -159,12 +160,31 @@ static void apply_layer(uint8_t layer) {
     apply_desired(desired_for(layer));
 }
 
-static void cycle_mood(void) {
-    base_mood = (base_mood + 1) % MOOD_COUNT;
-    LOG_INF("base mood -> %d", base_mood);
+static void set_mood(enum base_mood m) {
+    base_mood = m;
+    LOG_INF("base mood -> %d", m);
     /* Live preview: paint the chosen base mood now even though SYS is held, so
-     * the change is visible while cycling. Releasing SYS repaints base anyway. */
+     * the change is visible immediately. Releasing SYS repaints base anyway. */
     apply_desired(desired_for(0));
+}
+
+/* The effects key steps through the animations; from DARK/TEAL it enters at the
+ * first animation. */
+static void cycle_effect(void) {
+    switch (base_mood) {
+    case MOOD_BREATHE:
+        set_mood(MOOD_SPECTRUM);
+        break;
+    case MOOD_SPECTRUM:
+        set_mood(MOOD_SWIRL);
+        break;
+    case MOOD_SWIRL:
+        set_mood(MOOD_BREATHE);
+        break;
+    default:
+        set_mood(MOOD_BREATHE);
+        break;
+    }
 }
 
 static int rgb_layer_listener(const zmk_event_t *eh) {
@@ -174,12 +194,20 @@ static int rgb_layer_listener(const zmk_event_t *eh) {
     }
 
     const struct zmk_position_state_changed *psc = as_zmk_position_state_changed(eh);
-    if (psc != NULL) {
-        if (psc->state && psc->position == MOOD_CYCLE_POSITION &&
-            zmk_keymap_highest_layer_active() == SYS_LAYER) {
-            cycle_mood();
+    if (psc != NULL && psc->state && zmk_keymap_highest_layer_active() == SYS_LAYER) {
+        switch (psc->position) {
+        case MOOD_KEY_DARK:
+            set_mood(MOOD_DARK);
+            break;
+        case MOOD_KEY_DIM:
+            set_mood(MOOD_TEAL);
+            break;
+        case MOOD_KEY_FX:
+            cycle_effect();
+            break;
+        default:
+            break;
         }
-        return 0;
     }
 
     return 0;

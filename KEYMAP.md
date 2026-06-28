@@ -58,15 +58,15 @@ invoking the global `&rgb_ug` behaviour, which ZMK forwards to both halves.
 | GAME? | violet | `280,100,50` |
 | MINECRFT / GAME | green / blue | `120…` / `220…` |
 
-**BASE moods** (the resting look, runtime-selectable): cycle by pressing the
-mood key — **SYS layer, pos 41 (the left `X`-position key, set to `&none`)** —
-while holding SYS. The change previews live as you cycle; release SYS to settle.
+**BASE moods** (the resting look, runtime-selectable): three dedicated keys on
+the **SYS layer** (left bottom row, `Z`/`X`/`C` positions, each set to `&none`
+so the module drives them). Press while holding SYS; the change previews live.
 
-| Mood | BASE appearance |
-|------|-----------------|
-| DARK | underglow off |
-| TEAL (default) | solid dim teal `160,100,15` |
-| SWIRL | animated rainbow swirl |
+| SYS key | Pos | Mood |
+|---------|-----|------|
+| `Z` | 40 | DARK — underglow off |
+| `X` | 41 | DIM — solid dim teal `160,100,15` (default) |
+| `C` | 42 | EFFECTS — steps through breathe → spectrum → swirl |
 
 **How it works / notes:**
 - Module: `zmk-rgb-layer/` (in-tree Zephyr module, `CONFIG_ZMK_RGB_LAYER_INDICATOR=y`).
