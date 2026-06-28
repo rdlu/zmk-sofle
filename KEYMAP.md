@@ -65,8 +65,13 @@ so the module drives them). Press while holding SYS; the change previews live.
 | SYS key | Pos | Mood |
 |---------|-----|------|
 | `Z` | 40 | DARK — underglow off |
-| `X` | 41 | DIM — solid dim teal `160,100,15` (default) |
+| `X` | 41 | DIM — solid dim teal (default) |
 | `C` | 42 | EFFECTS — steps through breathe → spectrum → swirl |
+
+**Brightness** (day/night) is a master level the module applies to every colour,
+so it sticks across repaints. Adjust with the **brightness keys on SYS** —
+pos 13 (`Q`-position, up) and pos 26 (`A`-position, down), also `&none` keys the
+module owns. All layer colours scale to it; the TEAL base sits at ~30% of it.
 
 **How it works / notes:**
 - Module: `zmk-rgb-layer/` (in-tree Zephyr module, `CONFIG_ZMK_RGB_LAYER_INDICATOR=y`).

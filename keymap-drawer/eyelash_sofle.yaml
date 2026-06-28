@@ -274,7 +274,7 @@ layers:
   - KP 9
   - KP MINUS
   - {t: '$$mdi:transfer$$', type: trans}
-  - RGB BRI
+  - {t: '$$mdi:minus-circle-outline$$', type: none}
   - RGB SAI
   - RGB HUI
   - RGB EFF
@@ -287,7 +287,7 @@ layers:
   - KP 6
   - KP PLUS
   - {t: '$$mdi:transfer$$', type: trans}
-  - RGB BRD
+  - {t: '$$mdi:minus-circle-outline$$', type: none}
   - RGB SAD
   - RGB HUD
   - RGB EFR

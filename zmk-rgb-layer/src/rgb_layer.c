@@ -40,6 +40,9 @@ LOG_MODULE_REGISTER(zmk_rgb_layer, CONFIG_ZMK_LOG_LEVEL);
 #define MOOD_KEY_DARK 40
 #define MOOD_KEY_DIM 41
 #define MOOD_KEY_FX 42
+/* The underglow brightness keys, now owned by the module so the level sticks. */
+#define BRIGHT_KEY_UP 13
+#define BRIGHT_KEY_DOWN 26
 
 /* ZMK underglow effect ids (see rgb_underglow.c UNDERGLOW_EFFECT_*). */
 #define EFFECT_SOLID 0
@@ -61,21 +64,34 @@ enum base_mood {
 
 static enum base_mood base_mood = MOOD_TEAL;
 
+/* Master brightness applied to all colours, so the underglow brightness keys
+ * (which the module now owns) actually stick across repaints. Clamped to
+ * [BRIGHT_MIN, BRIGHT_MAX]; BRIGHT_MAX matches CONFIG_..._BRT_MAX (60). */
+#define BRIGHT_MIN 4
+#define BRIGHT_MAX 60
+#define BRIGHT_STEP 8
+static uint8_t brightness = 50;
+
+/* The resting TEAL base sits at ~30% of master so it stays a dim glow. */
+static uint8_t base_brightness(void) {
+    uint8_t v = (uint16_t)brightness * 3 / 10;
+    return v < 2 ? 2 : v;
+}
+
 struct layer_color {
     uint16_t h;
     uint8_t s;
-    uint8_t v;
 };
 
-/* Solid colour for non-base layers, indexed by layer. */
+/* Hue/sat for non-base layers, indexed by layer. Brightness is the master. */
 static const struct layer_color layer_colors[] = {
-    [1] = {250, 100, 50}, /* NAV     — indigo  */
-    [2] = {290, 100, 50}, /* CODE    — magenta */
-    [3] = {35, 100, 50},  /* MEDIA   — amber   */
-    [4] = {0, 100, 50},   /* SYS|NUM — red     */
-    [5] = {280, 100, 50}, /* GAME?   — violet  */
-    [6] = {120, 100, 50}, /* MINECRFT— green   */
-    [7] = {220, 100, 50}, /* GAME    — blue    */
+    [1] = {250, 100}, /* NAV     — indigo  */
+    [2] = {290, 100}, /* CODE    — magenta */
+    [3] = {35, 100},  /* MEDIA   — amber   */
+    [4] = {0, 100},   /* SYS|NUM — red     */
+    [5] = {280, 100}, /* GAME?   — violet  */
+    [6] = {120, 100}, /* MINECRFT— green   */
+    [7] = {220, 100}, /* GAME    — blue    */
 };
 
 #define NUM_LAYER_COLORS (sizeof(layer_colors) / sizeof(layer_colors[0]))
@@ -114,22 +130,23 @@ static void invoke_rgb(uint32_t cmd, uint32_t val) {
 static struct desired desired_for(uint8_t layer) {
     if (layer != 0) {
         struct layer_color c =
-            (layer < NUM_LAYER_COLORS) ? layer_colors[layer] : (struct layer_color){0, 0, 0};
-        return (struct desired){true, EFFECT_SOLID, true, RGB_COLOR_HSB_VAL(c.h, c.s, c.v)};
+            (layer < NUM_LAYER_COLORS) ? layer_colors[layer] : (struct layer_color){0, 0};
+        return (struct desired){true, EFFECT_SOLID, true, RGB_COLOR_HSB_VAL(c.h, c.s, brightness)};
     }
 
     switch (base_mood) {
     case MOOD_DARK:
         return (struct desired){false, EFFECT_SOLID, false, 0};
     case MOOD_BREATHE:
-        return (struct desired){true, EFFECT_BREATHE, true, RGB_COLOR_HSB_VAL(160, 100, 50)};
+        return (struct desired){true, EFFECT_BREATHE, true, RGB_COLOR_HSB_VAL(160, 100, brightness)};
     case MOOD_SPECTRUM:
         return (struct desired){true, EFFECT_SPECTRUM, false, 0};
     case MOOD_SWIRL:
         return (struct desired){true, EFFECT_SWIRL, false, 0};
     case MOOD_TEAL:
     default:
-        return (struct desired){true, EFFECT_SOLID, true, RGB_COLOR_HSB_VAL(160, 100, 15)};
+        return (struct desired){true, EFFECT_SOLID, true,
+                                RGB_COLOR_HSB_VAL(160, 100, base_brightness())};
     }
 }
 
@@ -187,6 +204,19 @@ static void cycle_effect(void) {
     }
 }
 
+static void adjust_brightness(int delta) {
+    int b = (int)brightness + delta;
+    if (b < BRIGHT_MIN) {
+        b = BRIGHT_MIN;
+    } else if (b > BRIGHT_MAX) {
+        b = BRIGHT_MAX;
+    }
+    brightness = (uint8_t)b;
+    LOG_INF("brightness -> %d", brightness);
+    /* Repaint the active layer so the new level shows immediately (and sticks). */
+    apply_layer(zmk_keymap_highest_layer_active());
+}
+
 static int rgb_layer_listener(const zmk_event_t *eh) {
     if (as_zmk_layer_state_changed(eh) != NULL) {
         apply_layer(zmk_keymap_highest_layer_active());
@@ -204,6 +234,12 @@ static int rgb_layer_listener(const zmk_event_t *eh) {
             break;
         case MOOD_KEY_FX:
             cycle_effect();
+            break;
+        case BRIGHT_KEY_UP:
+            adjust_brightness(+BRIGHT_STEP);
+            break;
+        case BRIGHT_KEY_DOWN:
+            adjust_brightness(-BRIGHT_STEP);
             break;
         default:
             break;
