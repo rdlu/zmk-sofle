@@ -28,6 +28,9 @@
 #include <zephyr/init.h>
 #include <zephyr/logging/log.h>
 #include <zephyr/settings/settings.h>
+#if IS_ENABLED(CONFIG_BT)
+#include <zephyr/bluetooth/conn.h>
+#endif
 
 #include <zmk/behavior.h>
 #include <zmk/event_manager.h>
@@ -183,6 +186,26 @@ static void apply_layer(uint8_t layer) {
     apply_desired(desired_for(layer));
 }
 
+/* Re-send the FULL desired state, ignoring the diff-cache. Used when a split
+ * peripheral (re)connects: it boots restoring its OWN stale underglow state, and
+ * the central's cache would otherwise suppress the corrective re-forward. The
+ * cache is refreshed to match so steady-state diffing resumes afterwards. */
+static void force_apply(struct desired d) {
+    if (!d.on) {
+        invoke_rgb(RGB_OFF_CMD, 0);
+        strip_on = false;
+        return;
+    }
+    invoke_rgb(RGB_ON_CMD, 0);
+    strip_on = true;
+    invoke_rgb(RGB_EFS_CMD, d.effect);
+    cur_effect = d.effect;
+    if (d.has_color) {
+        invoke_rgb(RGB_COLOR_HSB_CMD, d.color);
+        cur_color = d.color;
+    }
+}
+
 /* --- Persistence (mood + brightness) ------------------------------------- *
  * Mirrors ZMK's rgb_underglow: a debounced delayable work writes a tiny blob
  * to the settings partition; a static handler restores it during settings_load.
@@ -323,10 +346,33 @@ ZMK_SUBSCRIPTION(rgb_layer, zmk_position_state_changed);
  * time. The delay also gives the split link time to come up so the forwarded
  * &rgb_ug reaches the peripheral half. */
 static void rgb_layer_boot_paint(struct k_work *work) {
-    apply_layer(zmk_keymap_highest_layer_active());
+    force_apply(desired_for(zmk_keymap_highest_layer_active()));
 }
 
 static K_WORK_DELAYABLE_DEFINE(boot_paint_work, rgb_layer_boot_paint);
+
+#if IS_ENABLED(CONFIG_BT)
+/* When a BLE link comes up on the central (the peripheral half joining, or a
+ * host reconnecting), force a full repaint after a short delay — long enough for
+ * the split GATT service to finish discovery so the forwarded &rgb_ug lands on
+ * the freshly-connected peripheral, overriding the stale state it restored. */
+static void rgb_layer_resync(struct k_work *work) {
+    force_apply(desired_for(zmk_keymap_highest_layer_active()));
+}
+
+static K_WORK_DELAYABLE_DEFINE(resync_work, rgb_layer_resync);
+
+static void rgb_layer_on_connected(struct bt_conn *conn, uint8_t err) {
+    if (err) {
+        return;
+    }
+    k_work_reschedule(&resync_work, K_MSEC(2500));
+}
+
+BT_CONN_CB_DEFINE(rgb_layer_conn_cb) = {
+    .connected = rgb_layer_on_connected,
+};
+#endif
 
 static int rgb_layer_init(void) {
 #if IS_ENABLED(CONFIG_SETTINGS)
