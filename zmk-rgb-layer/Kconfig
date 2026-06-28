@@ -1,0 +1,7 @@
+config ZMK_RGB_LAYER_INDICATOR
+    bool "Event-driven per-layer RGB underglow indicator"
+    depends on ZMK_RGB_UNDERGLOW
+    help
+      Paints the underglow a per-layer colour by listening to layer-state
+      changes and invoking the global &rgb_ug behaviour (which syncs both
+      split halves). Replaces the keymap-macro approach.

@@ -65,7 +65,7 @@ Locked gaming layers that strip all HRM/hold-tap/caps_word so WASD + modifiers a
 - **Picker (layer 5, "GAME?"):** joystick ↑ → MINECRFT, ↓ → generic GAME, center → `&to 0` (cancel). All other keys `&none`.
 - **Game chassis (layers 6 & 7, identical except pos 0):** `LCTRL`@39 (pinky), `LSHIFT`@57 (left thumb), `SPACE`@56 + @59 (both thumbs), `BSPC`@60, `LALT`@61, `F13`@62 (PTT), `mo(MEDIA)`@63. Joystick = audio cluster (Vol±/Mute/PlayPause) + center Enter. pos 0: MC = `F3`, generic = `` ` ``.
 - **Exit/switch combos:** `0 + 12` → `&GAME_EXIT` (RGB off + `&to 0`); `0 + 5` → `&to 5` (re-pick). Both scoped `layers = <6 7>`.
-- **RGB feedback** (`GAME_MC_TO`/`GAME_GEN_TO` set `RGB_COLOR_HSB`): only visible on battery/BLE — `CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB=y` kills it on USB. OLED `display-name` is the primary indicator.
+- **RGB feedback** (`GAME_MC_TO`/`GAME_GEN_TO` set `RGB_COLOR_HSB`): visible on both USB and battery since v2.6.0 (`AUTO_OFF_USB=n`). `GAME_EXIT` does `RGB_OFF` to return to the dark smart-off base. OLED `display-name` is still the primary indicator.
 
 ## Key position numbering
 
@@ -106,7 +106,7 @@ Current timing: `tapping-term-ms=280`, `require-prior-idle-ms=150`, `quick-tap-m
 ## Branch / PR conventions
 
 - Always work on a feature branch and keep an open PR — **never commit directly to `main`** unless explicitly asked
-- No active feature branch — latest release is **v2.5.0** (DYA Studio firmware, PR #31 merged). Gaming mode (PR #27) and Studio firmware (PR #31) are both in `main`. Start a new branch/PR for the next topic.
+- No active feature branch — latest release is **v2.6.0** (per-layer underglow colour feedback / smart-off, PR #32 merged). Gaming mode (PR #27), Studio firmware (PR #31), and RGB layer feedback (PR #32) are all in `main`. Start a new branch/PR for the next topic.
 - Main branch is `main`
 
 ### PR description hygiene

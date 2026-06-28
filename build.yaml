@@ -1,12 +1,21 @@
 ---
+# The zmk-rgb-layer module (per-layer underglow indicator) lives in-repo at
+# zmk-rgb-layer/. It is a self-contained Zephyr module (zmk-rgb-layer/zephyr/
+# module.yml), added to each eyelash build via -DZMK_EXTRA_MODULES — exactly as
+# the local `mise run build-{left,right}` tasks do. ${GITHUB_WORKSPACE} is where
+# the reusable build-user-config workflow checks out this repo; it is expanded by
+# bash in the build step. We deliberately do NOT add a root zephyr/module.yml
+# (which would auto-set ZMK_EXTRA_MODULES) because the local west workspace keeps
+# the Zephyr RTOS at ./zephyr — a root marker would collide with it.
 include:
   - board: nice_nano_v2
     shield: eyelash_sofle_left nice_view
     snippet: studio-rpc-usb-uart
-    cmake-args: -DCONFIG_ZMK_STUDIO=y -DCONFIG_ZMK_STUDIO_LOCKING=n
+    cmake-args: -DCONFIG_ZMK_STUDIO=y -DCONFIG_ZMK_STUDIO_LOCKING=n -DZMK_EXTRA_MODULES=${GITHUB_WORKSPACE}/zmk-rgb-layer
     artifact-name: eyelash_sofle_studio_left
   - board: nice_nano_v2
     shield: eyelash_sofle_right nice_view
+    cmake-args: -DZMK_EXTRA_MODULES=${GITHUB_WORKSPACE}/zmk-rgb-layer
     artifact-name: nice_view-eyelash_sofle_right-zmk
   - board: nice_nano_v2
     shield: settings_reset
