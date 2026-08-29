@@ -4,6 +4,9 @@ python = {version = "3.12", backend = "uv"}
 
 [env]
 _.python.venv = {path = ".venv", create = true}
+# Zephyr 3.5 errors out in FindZephyr-sdk.cmake if ZEPHYR_TOOLCHAIN_VARIANT is unset
+ZEPHYR_TOOLCHAIN_VARIANT = "zephyr"
+ZEPHYR_SDK_INSTALL_DIR = "{{config_root}}/tools/zephyr-sdk-0.17.0"
 
 [tasks.setup]
 description = "Initialize west workspace and Python deps (run once after cloning)"

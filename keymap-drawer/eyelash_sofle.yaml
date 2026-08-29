@@ -447,8 +447,8 @@ layers:
   - F2
   - F11
   - LGUI
-  - $$mdi:keyboard-space$$
   - $$mdi:apple-keyboard-shift$$
+  - $$mdi:keyboard-space$$
   - {t: '$$mdi:keyboard-return$$', type: enter}
   - $$mdi:keyboard-space$$
   - {t: '$$mdi:backspace$$', type: backspace}
@@ -512,8 +512,8 @@ layers:
   - F2
   - F11
   - LGUI
-  - $$mdi:keyboard-space$$
   - $$mdi:apple-keyboard-shift$$
+  - $$mdi:keyboard-space$$
   - {t: '$$mdi:keyboard-return$$', type: enter}
   - $$mdi:keyboard-space$$
   - {t: '$$mdi:backspace$$', type: backspace}
