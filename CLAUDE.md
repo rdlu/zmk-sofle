@@ -63,7 +63,7 @@ Locked gaming layers that strip all HRM/hold-tap/caps_word so WASD + modifiers a
 
 - **Entry:** hold `mo(SYS|NUM)` → tap SYS **pos 63** (`&to 5`). The original design used the SYS joystick-center (pos 58), but PR #25 turned the SYS joystick into a mouse (pos 58 = `&mkp LCLK`), so entry moved to the free right-thumb outer key.
 - **Picker (layer 5, "GAME?"):** joystick ↑ → MINECRFT, ↓ → generic GAME, center → `&to 0` (cancel). All other keys `&none`.
-- **Game chassis (layers 6 & 7, identical except pos 0):** `LCTRL`@39 (pinky), `LSHIFT`@57 (left thumb), `SPACE`@56 + @59 (both thumbs), `BSPC`@60, `LALT`@61, `F13`@62 (PTT), `mo(MEDIA)`@63. Joystick = audio cluster (Vol±/Mute/PlayPause) + center Enter. pos 0: MC = `F3`, generic = `` ` ``.
+- **Game chassis (layers 6 & 7, identical except pos 0):** `LCTRL`@39 (pinky), `LSHIFT`@56 (left thumb inner), `SPACE`@57 + @59 (both thumbs), `BSPC`@60, `LALT`@61, `F13`@62 (PTT), `mo(MEDIA)`@63. Joystick = audio cluster (Vol±/Mute/PlayPause) + center Enter. pos 0: MC = `F3`, generic = `` ` ``.
 - **Exit/switch combos:** `0 + 12` → `&GAME_EXIT` (RGB off + `&to 0`); `0 + 5` → `&to 5` (re-pick). Both scoped `layers = <6 7>`.
 - **RGB feedback** (`GAME_MC_TO`/`GAME_GEN_TO` set `RGB_COLOR_HSB`): visible on both USB and battery since v2.6.0 (`AUTO_OFF_USB=n`). `GAME_EXIT` does `RGB_OFF` to return to the dark smart-off base. OLED `display-name` is still the primary indicator.
 
