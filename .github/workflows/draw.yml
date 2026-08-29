@@ -14,10 +14,16 @@ env:
 
 jobs:
   draw:
-    uses: caksoylar/keymap-drawer/.github/workflows/draw-zmk.yml@main
+    # Pinned to a SHA, not @main: this reusable workflow runs with
+    # `contents: write` on this repo. SHA is caksoylar/keymap-drawer main HEAD
+    # as of 2026-08-29.
+    uses: caksoylar/keymap-drawer/.github/workflows/draw-zmk.yml@e855a57cf6f5851b8235b56a69d46fa0646b26e8
     permissions:
       contents: write
     with:
       commit_message: "[Draw] ${{ github.event.head_commit.message }}"
       destination: "commit"
       fail_on_error: ${{ fromJSON(true) }}
+      # Keep CI rendering identical to the local `mise run draw` task,
+      # which pins the same version. Bump both together.
+      install_version: "0.23.0"

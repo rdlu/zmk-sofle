@@ -17,7 +17,7 @@ west zephyr-export
 uv pip install -r zmk/zephyr/scripts/requirements.txt
 # ZMK Studio protobuf codegen needs pkg_resources (dropped in setuptools 81)
 # and google.protobuf (nanopb generator). Neither is in Zephyr's requirements.
-uv pip install 'setuptools<81' protobuf
+uv pip install 'setuptools<81' 'protobuf>=7.35'
 """
 
 [tasks.build-left]
@@ -178,9 +178,13 @@ echo "✅ Both halves built and flashed. They will auto-reset and re-pair over B
 
 [tasks.draw]
 description = "Regenerate keymap SVG locally using keymap-drawer"
+# -j config/eyelash_sofle.json (not -z eyelash_sofle): the CI draw workflow
+# picks the layout from config/<keyboard>.json, and the two sources differ by
+# 1-2px. Using -z locally made every merge produce a [Draw] commit rewriting
+# 20 lines of the SVG. With -j the local render is byte-identical to CI.
 run = """
-uvx --from keymap-drawer keymap -c keymap_drawer.config.yaml parse -z config/eyelash_sofle.keymap -o keymap-drawer/eyelash_sofle.yaml
-uvx --from keymap-drawer keymap -c keymap_drawer.config.yaml draw -z eyelash_sofle keymap-drawer/eyelash_sofle.yaml -o keymap-drawer/eyelash_sofle.svg
+uvx --from keymap-drawer==0.23.0 keymap -c keymap_drawer.config.yaml parse -z config/eyelash_sofle.keymap -o keymap-drawer/eyelash_sofle.yaml
+uvx --from keymap-drawer==0.23.0 keymap -c keymap_drawer.config.yaml draw -j config/eyelash_sofle.json keymap-drawer/eyelash_sofle.yaml -o keymap-drawer/eyelash_sofle.svg
 echo "SVG written to keymap-drawer/eyelash_sofle.svg"
 """
 
@@ -377,7 +381,7 @@ while [ "$start" -le "$TOTAL" ]; do
   set -- $NAMES
   IFS=$OLDIFS
   echo ">> Page $page: $*"
-  uvx --from keymap-drawer keymap -c "$CFG" draw -z eyelash_sofle "$YAML" -s "$@" -o "$SVG_OUT"
+  uvx --from keymap-drawer==0.23.0 keymap -c "$CFG" draw -j config/eyelash_sofle.json "$YAML" -s "$@" -o "$SVG_OUT"
   SVG_ABS=$(realpath "$SVG_OUT")
   cat >> "$TMP_HTML" <<EOF
 <div class="page"><img src="file://$SVG_ABS" alt="Eyelash Sofle keymap page $page"></div>
