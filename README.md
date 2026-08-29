@@ -190,7 +190,7 @@ If the halves fail to connect to each other, clear their Bluetooth bonds and let
 
 ## Firmware memory budget
 
-Headroom available for future keymap growth, measured on the `feat/gaming-left-thumb-swap` branch (DYA Studio: cormoran ZMK fork + 5 modules, plus the in-repo `zmk-rgb-layer` underglow module). The left half is the tightest because Studio + the DYA modules ship on it (USB CDC-ACM + BLE GATT studio transports both compiled in); `zmk-rgb-layer` compiles central-only, so it adds to the left half only.
+Headroom available for future keymap growth, measured on `main` (CI run [33272691165](https://github.com/rdlu/zmk-sofle/actions/runs/33272691165), 2026-08-29) (DYA Studio: cormoran ZMK fork + 5 modules, plus the in-repo `zmk-rgb-layer` underglow module). The left half is the tightest because Studio + the DYA modules ship on it (USB CDC-ACM + BLE GATT studio transports both compiled in); `zmk-rgb-layer` compiles central-only, so it adds to the left half only.
 
 | Build | Flash used | Flash free | RAM used | RAM free |
 |-------|-----------:|-----------:|---------:|---------:|
