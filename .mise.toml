@@ -147,6 +147,141 @@ echo ""
 mise run doctor
 """
 
+[tasks.deps-check]
+description = "Check whether any SHA/tag-pinned west dependency has newer upstream commits or tags available"
+# The counterpart to `doctor`. They look in opposite directions:
+#   doctor      — does the WORKSPACE match the manifest?      (drift from the pin)
+#   deps-check  — has UPSTREAM moved past the manifest?       (updates to the pin)
+# Pinning trades silent auto-updates for explicit ones, so this is what replaces
+# the thing you lose. Each pinned project carries a `# track: <ref>` comment in
+# config/west.yml naming the upstream ref its SHA was taken from; `tags` means
+# compare against the newest remote tag instead of a branch tip.
+# Network cost is one `git ls-remote` per project — no fetching, no clones.
+run = '''
+set -eu
+
+python3 - <<'PYEOF_DEPS'
+import re
+import subprocess
+import sys
+
+MANIFEST = "config/west.yml"
+
+# --- what the manifest pins, and what upstream ref each pin came from --------
+text = open(MANIFEST).read()
+pins = []
+current = None
+for line in text.splitlines():
+    m = re.match(r"\s*-\s+name:\s+(\S+)", line)
+    if m:
+        current = m.group(1)
+        continue
+    m = re.match(r"\s*revision:\s+(\S+)\s*#\s*track:\s*(\S+)", line)
+    if m and current:
+        pins.append((current, m.group(1), m.group(2)))
+
+if not pins:
+    print("No '# track:' annotations found in " + MANIFEST + " — nothing to check.")
+    sys.exit(0)
+
+# --- project URLs come from west itself, not from re-parsing the YAML -------
+urls = {}
+out = subprocess.run(["west", "list", "-f", "{name}|{url}"],
+                     capture_output=True, text=True).stdout
+for line in out.splitlines():
+    parts = line.split("|")
+    if len(parts) == 2 and parts[1] not in ("", "N/A"):
+        urls[parts[0]] = parts[1]
+
+
+def ls_remote(url, pattern=None):
+    cmd = ["git", "ls-remote"]
+    if pattern == "tags":
+        cmd += ["--tags", "--refs"]
+    cmd.append(url)
+    if pattern and pattern != "tags":
+        cmd.append(pattern)
+    r = subprocess.run(cmd, capture_output=True, text=True)
+    if r.returncode != 0:
+        return None
+    rows = []
+    for line in r.stdout.splitlines():
+        bits = line.split()
+        if len(bits) == 2:
+            rows.append((bits[0], bits[1]))
+    return rows
+
+
+def version_key(tag):
+    return [int(n) for n in re.findall(r"\d+", tag)] or [0]
+
+
+behind = []
+errors = []
+print(">> Pinned dependencies vs upstream")
+print("")
+
+for name, pinned, track in pins:
+    url = urls.get(name)
+    if not url:
+        errors.append(name + ": no URL (project not in `west list`)")
+        continue
+
+    if track == "tags":
+        rows = ls_remote(url, "tags")
+        if rows is None:
+            errors.append(name + ": ls-remote failed")
+            continue
+        tags = sorted({r.split("refs/tags/")[-1] for _, r in rows}, key=version_key)
+        newest = tags[-1] if tags else None
+        if newest and newest != pinned:
+            status = "UPDATE -> " + newest
+            behind.append((name, pinned, newest, "tag"))
+        else:
+            status = "up to date"
+        print("   %-36s %-22s %-12s %s" % (name, "tags", pinned, status))
+    else:
+        rows = ls_remote(url, "refs/heads/" + track)
+        if rows is None or not rows:
+            errors.append(name + ": could not resolve " + track)
+            continue
+        tip = rows[0][0]
+        if not tip.startswith(pinned) and not pinned.startswith(tip[:len(pinned)]):
+            status = "UPDATE -> " + tip[:12]
+            behind.append((name, pinned, tip, "commit"))
+        else:
+            status = "up to date"
+        print("   %-36s %-22s %-12s %s" % (name, track, pinned[:12], status))
+
+print("")
+if errors:
+    print("Problems:")
+    for e in errors:
+        print("   " + e)
+    print("")
+
+if not behind:
+    print("All pinned dependencies are at their tracked upstream tip.")
+    sys.exit(0)
+
+print(str(len(behind)) + " update(s) available:")
+for name, pinned, new, kind in behind:
+    print("   " + name)
+    print("      pinned:   " + pinned)
+    print("      upstream: " + new)
+print("")
+print("To take one:")
+print("   1. edit config/west.yml — set that project's revision to the new value")
+print("      (keep its '# track:' comment so this task keeps working)")
+print("   2. west update && mise run doctor")
+print("   3. mise run build-left && mise run build-right    # it must still compile")
+print("   4. commit config/west.yml with the reason for the bump")
+print("")
+print("NOTE: bumping zmk can change zmk/app/west.yml's own zephyr entry.")
+print("      config/west.yml overrides zephyr, so mirror any such change there.")
+PYEOF_DEPS
+'''
+
 [tasks.doctor-ci]
 description = "Compare the local west checkouts against the SHAs the last successful main CI build resolved (needs gh)"
 # CI is the source of truth for what the manifest resolves to: it runs a fresh

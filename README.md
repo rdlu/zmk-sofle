@@ -246,11 +246,24 @@ mise run setup
 mise run doctor        # fast, offline: is the workspace what config/west.yml says it should be?
 mise run doctor-fix    # repair it
 mise run doctor-ci     # optional: diff local checkouts against the last green main build (needs gh)
+mise run deps-check    # the opposite question: has upstream moved past what we pin?
 ```
 
 The west workspace can drift out of sync with `config/west.yml` without any warning from `west update`. The failure that motivated these tasks: the `zmk/` clone's git remote still pointed at `zmkfirmware/zmk` from before the switch to cormoran's fork — west names remotes from the manifest but will **not** repoint an existing clone — so `west update` quietly could not fetch the pinned revision and left `zmk/` on an unrelated commit from a newer Zephyr 4.1 tree. Builds then died at CMake configure with `Invalid BOARD: nice_nano_v2`, which looks like a board or keymap problem and is neither. CI was green the whole time.
 
 `doctor` compares every project's `HEAD` against the `manifest-rev` ref west writes into each one, checks each clone's remote URL against the manifest, and verifies the board file and Zephyr version — so it catches this whole class of drift, not just the one instance.
+
+### 3c. Keeping dependencies current
+
+Every west project is pinned to a SHA or tag, so builds are reproducible: the same repo commit always produces the same firmware. The tradeoff is that upstream fixes no longer arrive on their own, so there is a task for the other direction:
+
+```bash
+mise run deps-check
+```
+
+It reads the `# track: <ref>` comment beside each pin in `config/west.yml` — naming the upstream branch or tag stream the SHA was taken from — and reports which projects have moved. One `git ls-remote` per project; no fetching. To take an update: edit the revision, `west update`, `mise run doctor`, build both halves, then commit.
+
+> **Bumping `zmk` needs one extra step.** `config/west.yml` deliberately overrides `zephyr`, because `zmk/app/west.yml` declares it at a *branch* (`v3.5.0+zmk-fixes`) and pinning `zmk` alone would leave Zephyr floating. If a `zmk` bump changes that entry upstream, mirror the change into `config/west.yml`.
 
 ### 4. Build and flash
 
