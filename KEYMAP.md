@@ -57,6 +57,7 @@ invoking the global `&rgb_ug` behaviour, which ZMK forwards to both halves.
 | SYS\|NUM | red | `0,100,50` |
 | GAME? | violet | `280,100,50` |
 | MINECRFT / GAME | green / blue | `120…` / `220…` |
+| NOMANSKY | white / silver | `0,0,50` (sat 0 = neutral white) |
 
 **BASE moods** (the resting look, runtime-selectable): three dedicated keys on
 the **SYS layer** (left bottom row, `Z`/`X`/`C` positions, each set to `&none`
@@ -87,8 +88,10 @@ module owns. All layer colours scale to it; the TEAL base sits at ~30% of it.
   last set instead of the TEAL/50 defaults. The boot paint is deferred ~1.5 s so
   it runs after ZMK's `settings_load()` (which happens in `main()`, after every
   `SYS_INIT`) and after the split link is up.
-- CODE is now a plain `&mo 2` (instant colour, no hold-tap); **DEL moved to the
-  MEDIA layer** (left-index home, pos 30).
+- CODE is now a plain `&mo 2` (instant colour, no hold-tap). **DEL is
+  `mo(CODE) + BSPC`** — hold the right-thumb CODE key (pos 60), tap the
+  left-thumb BSPC position (pos 57). Cross-hand, so no same-hand roll and no
+  hold-tap cost anywhere. Also still on MEDIA left-index home (pos 30).
 
 ## Layer summary
 
@@ -97,7 +100,7 @@ module owns. All layer colours scale to it; the TEAL base sits at ~30% of it.
   - Left: `S`=LALT · `D`=LCTRL · `F`=LSHFT
   - Right: `J`=RSHFT · `K`=RCTRL · `L`=LALT
 - Right thumb `F12` — `ralt_mt` (tap = F12, hold = RALT/AltGr for Latin accents)
-- Right thumb: `SPACE` · `lt(CODE,DEL)` · `mo(MEDIA)` · `F12/RALT` · `CapsWord`
+- Right thumb: `SPACE` · `mo(CODE)` · `CapsWord` · `F12/RALT` · `mo(MEDIA)`
 - **Central joystick column (top→bottom):** Vol↑ · Vol↓ · Play/Pause · Next · Mute — direct media access without holding `mo(MEDIA)`. The **encoder** defaults to Vol↑/↓ and is **live-configurable in DYA Studio** (runtime-sensor-rotate) on every layer.
 
 ### NAV (1) — hold `mo1`
@@ -108,8 +111,9 @@ module owns. All layer colours scale to it; the TEAL base sits at ~30% of it.
 - Thumb: Del · App menu · LCTRL · Left · Right
 - Mouse keys removed from this layer — moved to `SYS|NUM` as an emergency fallback
 
-### CODE (2) — hold `lt(2, DEL)`
-Left home + bottom rows; right side transparent.
+### CODE (2) — hold `mo 2` (right thumb, pos 60)
+Left home + bottom rows; right side transparent. The left-thumb BSPC position
+(pos 57) is `&kp DEL`, so **CODE + BSPC = Delete**.
 
 | Key | Tap | Hold |
 |-----|-----|------|
@@ -170,7 +174,7 @@ NUM  7   8   9   -
 
 **Gaming entry:** SYS right-thumb outer key (pos 63) = `&to 5` → opens the GAME? picker (layer 5).
 
-### Gaming layers (5–7)
+### Gaming layers (5–8)
 
 Locked layers with **no HRM, no hold-tap, no caps_word** — WASD, SPACE and all modifiers are pure `&kp`, so holds work for movement/run/crouch. Designed in [#11](https://github.com/rdlu/zmk-sofle/issues/11).
 
@@ -181,26 +185,36 @@ Transient launcher. Joystick selects; everything else is `&none` so a stray pres
 |----------|---|
 | ↑ (pos 6) | `&GAME_MC_TO` → MINECRFT (layer 6), underglow green |
 | ↓ (pos 19) | `&GAME_GEN_TO` → GAME (layer 7), underglow blue |
+| ← (pos 32) | `&GAME_NMS_TO` → NOMANSKY (layer 8), underglow white |
 | center (pos 58) | `&to 0` (cancel) |
 
-#### MINECRFT (6) / GAME (7) — shared chassis
-Identical except **pos 0**: `F3` (MC debug) vs `` ` `` (generic console).
+#### MINECRFT (6) / GAME (7) / NOMANSKY (8) — shared chassis
+Differ only in **pos 0** and, on NOMANSKY, the two left-hand modifiers:
+
+| Layer | pos 0 | pos 39 (pinky) | pos 56 (left thumb) |
+|-------|-------|----------------|---------------------|
+| MINECRFT (6) | `F3` (debug screen) | `LCTRL` | `LSHIFT` |
+| GAME (7) | `` ` `` (console) | `LCTRL` | `LSHIFT` |
+| NOMANSKY (8) | `F12` (Steam screenshot) | `LSHIFT` | `LCTRL` |
 
 ```
 Row 0:  F3/`  1  2  3  4  5    [Vol+]   6  7  8  9  0  -
 Row 1:  TAB   Q  W  E  R  T    [Vol-]   Y  U  I  O  P  =
 Row 2:  ESC   A  S  D  F  G    [Mute]   H  J  K  L  ;  '
 Row 3:  LCTRL Z  X  C  V  B    [P/P]    N  M  ,  .  /  ↵
-Row 4:  Mute  F2 F11 LGUI SPACE LSHIFT | ENTER | SPACE BSPC LALT F13 mo(MEDIA)
+Row 4:  Mute  F2 F11 LGUI LSHIFT SPACE | ENTER | SPACE BSPC LALT F13 mo(MEDIA)
 ```
 
 - **LCTRL @ pos 39** (pinky, replaces base `\`) — sprint/crouch
-- **LSHIFT @ pos 57** (left thumb) — sneak/walk; **SPACE on both thumbs** (pos 56 + 59)
+- **LSHIFT @ pos 56** (left thumb inner) — sneak/walk; **SPACE on both thumbs** (pos 57 + 59)
+- **NOMANSKY swaps those two** (`LSHIFT` @ 39, `LCTRL` @ 56) — NMS runs on Shift
+  and leaves Ctrl unused. Requested deliberately; note it does move the held run
+  modifier from the thumb onto the pinky, unlike the MC/GAME chassis
 - **F13 @ pos 62** — push-to-talk (bind in Discord/OBS); `mo(MEDIA)` @ 63 still reachable
 - **Joystick** = 4-way audio cluster (Vol↑/Vol↓/Mute/Play-Pause) + center Enter; encoder = volume (default; live-configurable in DYA Studio)
 
-#### Exit / re-pick (combos, scoped to layers 6 & 7)
+#### Exit / re-pick (combos, scoped to layers 6, 7 & 8)
 - **Exit → BASE:** positions `0 + 12` (top corners) → `&GAME_EXIT` (RGB off + `&to 0`)
 - **Re-pick:** positions `0 + 5` (top-left pair) → `&to 5`
 
-> **RGB caveat:** the per-game underglow colour is set by the entry macros but `CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB=y` suppresses it on USB power (wired gaming). The OLED `display-name` (`GAME?` / `MINECRFT` / `GAME`) is the reliable active-mode indicator.
+> **RGB:** the per-game underglow colour is set both by the entry macro and by the `zmk-rgb-layer` module, and shows on USB as well as battery (`CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_USB=n` since v2.6.0). The OLED `display-name` (`GAME?` / `MINECRFT` / `GAME` / `NOMANSKY`) remains the primary active-mode indicator.

@@ -101,6 +101,7 @@ static const struct layer_color layer_colors[] = {
     [5] = {280, 100}, /* GAME?   — violet  */
     [6] = {120, 100}, /* MINECRFT— green   */
     [7] = {220, 100}, /* GAME    — blue    */
+    [8] = {0, 0},     /* NOMANSKY— white   */
 };
 
 #define NUM_LAYER_COLORS (sizeof(layer_colors) / sizeof(layer_colors[0]))
