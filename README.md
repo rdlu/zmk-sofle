@@ -190,15 +190,15 @@ If the halves fail to connect to each other, clear their Bluetooth bonds and let
 
 ## Firmware memory budget
 
-Headroom available for future keymap growth, measured on `main` (CI run [33272691165](https://github.com/rdlu/zmk-sofle/actions/runs/33272691165), 2026-08-29) (DYA Studio: cormoran ZMK fork + 5 modules, plus the in-repo `zmk-rgb-layer` underglow module). The left half is the tightest because Studio + the DYA modules ship on it (USB CDC-ACM + BLE GATT studio transports both compiled in); `zmk-rgb-layer` compiles central-only, so it adds to the left half only.
+Headroom available for future keymap growth, measured on `feat/nms-gaming-profile` (CI run [33675145109](https://github.com/rdlu/zmk-sofle/actions/runs/33675145109), 2026-09-02) (DYA Studio: cormoran ZMK fork + 5 modules, plus the in-repo `zmk-rgb-layer` underglow module). The left half is the tightest because Studio + the DYA modules ship on it (USB CDC-ACM + BLE GATT studio transports both compiled in); `zmk-rgb-layer` compiles central-only, so it adds to the left half only.
 
 | Build | Flash used | Flash free | RAM used | RAM free |
 |-------|-----------:|-----------:|---------:|---------:|
-| Left (Studio + nice_view) | 409 KB / 792 KB (51.6%) | **383 KB** | 107 KB / 256 KB (41.9%) | **149 KB** |
+| Left (Studio + nice_view) | 410 KB / 792 KB (51.8%) | **382 KB** | 109 KB / 256 KB (42.4%) | **147 KB** |
 | Right (nice_view) | 270 KB / 792 KB (34.1%) | **522 KB** | 62 KB / 256 KB (24.3%) | **194 KB** |
 | Settings reset | 45 KB / 792 KB (5.7%) | — | 11 KB / 256 KB (4.4%) | — |
 
-Just under half the flash is still free on the left half and two-thirds on the right, so new layers, macros, and combos have plenty of room. The DYA Studio modules added ~21 KB to the left half; the `zmk-rgb-layer` indicator module is negligible (well under 1 KB). Dropping Studio from the left half would recover a large chunk of flash if a future feature ever needs it.
+Just under half the flash is still free on the left half and two-thirds on the right, so new layers, macros, and combos have plenty of room. The ninth layer (NOMANSKY) cost about 1 KB of flash and 2 KB of RAM on the left half versus the previous eight-layer measurement. The DYA Studio modules added ~21 KB to the left half; the `zmk-rgb-layer` indicator module is negligible (well under 1 KB). Dropping Studio from the left half would recover a large chunk of flash if a future feature ever needs it.
 
 Refresh the numbers after any significant keymap change by re-reading the `Memory region` block in the latest `Build ZMK firmware` run log.
 
