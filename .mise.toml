@@ -20,6 +20,199 @@ uv pip install -r zmk/zephyr/scripts/requirements.txt
 uv pip install 'setuptools<81' 'protobuf>=7.35'
 """
 
+[tasks.doctor]
+description = "Check the local west workspace against config/west.yml — catches the drift that causes 'Invalid BOARD: nice_nano_v2'"
+# Why this exists: on 2026-09-02 `mise run build-left` died at CMake configure
+# with "Invalid BOARD: nice_nano_v2" while CI built the same commit fine. The
+# manifest was correct; the local zmk/ clone's git remote still pointed at
+# zmkfirmware/zmk (a leftover from before the cormoran fork switch — west names
+# remotes from the manifest but will NOT repoint an existing clone), so
+# `west update` silently could not fetch v0.3-branch+dya and left zmk/ parked on
+# an unrelated commit from a newer HWMv2 / Zephyr 4.1 line where nice_nano_v2
+# does not exist. Every project west manages carries a `manifest-rev` ref
+# pointing at the revision the manifest resolved to, so HEAD != manifest-rev is
+# the general, project-agnostic signal for this whole class of drift.
+run = """
+set -eu
+
+WORK=$(mktemp -d)
+trap 'rm -rf "$WORK"' EXIT
+DRIFT="$WORK/drift"
+: > "$DRIFT"
+
+if [ ! -d zmk ] || [ ! -d zephyr ]; then
+  echo "ERROR: west workspace not initialized (zmk/ or zephyr/ missing)."
+  echo "       Run: mise run setup"
+  exit 1
+fi
+
+echo ">> Projects vs config/west.yml"
+west list -f '{name}|{url}|{abspath}' | while IFS='|' read -r name url path; do
+  # The manifest project (this repo's config/) has no upstream URL.
+  case "$url" in ''|'N/A') continue ;; esac
+
+  if [ ! -e "$path/.git" ]; then
+    echo "   MISSING  $name — not cloned at $path"
+    echo "$name" >> "$DRIFT"
+    continue
+  fi
+
+  # west writes manifest-rev in every project = the revision the manifest
+  # resolved to at the last successful update. HEAD must equal it.
+  if ! want=$(git -C "$path" rev-parse manifest-rev 2>/dev/null); then
+    echo "   NO-REF   $name — no manifest-rev, project was never updated"
+    echo "$name" >> "$DRIFT"
+  else
+    head=$(git -C "$path" rev-parse HEAD)
+    if [ "$head" != "$want" ]; then
+      echo "   DRIFT    $name"
+      echo "            HEAD         $(git -C "$path" log --oneline -1 HEAD)"
+      echo "            manifest-rev $(git -C "$path" log --oneline -1 manifest-rev)"
+      echo "$name" >> "$DRIFT"
+    fi
+  fi
+
+  # A wrong remote URL is the failure that silently breaks `west update`.
+  if ! git -C "$path" remote -v | grep -qF "$url"; then
+    echo "   REMOTE   $name — manifest wants $url, clone has:"
+    git -C "$path" remote -v | awk '{print "            " $1 "  " $2}' | sort -u
+    echo "$name" >> "$DRIFT"
+  fi
+done
+
+echo ">> Build prerequisites"
+if [ ! -f zmk/app/boards/arm/nice_nano/nice_nano_v2.dts ]; then
+  echo "   FAIL  zmk/app/boards/arm/nice_nano/nice_nano_v2.dts missing"
+  echo "         Builds will abort with 'Invalid BOARD: nice_nano_v2'."
+  echo "         (A Zephyr HWMv2 tree puts the board at boards/nicekeyboards/ instead.)"
+  echo "board" >> "$DRIFT"
+fi
+
+if [ -f zephyr/VERSION ]; then
+  ZMAJ=$(sed -n 's/^VERSION_MAJOR *= *//p' zephyr/VERSION | tr -d ' ')
+  ZMIN=$(sed -n 's/^VERSION_MINOR *= *//p' zephyr/VERSION | tr -d ' ')
+  if [ "$ZMAJ" != "3" ]; then
+    echo "   FAIL  Zephyr $ZMAJ.$ZMIN — the v0.3 ZMK base needs 3.5"
+    echo "zephyr" >> "$DRIFT"
+  else
+    echo "   ok    Zephyr $ZMAJ.$ZMIN"
+  fi
+else
+  echo "   FAIL  zephyr/VERSION missing"
+  echo "zephyr" >> "$DRIFT"
+fi
+
+if [ -d "$ZEPHYR_SDK_INSTALL_DIR" ]; then
+  echo "   ok    Zephyr SDK at $ZEPHYR_SDK_INSTALL_DIR"
+else
+  echo "   FAIL  Zephyr SDK not found at $ZEPHYR_SDK_INSTALL_DIR"
+  echo "         Do NOT substitute the AUR zephyr-sdk — it needs Zephyr 4.2+."
+  echo "sdk" >> "$DRIFT"
+fi
+
+echo ""
+if [ -s "$DRIFT" ]; then
+  echo "❌ Workspace has drifted from config/west.yml."
+  echo "   Repair with:  mise run doctor-fix"
+  exit 1
+fi
+echo "✅ Workspace matches config/west.yml — local builds should match CI."
+"""
+
+[tasks.doctor-fix]
+description = "Repair a drifted west workspace: repoint remotes at the manifest URLs, west update, drop the stale build/"
+run = """
+set -eu
+
+echo ">> Repointing project remotes at the manifest URLs..."
+west list -f '{name}|{url}|{abspath}' | while IFS='|' read -r name url path; do
+  case "$url" in ''|'N/A') continue ;; esac
+  [ -e "$path/.git" ] || continue
+  git -C "$path" remote -v | grep -qF "$url" && continue
+  RNAME=$(git -C "$path" remote | head -1)
+  [ -n "$RNAME" ] || continue
+  echo "   $name: remote '$RNAME' -> $url"
+  git -C "$path" remote set-url "$RNAME" "$url"
+done
+
+echo ">> west update..."
+west update
+
+# build/ caches the resolved board and Zephyr paths from the OLD tree; leaving it
+# makes the next build fail or, worse, succeed against stale generated headers.
+echo ">> Removing stale build/..."
+rm -rf build
+
+echo ""
+mise run doctor
+"""
+
+[tasks.doctor-ci]
+description = "Compare the local west checkouts against the SHAs the last successful main CI build resolved (needs gh)"
+# CI is the source of truth for what the manifest resolves to: it runs a fresh
+# `west init && west update` every time. A green CI build alongside a broken
+# local build means the workspace drifted, not the manifest.
+run = """
+set -eu
+
+command -v gh >/dev/null || { echo "ERROR: gh not found."; exit 1; }
+
+WORK=$(mktemp -d)
+trap 'rm -rf "$WORK"' EXIT
+
+echo ">> Finding the last successful 'Build ZMK firmware' run on main..."
+RUN_ID=$(gh run list --repo rdlu/zmk-sofle --workflow "Build ZMK firmware" --branch main --status success --limit 1 --json databaseId --jq '.[0].databaseId')
+[ -n "$RUN_ID" ] || { echo "ERROR: no successful main build found."; exit 1; }
+echo "   run $RUN_ID"
+
+gh run view "$RUN_ID" --repo rdlu/zmk-sofle --log > "$WORK/log" 2>/dev/null
+
+# The west update output interleaves "=== updating <name> (<path>):" with the
+# following "HEAD is now at <sha> <subject>" line. Pair them up.
+# The run log interleaves ALL parallel build jobs, so narrow to one job first
+# (otherwise another job's "HEAD is now at" line gets paired with this job's
+# "=== updating", which silently mis-attributes SHAs). West also prints the
+# HEAD line twice for some projects, so record into a map keyed by project
+# rather than printing on the first match.
+# Field-walked rather than regex-matched: a TOML basic string treats a
+# backslash as an escape, so the awk program must stay backslash-free.
+awk -F'\t' '$1 ~ /eyelash_sofle_left/ {print $3}' "$WORK/log" | awk '
+  {
+    for (i = 1; i <= NF; i++) {
+      if ($i == "===" && $(i+1) == "updating") { cur = $(i+2); break }
+      if (cur != "" && $i == "HEAD" && $(i+1) == "is" && $(i+2) == "now" && $(i+3) == "at") {
+        map[cur] = $(i+4); break
+      }
+    }
+  }
+  END { for (k in map) print k "|" map[k] }
+' | sort -u > "$WORK/ci"
+
+[ -s "$WORK/ci" ] || { echo "ERROR: could not parse project SHAs from the run log."; exit 1; }
+
+DIFF=0
+echo ">> Local vs CI"
+while IFS='|' read -r name sha; do
+  path=$(west list -f '{name}|{abspath}' | awk -F'|' -v n="$name" '$1 == n {print $2}')
+  [ -n "$path" ] && [ -e "$path/.git" ] || continue
+  local_full=$(git -C "$path" rev-parse HEAD)
+  case "$local_full" in
+    "$sha"*) ;;
+    *)
+      echo "   DIFF  $name  local $(git -C "$path" rev-parse --short HEAD)  CI $sha"
+      DIFF=1
+      ;;
+  esac
+done < "$WORK/ci"
+
+echo ""
+if [ "$DIFF" -eq 1 ]; then
+  echo "❌ Local checkouts differ from CI. Repair with:  mise run doctor-fix"
+  exit 1
+fi
+echo "✅ Local checkouts match the last successful CI build."
+"""
+
 [tasks.build-left]
 description = "Build left half firmware (ZMK Studio enabled)"
 run = """
