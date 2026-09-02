@@ -47,25 +47,31 @@ Eight layers, accessed as follows:
 |---|---------|---------------------|
 | 0 | BASE    | always on           |
 | 1 | NAV     | hold `mo1` (left thumb) |
-| 2 | CODE    | hold `lt(2, DEL)` (right thumb) |
+| 2 | CODE    | hold `mo2` (right thumb, pos 60) |
 | 3 | MEDIA   | hold `mo3` (right thumb) |
 | 4 | SYS\|NUM | hold `mo4` (left thumb) |
 | 5 | GAME?   | `&to 5` from SYS (right-thumb outer key, pos 63) — transient picker |
 | 6 | MINECRFT | picker joystick ↑ (`&GAME_MC_TO` → `&to 6`) |
 | 7 | GAME    | picker joystick ↓ (`&GAME_GEN_TO` → `&to 7`) — generic FPS/MOBA |
+| 8 | NOMANSKY | picker joystick ← (`&GAME_NMS_TO` → `&to 8`) — No Man's Sky |
 
-Right thumb cluster (BASE): `SPACE · lt(CODE,DEL) · CapsWord · ralt_mt(RALT, F12) · mo(MEDIA)`
+Right thumb cluster (BASE): `SPACE · mo(CODE) · CapsWord · ralt_mt(RALT, F12) · mo(MEDIA)`
+**DEL = `mo(CODE) + BSPC`** — hold the CODE key (right thumb, pos 60) and tap the
+left-thumb BSPC position (pos 57). Cross-hand, no hold-tap cost. CODE is a plain
+`&mo 2`; the old `&lt 2 DEL` was removed in `ebc0602` for hold-tap lag, which left
+BASE with no DEL at all until this was added. DEL is also on MEDIA pos 30.
 Left thumb cluster (BASE): `mo(SYS|NUM) · F11 · LGUI · mo(NAV) · BSPC`
 
-### Gaming mode (layers 5–7)
+### Gaming mode (layers 5–8)
 
 Locked gaming layers that strip all HRM/hold-tap/caps_word so WASD + modifiers are pure `&kp`. Designed in issue #11; re-applied onto current main in `feat/gaming-mode` (the older `gaming` branch / `v2.0.0-rc1` was built on a pre-v1.4 base and is superseded).
 
 - **Entry:** hold `mo(SYS|NUM)` → tap SYS **pos 63** (`&to 5`). The original design used the SYS joystick-center (pos 58), but PR #25 turned the SYS joystick into a mouse (pos 58 = `&mkp LCLK`), so entry moved to the free right-thumb outer key.
-- **Picker (layer 5, "GAME?"):** joystick ↑ → MINECRFT, ↓ → generic GAME, center → `&to 0` (cancel). All other keys `&none`.
-- **Game chassis (layers 6 & 7, identical except pos 0):** `LCTRL`@39 (pinky), `LSHIFT`@56 (left thumb inner), `SPACE`@57 + @59 (both thumbs), `BSPC`@60, `LALT`@61, `F13`@62 (PTT), `mo(MEDIA)`@63. Joystick = audio cluster (Vol±/Mute/PlayPause) + center Enter. pos 0: MC = `F3`, generic = `` ` ``.
-- **Exit/switch combos:** `0 + 12` → `&GAME_EXIT` (RGB off + `&to 0`); `0 + 5` → `&to 5` (re-pick). Both scoped `layers = <6 7>`.
-- **RGB feedback** (`GAME_MC_TO`/`GAME_GEN_TO` set `RGB_COLOR_HSB`): visible on both USB and battery since v2.6.0 (`AUTO_OFF_USB=n`). `GAME_EXIT` does `RGB_OFF` to return to the dark smart-off base. OLED `display-name` is still the primary indicator.
+- **Picker (layer 5, "GAME?"):** joystick ↑ → MINECRFT, ↓ → generic GAME, ← → NOMANSKY, center → `&to 0` (cancel). All other keys `&none`.
+- **Game chassis (layers 6, 7 & 8):** `LCTRL`@39 (pinky), `LSHIFT`@56 (left thumb inner), `SPACE`@57 + @59 (both thumbs), `BSPC`@60, `LALT`@61, `F13`@62 (PTT), `mo(MEDIA)`@63. Joystick = audio cluster (Vol±/Mute/PlayPause) + center Enter. pos 0: MC = `F3`, generic = `` ` ``, NMS = `F12` (Steam screenshot).
+- **NOMANSKY (8) swaps `LSHIFT`/`LCTRL`** → `LSHIFT`@39 (pinky), `LCTRL`@56 (thumb). Requested explicitly: NMS runs on Shift, Ctrl is unused. It does move the held run modifier off the thumb onto the pinky — the reverse of the MC/GAME rationale — so if the owner ever reports run being awkward, flipping those two positions back is the fix.
+- **Exit/switch combos:** `0 + 12` → `&GAME_EXIT` (RGB off + `&to 0`); `0 + 5` → `&to 5` (re-pick). Both scoped `layers = <6 7 8>`.
+- **RGB feedback** (`GAME_MC_TO`/`GAME_GEN_TO`/`GAME_NMS_TO` set `RGB_COLOR_HSB`; NMS is `0,0,50` — sat 0 = white/silver): visible on both USB and battery since v2.6.0 (`AUTO_OFF_USB=n`). `GAME_EXIT` does `RGB_OFF` to return to the dark smart-off base. OLED `display-name` is still the primary indicator.
 
 ## Key position numbering
 

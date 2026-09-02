@@ -139,7 +139,7 @@
             bindings = <&GAME_EXIT>;
             key-positions = <0 12>;
             timeout-ms = <50>;
-            layers = <6 7>;
+            layers = <6 7 8>;
         };
 
         // Re-open the picker without bouncing through BASE.
@@ -147,7 +147,7 @@
             bindings = <&to 5>;
             key-positions = <0 5>;
             timeout-ms = <50>;
-            layers = <6 7>;
+            layers = <6 7 8>;
         };
     };
 
@@ -401,6 +401,13 @@
             label = "GAME_GEN_TO";
         };
 
+        GAME_NMS_TO: GAME_NMS_TO {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            bindings = <&rgb_ug RGB_ON>, <&rgb_ug RGB_EFS_CMD 0>, <&rgb_ug RGB_COLOR_HSB(0,0,50)>, <&to 8>;
+            label = "GAME_NMS_TO";
+        };
+
         // Exit: turn the underglow off (smart-off base = dark) and return to BASE.
         GAME_EXIT: GAME_EXIT {
             compatible = "zmk,behavior-macro";
@@ -448,7 +455,7 @@
 &trans     &trans     &M_LARROW      &M_PIPE         &M_ARROW        &M_FARROW   &trans  &M_DCOLON  &M_CLOSURE &M_DBG    &M_TODO     &M_TFISH   &trans
 &kp GRAVE  &kp LBRC   &mt LALT RBRC  &mt LCTRL LBKT  &mt LSHFT RBKT  &kp PLUS    &trans  &M_PAREN   &M_BRKT   &M_BRACE   &M_DQUO     &trans     &trans
 &trans     &kp MINUS  &kp UNDER      &kp LPAR        &kp RPAR        &kp EQUAL   &trans  &M_EQEQ    &M_NEQ    &M_LEQ     &M_GEQ      &trans     &trans
-&trans     &trans     &trans         &trans          &trans          &trans      &trans  &trans     &trans    &trans     &trans      &trans
+&trans     &trans     &trans         &trans          &trans          &kp DEL     &trans  &trans     &trans    &trans     &trans      &trans
             >;
 
             display-name = "CODE";
@@ -483,13 +490,14 @@
 
         // Layer 5 — GAME_PICK: transient launcher reached from the SYS layer
         // (hold left-thumb SYS, tap right-thumb outer key → &to 5). Joystick
-        // UP = Minecraft, DOWN = generic GAME, CENTER = cancel back to BASE.
-        // Every other key is &none so a stray press can't escape the picker.
+        // UP = Minecraft, DOWN = generic GAME, LEFT = No Man's Sky,
+        // CENTER = cancel back to BASE. Every other key is &none so a stray
+        // press can't escape the picker.
         layer_5 {
             bindings = <
 &none  &none  &none  &none  &none  &none      &GAME_MC_TO   &none  &none  &none  &none  &none  &none
 &none  &none  &none  &none  &none  &none      &GAME_GEN_TO  &none  &none  &none  &none  &none  &none
-&none  &none  &none  &none  &none  &none      &none         &none  &none  &none  &none  &none  &none
+&none  &none  &none  &none  &none  &none      &GAME_NMS_TO  &none  &none  &none  &none  &none  &none
 &none  &none  &none  &none  &none  &none      &none         &none  &none  &none  &none  &none  &none
 &none  &none  &none  &none  &none  &none      &to 0         &none  &none  &none  &none  &none
             >;
@@ -528,6 +536,27 @@
             >;
 
             display-name = "GAME";
+            sensor-bindings = <&rsr_vol &rsr_trans>;
+        };
+
+        // Layer 8 — NOMANSKY (No Man's Sky). Same chassis as GAME (7), with two
+        // deliberate deltas:
+        //   * LSHFT@39 / LCTRL@56 are exchanged vs. layers 6-7 — NMS puts run on
+        //     Shift and leaves Ctrl unused, and this is the arrangement the
+        //     owner asked for. (Note: it does move the held run modifier off the
+        //     thumb and onto the pinky, unlike the MC/GAME chassis.)
+        //   * pos 0 = F12 (Steam screenshot). MC's F3 debug screen and GAME's
+        //     GRAVE console both do nothing in NMS.
+        layer_8 {
+            bindings = <
+&kp F12     &kp N1  &kp N2  &kp N3    &kp N4     &kp N5         &kp C_VOL_UP  &kp N6     &kp N7    &kp N8     &kp N9    &kp N0     &kp MINUS
+&kp TAB     &kp Q   &kp W   &kp E     &kp R      &kp T          &kp C_VOL_DN  &kp Y      &kp U     &kp I      &kp O     &kp P      &kp EQUAL
+&kp ESC     &kp A   &kp S   &kp D     &kp F      &kp G          &kp C_MUTE    &kp H      &kp J     &kp K      &kp L     &kp SEMI   &kp APOS
+&kp LSHFT   &kp Z   &kp X   &kp C     &kp V      &kp B          &kp C_PP      &kp N      &kp M     &kp COMMA  &kp DOT   &kp FSLH   &kp RET
+&kp C_MUTE  &kp F2  &kp F11 &kp LGUI  &kp LCTRL  &kp SPACE      &kp ENTER     &kp SPACE  &kp BSPC  &kp LALT   &kp F13   &mo 3
+            >;
+
+            display-name = "NOMANSKY";
             sensor-bindings = <&rsr_vol &rsr_trans>;
         };
     };
