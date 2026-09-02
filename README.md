@@ -240,6 +240,18 @@ mise run setup
 
 `setup` runs `west init`, `west update`, `west zephyr-export`, and installs Python deps into the venv. ZMK source lands in `zmk/` and `modules/` (gitignored).
 
+### 3b. Check the workspace when a build fails oddly
+
+```bash
+mise run doctor        # fast, offline: is the workspace what config/west.yml says it should be?
+mise run doctor-fix    # repair it
+mise run doctor-ci     # optional: diff local checkouts against the last green main build (needs gh)
+```
+
+The west workspace can drift out of sync with `config/west.yml` without any warning from `west update`. The failure that motivated these tasks: the `zmk/` clone's git remote still pointed at `zmkfirmware/zmk` from before the switch to cormoran's fork — west names remotes from the manifest but will **not** repoint an existing clone — so `west update` quietly could not fetch the pinned revision and left `zmk/` on an unrelated commit from a newer Zephyr 4.1 tree. Builds then died at CMake configure with `Invalid BOARD: nice_nano_v2`, which looks like a board or keymap problem and is neither. CI was green the whole time.
+
+`doctor` compares every project's `HEAD` against the `manifest-rev` ref west writes into each one, checks each clone's remote URL against the manifest, and verifies the board file and Zephyr version — so it catches this whole class of drift, not just the one instance.
+
 ### 4. Build and flash
 
 Build the firmware locally:
